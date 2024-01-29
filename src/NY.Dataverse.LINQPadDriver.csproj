@@ -43,9 +43,13 @@
 	  <AnalysisLevel>latest-recommended</AnalysisLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Remove="linqpad-samples\**" />
     <Compile Remove="MarkMpn.FetchXmlToWebAPI\**" />
+    <EmbeddedResource Remove="linqpad-samples\**" />
     <EmbeddedResource Remove="MarkMpn.FetchXmlToWebAPI\**" />
+    <None Remove="linqpad-samples\**" />
     <None Remove="MarkMpn.FetchXmlToWebAPI\**" />
+    <Page Remove="linqpad-samples\**" />
     <Page Remove="MarkMpn.FetchXmlToWebAPI\**" />
   </ItemGroup>
   <ItemGroup>
@@ -66,24 +70,6 @@
       <PackagePath>
       </PackagePath>
     </None>
-  </ItemGroup>
-  <ItemGroup>
-    <None Remove="linqpad-samples\Entity Created Information.linq" />
-    <None Remove="linqpad-samples\PCF Components.linq" />
-    <None Remove="linqpad-samples\Plugins by Message.linq" />
-    <None Remove="linqpad-samples\Record Count.linq" />
-    <None Remove="linqpad-samples\Required Attributes.linq" />
-    <None Remove="linqpad-samples\User Settings.linq" />
-    <None Remove="linqpad-samples\Webresource Images.linq" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="linqpad-samples\Entity Created Information.linq" />
-    <Content Include="linqpad-samples\PCF Components.linq" />
-    <Content Include="linqpad-samples\Plugins by Message.linq" />
-    <Content Include="linqpad-samples\Record Count.linq" />
-    <Content Include="linqpad-samples\Required Attributes.linq" />
-    <Content Include="linqpad-samples\User Settings.linq" />
-    <Content Include="linqpad-samples\Webresource Images.linq" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Azure.Identity" Version="1.10.4" />
