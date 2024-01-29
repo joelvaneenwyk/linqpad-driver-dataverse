@@ -21,11 +21,11 @@ namespace NY.Dataverse.LINQPadDriver
             var fetchXml = XElement.Parse(query);
             var entityElement = fetchXml.Element(FetchAttributes.Entity);
             var entityMetadata = new List<EntityMetadata>();
-            var mainEntity = DataverseClient.GetEntityMetadata(entityElement.Attribute(FetchAttributes.Name).Value, EntityFilters.Entity | EntityFilters.Attributes | EntityFilters.Relationships);
+            var mainEntity = DataverseClient.GetEntityMetadata(entityElement?.Attribute(FetchAttributes.Name)?.Value, EntityFilters.Entity | EntityFilters.Attributes | EntityFilters.Relationships);
             entityMetadata.Add(mainEntity);
 
             if(fetchXml.Descendants(FetchAttributes.LinkEntity).Any())
-                entityMetadata.AddRange(fetchXml.Descendants(FetchAttributes.LinkEntity).Select(x => DataverseClient.GetEntityMetadata(x.Attribute(FetchAttributes.Name).Value, EntityFilters.Entity | EntityFilters.Attributes | EntityFilters.Relationships)).ToList());
+                entityMetadata.AddRange(fetchXml.Descendants(FetchAttributes.LinkEntity).Select(x => DataverseClient.GetEntityMetadata(x.Attribute(FetchAttributes.Name)?.Value, EntityFilters.Entity | EntityFilters.Attributes | EntityFilters.Relationships)).ToList());
 
             var converter = new FetchXmlToWebAPIConverter(new LINQPadMetadataProvider(entityMetadata), url);
             var webApiUrl = converter.ConvertFetchXmlToWebAPI(query);

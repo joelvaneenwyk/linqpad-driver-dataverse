@@ -1,11 +1,11 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>net6.0-windows</TargetFramework>
+    <TargetFrameworks>net6.0-windows;net7.0-windows;net8.0-windows</TargetFrameworks>
     <UseWpf>true</UseWpf>
     <AssemblyName>NY.Dataverse.LINQPadDriver</AssemblyName>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageTags>dataverse,linqpaddriver,commondataservice,powerapps,dynamics365</PackageTags>
-	<VersionPrefix>1.7.5</VersionPrefix>
+    <VersionPrefix>1.7.5</VersionPrefix>
     <Authors>Natraj Yegnaraman</Authors>
     <Company>Natraj Yegnaraman</Company>
     <PackageId>NY.Dataverse.LINQPadDriver</PackageId>
@@ -26,7 +26,21 @@
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <Version>1.7.5</Version>
     <AssemblyVersion>1.7.5.0</AssemblyVersion>
-    <FileVersion>1.7.5.0</FileVersion>    
+    <FileVersion>1.7.5.0</FileVersion>
+    <Platforms>AnyCPU;x86;ARM32;ARM64;x64</Platforms>
+    <Nullable>enable</Nullable>
+	  <WarningLevel>7</WarningLevel>
+	  <CheckForOverflowUnderflow>True</CheckForOverflowUnderflow>
+	  <TreatWarningsAsErrors>True</TreatWarningsAsErrors>
+	  <NoWarn>$(NoWarn);1701;1702;8981;SYSLIB0044;CS1591</NoWarn>
+	  <WarningsNotAsErrors>1591</WarningsNotAsErrors>
+	  <DocumentationFile>$(SolutionDir).build\doc\$(Configuration)\$(Platform)\$(MSBuildProjectName).xml</DocumentationFile>
+	  <BaseOutputPath>$(SolutionDir).build\obj\$(Configuration)\$(Platform)\$(MSBuildProjectName)\</BaseOutputPath>
+	  <Title>NY.Dataverse.LINQPadDriver</Title>
+	  <IncludeSymbols>True</IncludeSymbols>
+	  <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+	  <EnforceCodeStyleInBuild>True</EnforceCodeStyleInBuild>
+	  <AnalysisLevel>latest-recommended</AnalysisLevel>
   </PropertyGroup>
   <ItemGroup>
     <Compile Remove="MarkMpn.FetchXmlToWebAPI\**" />
@@ -44,11 +58,13 @@
     </None>
     <None Include="..\images\LINQPadDriver.png">
       <Pack>True</Pack>
-      <PackagePath></PackagePath>
+      <PackagePath>
+      </PackagePath>
     </None>
     <None Include="..\README.md">
       <Pack>True</Pack>
-      <PackagePath></PackagePath>
+      <PackagePath>
+      </PackagePath>
     </None>
   </ItemGroup>
   <ItemGroup>
@@ -72,7 +88,7 @@
   <ItemGroup>
     <PackageReference Include="Azure.Identity" Version="1.10.4" />
     <PackageReference Include="LINQPad.Reference" Version="1.3.0" />
-    <PackageReference Include="Microsoft.PowerPlatform.Dataverse.Client" Version="1.1.16" />
+    <PackageReference Include="Microsoft.PowerPlatform.Dataverse.Client" Version="1.1.17" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
@@ -85,7 +101,7 @@
     </Compile>
   </ItemGroup>
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec Command="xcopy /i/y/s &quot;$(TargetDir)*.*&quot; &quot;%25LocalAppData%25\LINQPad\Drivers\DataContext\NetCore\$(TargetName)&quot;" />
+    <Exec Command="xcopy /i/y/s &quot;$(TargetDir)*.*&quot; &quot;%25LocalAppData%25\LINQPad\Drivers\DataContext\NetCore\$(TargetName)&quot;&#xD;&#xA;exit /b 0" />
   </Target>
-  <Import Project="MarkMpn.FetchXmlToWebAPI\MarkMpn.FetchXmlToWebAPI\MarkMpn.FetchXmlToWebAPI.projitems" Label="Shared" />  
+  <Import Project="MarkMpn.FetchXmlToWebAPI\MarkMpn.FetchXmlToWebAPI\MarkMpn.FetchXmlToWebAPI.projitems" Label="Shared" />
 </Project>

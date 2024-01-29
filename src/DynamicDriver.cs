@@ -16,14 +16,17 @@ using System.Linq;
 using System.Reflection;
 using System.Windows;
 using System.Xml.Linq;
+using System.Runtime.InteropServices;
+using System.Globalization;
+using System.CodeDom.Compiler;
 
 namespace NY.Dataverse.LINQPadDriver
 {
     public class DynamicDriver : DynamicDataContextDriver
 	{
-		static DynamicDriver _driverInstance;
-		static ServiceClient _dataverseServiceClient;
-		static QueryExecutionManager _queryExecutionManager;
+		static DynamicDriver? _driverInstance;
+		static ServiceClient? _dataverseServiceClient;
+		static QueryExecutionManager? _queryExecutionManager;
 
 #if DEBUG
 		static DynamicDriver()
@@ -32,7 +35,7 @@ namespace NY.Dataverse.LINQPadDriver
 			AppDomain.CurrentDomain.FirstChanceException += (sender, args) =>
 			{
 
-				if (args.Exception.StackTrace.Contains("NY.Dataverse.LINQPadDriver"))
+				if (args.Exception.StackTrace?.Contains("NY.Dataverse.LINQPadDriver") ?? false)
 					Debugger.Launch();
 			};
 		}
@@ -40,15 +43,15 @@ namespace NY.Dataverse.LINQPadDriver
 		public override string Name => "Dataverse LINQPad Driver";
 
 		public override string Author => "Natraj Yegnaraman";
-        public override string GetConnectionDescription(IConnectionInfo connectionInfo) 
+        public override string GetConnectionDescription(IConnectionInfo cxInfo) 
         {
-            var connectionProperties = new ConnectionProperties(connectionInfo);
+            var connectionProperties = new ConnectionProperties(cxInfo);
             return !string.IsNullOrEmpty(connectionProperties.ConnectionName) ? $"{connectionProperties.ConnectionName} ({connectionProperties.EnvironmentUrl})" : connectionProperties.EnvironmentUrl;
         }
 
 		public override bool ShowConnectionDialog (IConnectionInfo cxInfo, ConnectionDialogOptions dialogOptions)
 			=> new ConnectionDialog (cxInfo).ShowDialog() == true;
-		public override IEnumerable<string> GetAssembliesToAdd(IConnectionInfo cxInfo)
+		public override IReadOnlyList<string> GetAssembliesToAdd(IConnectionInfo cxInfo)
 		{
 			return new string[]
 				{
@@ -68,29 +71,34 @@ namespace NY.Dataverse.LINQPadDriver
 			Debugger.Launch();
 #endif
 			var connectionProperties = new ConnectionProperties(cxInfo);
-			List<ExplorerItem> explorerItems = new List<ExplorerItem>();
-			ServiceClient client = null;
+            List<ExplorerItem> explorerItems = new();
+			ServiceClient? client = null;
             try
             {
                 client = connectionProperties.GetCdsClient();
                 if (client.IsReady)
                 {
                     var entityMetadata = GetEntityMetadata(client);
-                    var code = new CDSTemplate(entityMetadata) { Namespace = nameSpace, TypeName = typeName }.TransformText();
-#if DEBUG
-                    File.WriteAllText(Path.Combine(GetContentFolder(), "LINQPad.EarlyBound.cs"), code);
-#endif
-                    Compile(code, assemblyToBuild.CodeBase, cxInfo);
-
-                    BuildEntityAndAttributeExplorerItems(explorerItems, entityMetadata);
-
-                    foreach (var entity in entityMetadata)
+					if (entityMetadata != null)
                     {
-                        var source = explorerItems.FirstOrDefault(e => e.Kind == ExplorerItemKind.QueryableObject && (string)e.Tag == entity.entityMetadata.LogicalName);
+                        var code = new CDSTemplate(entityMetadata) { Namespace = nameSpace, TypeName = typeName }.TransformText();
+#if DEBUG
+                        File.WriteAllText(Path.Combine(GetContentFolder(), "LINQPad.EarlyBound.cs"), code);
+#endif
+                        Compile(code, assemblyToBuild.CodeBase, cxInfo);
 
-                        BuildOneToManyRelationLinks(explorerItems, entity, source);
+                        BuildEntityAndAttributeExplorerItems(explorerItems, entityMetadata);
 
-                        BuildManyToOneRelationLinks(explorerItems, entity, source);
+                        foreach (ref var entity in CollectionsMarshal.AsSpan(entityMetadata))
+                        {
+							var entityLogicalName = entity.entityMetadata.LogicalName;
+                            var source = explorerItems.FirstOrDefault(
+								e => e.Kind == ExplorerItemKind.QueryableObject 
+								&& (string)e.Tag == entityLogicalName);
+
+                            BuildOneToManyRelationLinks(explorerItems, entity, source);
+                            BuildManyToOneRelationLinks(explorerItems, entity, source);
+                        }
                     }
                 }
             }
@@ -117,14 +125,17 @@ namespace NY.Dataverse.LINQPadDriver
 			_driverInstance = this;
             var preExecuteEvent = context.GetType().GetEvent("PreExecute");
 			var preExecuteEventHandler = GetType().GetMethod("OnPreExecute", BindingFlags.Static | BindingFlags.NonPublic);
-			preExecuteEvent.AddEventHandler(context, Delegate.CreateDelegate(preExecuteEvent.EventHandlerType, null, preExecuteEventHandler));
+			if (preExecuteEvent?.EventHandlerType != null && preExecuteEventHandler != null)
+			{
+				preExecuteEvent?.AddEventHandler(context, Delegate.CreateDelegate(preExecuteEvent.EventHandlerType, null, preExecuteEventHandler));
+			}
 			_queryExecutionManager = executionManager;
 			base.InitializeContext(cxInfo, context, executionManager);
 		}
 
-        public override bool AreRepositoriesEquivalent(IConnectionInfo r1, IConnectionInfo r2)
+        public override bool AreRepositoriesEquivalent(IConnectionInfo c1, IConnectionInfo c2)
 		{
-			return Equals(r1.DriverData.Element("EnvironmentUrl"), r2.DriverData.Element("EnvironmentUrl"));
+			return Equals(c1.DriverData.Element("EnvironmentUrl"), c2.DriverData.Element("EnvironmentUrl"));
 		}
 
 		public override object[] GetContextConstructorArguments(IConnectionInfo cxInfo)
@@ -140,11 +151,11 @@ namespace NY.Dataverse.LINQPadDriver
 				dataverseServiceClient
 			};
 		}
-		public override ParameterDescriptor[] GetContextConstructorParameters(IConnectionInfo connectionInfo) => new[]
+		public override ParameterDescriptor[] GetContextConstructorParameters(IConnectionInfo cxInfo) => new[]
 		{
 			new ParameterDescriptor("dataverseServiceClient", typeof(ServiceClient).FullName)
 		};
-		public override IEnumerable<string> GetNamespacesToAdd(IConnectionInfo cxInfo) => new List<string>
+		public override IReadOnlyList<string> GetNamespacesToAdd(IConnectionInfo cxInfo) => new List<string>
 		{
 			"Microsoft.Crm.Sdk.Messages",
 			"Microsoft.Xrm.Sdk",
@@ -162,7 +173,7 @@ namespace NY.Dataverse.LINQPadDriver
 			"NY.Dataverse.LINQPadDriver.Entities"
 		};
 
-		static void Compile(string cSharpSourceCode, string outputFile, IConnectionInfo cxInfo)
+		static void Compile(string cSharpSourceCode, string? outputFile, IConnectionInfo cxInfo)
 		{
 			var customAssemblies = new[]{
 				typeof(ServiceClient).Assembly.Location,
@@ -179,15 +190,23 @@ namespace NY.Dataverse.LINQPadDriver
 				SourceCode = new[] { cSharpSourceCode }
 			});
 			if (compileResult.Errors.Length > 0)
-				throw new Exception("Cannot compile typed context: " + compileResult.Errors[0]);
+				throw new TypeCompileException($"Cannot compile typed context: {compileResult.Errors[0]}");
 		}
 
-        #region Helper Methods
-		private static void OnPreExecute(object sender, EventArgs e)
+        [Serializable]
+        public class TypeCompileException : Exception
         {
-			if (_dataverseServiceClient != null)
+            public TypeCompileException() : base() { }
+            public TypeCompileException(string message) : base(message) { }
+            public TypeCompileException(string message, Exception inner) : base(message, inner) { }
+        }
+
+        #region Helper Methods
+        private static void OnPreExecute(object sender, EventArgs e)
+        {
+			if (_dataverseServiceClient != null 
+				&& e.GetType()?.GetProperty("query")?.GetValue(e) is QueryExpression query)
 			{
-				QueryExpression query = (QueryExpression)e.GetType().GetProperty("query").GetValue(e);
                 var expressionToFetchXmlRequest = new QueryExpressionToFetchXmlRequest
                 {
                     Query = query
@@ -265,7 +284,7 @@ namespace NY.Dataverse.LINQPadDriver
 					}
 					if(a.AttributeType == AttributeTypeCode.PartyList)
                     {
-						attributeName = char.ToUpper(attributeName[0]) + attributeName[1..];
+						attributeName = char.ToUpper(attributeName[0], CultureInfo.CurrentCulture) + attributeName[1..];
 					}
 					return new ExplorerItem($"{attributeName} ({GetTypeFromCode(a.AttributeType)})", ExplorerItemKind.Parameter, ExplorerIcon.Column)
 					{
@@ -283,7 +302,7 @@ namespace NY.Dataverse.LINQPadDriver
             }
         }
 
-        private static void BuildOneToManyRelationLinks(List<ExplorerItem> explorerItems, (EntityMetadata entityMetadata, List<(string attributeName, List<(string Label, int? Value)> options)> optionMetadata) entity, ExplorerItem source)
+        private static void BuildOneToManyRelationLinks(List<ExplorerItem> explorerItems, (EntityMetadata entityMetadata, List<(string attributeName, List<(string Label, int? Value)> options)> optionMetadata) entity, ExplorerItem? source)
         {
             foreach (var oneToMany in entity.entityMetadata.OneToManyRelationships)
             {
@@ -299,7 +318,7 @@ namespace NY.Dataverse.LINQPadDriver
             }
         }
 
-        private static void BuildManyToOneRelationLinks(List<ExplorerItem> explorerItems, (EntityMetadata entityMetadata, List<(string attributeName, List<(string Label, int? Value)> options)> optionMetadata) entity, ExplorerItem source)
+        private static void BuildManyToOneRelationLinks(List<ExplorerItem> explorerItems, (EntityMetadata entityMetadata, List<(string attributeName, List<(string Label, int? Value)> options)> optionMetadata) entity, ExplorerItem? source)
         {
             foreach (var manyToOne in entity.entityMetadata.ManyToOneRelationships)
             {

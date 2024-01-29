@@ -7,6 +7,6 @@ namespace NY.Dataverse.LINQPadDriver
 {
     public class EnvironmentDetails
     {
-        public EntityMetadata Entities { get; set; }
+        public EntityMetadata? Entities { get; set; }
     }
 }
