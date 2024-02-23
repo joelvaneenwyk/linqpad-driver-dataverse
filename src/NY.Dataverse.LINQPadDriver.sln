@@ -7,6 +7,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NY.Dataverse.LINQPadDriver"
 EndProject
 Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "MarkMpn.FetchXmlToWebAPI", "MarkMpn.FetchXmlToWebAPI\MarkMpn.FetchXmlToWebAPI\MarkMpn.FetchXmlToWebAPI.shproj", "{543E6D79-2913-4B00-AAAC-5661F6ADB1A5}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MarkMpn.FetchXmlToWebAPI.Tests", "MarkMpn.FetchXmlToWebAPI\MarkMpn.FetchXmlToWebAPI.Tests\MarkMpn.FetchXmlToWebAPI.Tests.csproj", "{2F49870B-5B83-468D-9DA7-C7D0299CAE81}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -41,6 +43,26 @@ Global
 		{1AEC13A1-A7A0-4E31-8C55-E9E0A2C54511}.Release|x64.Build.0 = Release|x64
 		{1AEC13A1-A7A0-4E31-8C55-E9E0A2C54511}.Release|x86.ActiveCfg = Release|x86
 		{1AEC13A1-A7A0-4E31-8C55-E9E0A2C54511}.Release|x86.Build.0 = Release|x86
+		{2F49870B-5B83-468D-9DA7-C7D0299CAE81}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2F49870B-5B83-468D-9DA7-C7D0299CAE81}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2F49870B-5B83-468D-9DA7-C7D0299CAE81}.Debug|ARM32.ActiveCfg = Debug|Any CPU
+		{2F49870B-5B83-468D-9DA7-C7D0299CAE81}.Debug|ARM32.Build.0 = Debug|Any CPU
+		{2F49870B-5B83-468D-9DA7-C7D0299CAE81}.Debug|ARM64.ActiveCfg = Debug|Any CPU
+		{2F49870B-5B83-468D-9DA7-C7D0299CAE81}.Debug|ARM64.Build.0 = Debug|Any CPU
+		{2F49870B-5B83-468D-9DA7-C7D0299CAE81}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{2F49870B-5B83-468D-9DA7-C7D0299CAE81}.Debug|x64.Build.0 = Debug|Any CPU
+		{2F49870B-5B83-468D-9DA7-C7D0299CAE81}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{2F49870B-5B83-468D-9DA7-C7D0299CAE81}.Debug|x86.Build.0 = Debug|Any CPU
+		{2F49870B-5B83-468D-9DA7-C7D0299CAE81}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2F49870B-5B83-468D-9DA7-C7D0299CAE81}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2F49870B-5B83-468D-9DA7-C7D0299CAE81}.Release|ARM32.ActiveCfg = Release|Any CPU
+		{2F49870B-5B83-468D-9DA7-C7D0299CAE81}.Release|ARM32.Build.0 = Release|Any CPU
+		{2F49870B-5B83-468D-9DA7-C7D0299CAE81}.Release|ARM64.ActiveCfg = Release|Any CPU
+		{2F49870B-5B83-468D-9DA7-C7D0299CAE81}.Release|ARM64.Build.0 = Release|Any CPU
+		{2F49870B-5B83-468D-9DA7-C7D0299CAE81}.Release|x64.ActiveCfg = Release|Any CPU
+		{2F49870B-5B83-468D-9DA7-C7D0299CAE81}.Release|x64.Build.0 = Release|Any CPU
+		{2F49870B-5B83-468D-9DA7-C7D0299CAE81}.Release|x86.ActiveCfg = Release|Any CPU
+		{2F49870B-5B83-468D-9DA7-C7D0299CAE81}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -50,6 +72,7 @@ Global
 	EndGlobalSection
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		MarkMpn.FetchXmlToWebAPI\MarkMpn.FetchXmlToWebAPI\MarkMpn.FetchXmlToWebAPI.projitems*{1aec13a1-a7a0-4e31-8c55-e9e0a2c54511}*SharedItemsImports = 5
+		MarkMpn.FetchXmlToWebAPI\MarkMpn.FetchXmlToWebAPI\MarkMpn.FetchXmlToWebAPI.projitems*{2f49870b-5b83-468d-9da7-c7d0299cae81}*SharedItemsImports = 5
 		MarkMpn.FetchXmlToWebAPI\MarkMpn.FetchXmlToWebAPI\MarkMpn.FetchXmlToWebAPI.projitems*{543e6d79-2913-4b00-aaac-5661f6adb1a5}*SharedItemsImports = 13
 	EndGlobalSection
 EndGlobal

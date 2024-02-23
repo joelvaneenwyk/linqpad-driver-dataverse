@@ -29,28 +29,32 @@
     <FileVersion>1.7.5.0</FileVersion>
     <Platforms>AnyCPU;x86;ARM32;ARM64;x64</Platforms>
     <Nullable>enable</Nullable>
-	  <WarningLevel>7</WarningLevel>
-	  <CheckForOverflowUnderflow>True</CheckForOverflowUnderflow>
-	  <TreatWarningsAsErrors>True</TreatWarningsAsErrors>
-	  <NoWarn>$(NoWarn);1701;1702;8981;SYSLIB0044;CS1591</NoWarn>
-	  <WarningsNotAsErrors>1591</WarningsNotAsErrors>
-	  <DocumentationFile>$(SolutionDir).build\doc\$(Configuration)\$(Platform)\$(MSBuildProjectName).xml</DocumentationFile>
-	  <BaseOutputPath>$(SolutionDir).build\obj\$(Configuration)\$(Platform)\$(MSBuildProjectName)\</BaseOutputPath>
-	  <Title>NY.Dataverse.LINQPadDriver</Title>
-	  <IncludeSymbols>True</IncludeSymbols>
-	  <SymbolPackageFormat>snupkg</SymbolPackageFormat>
-	  <EnforceCodeStyleInBuild>True</EnforceCodeStyleInBuild>
-	  <AnalysisLevel>latest-recommended</AnalysisLevel>
+    <WarningLevel>7</WarningLevel>
+    <CheckForOverflowUnderflow>True</CheckForOverflowUnderflow>
+    <TreatWarningsAsErrors>True</TreatWarningsAsErrors>
+    <NoWarn>$(NoWarn);1701;1702;8981;SYSLIB0044;CS1591</NoWarn>
+    <WarningsNotAsErrors>1591</WarningsNotAsErrors>
+    <DocumentationFile>$(SolutionDir).build\doc\$(Configuration)\$(Platform)\$(MSBuildProjectName).xml</DocumentationFile>
+    <BaseOutputPath>$(SolutionDir).build\obj\$(Configuration)\$(Platform)\$(MSBuildProjectName)\</BaseOutputPath>
+    <Title>NY.Dataverse.LINQPadDriver</Title>
+    <IncludeSymbols>True</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+    <EnforceCodeStyleInBuild>True</EnforceCodeStyleInBuild>
+    <AnalysisLevel>latest-recommended</AnalysisLevel>
   </PropertyGroup>
   <ItemGroup>
     <Compile Remove="linqpad-samples\**" />
     <Compile Remove="MarkMpn.FetchXmlToWebAPI\**" />
+    <Compile Remove="obj\**" />
     <EmbeddedResource Remove="linqpad-samples\**" />
     <EmbeddedResource Remove="MarkMpn.FetchXmlToWebAPI\**" />
+    <EmbeddedResource Remove="obj\**" />
     <None Remove="linqpad-samples\**" />
     <None Remove="MarkMpn.FetchXmlToWebAPI\**" />
+    <None Remove="obj\**" />
     <Page Remove="linqpad-samples\**" />
     <Page Remove="MarkMpn.FetchXmlToWebAPI\**" />
+    <Page Remove="obj\**" />
   </ItemGroup>
   <ItemGroup>
     <None Update="CDSTemplate.tt">
