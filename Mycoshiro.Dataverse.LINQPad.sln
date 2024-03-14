@@ -9,6 +9,18 @@ Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "MarkMpn.FetchXmlToWebAPI", 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MarkMpn.FetchXmlToWebAPI.Tests", "src/MarkMpn.FetchXmlToWebAPI/MarkMpn.FetchXmlToWebAPI.Tests/MarkMpn.FetchXmlToWebAPI.Tests.csproj", "{2F49870B-5B83-468D-9DA7-C7D0299CAE81}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Globals", "Globals", "{51052DE1-DB0E-4D5B-BC09-BBF40B4BB833}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+		.gitattributes = .gitattributes
+		.gitignore = .gitignore
+		.gitmodules = .gitmodules
+		cspell.config.yaml = cspell.config.yaml
+		Directory.Build.props = Directory.Build.props
+		global.json = global.json
+		README.md = README.md
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
