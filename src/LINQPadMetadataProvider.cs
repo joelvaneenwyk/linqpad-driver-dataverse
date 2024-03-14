@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Linq;
 
-namespace NY.Dataverse.LINQPadDriver
+namespace Mycoshiro.Dataverse.LINQPad
 {
     public class LINQPadMetadataProvider : IMetadataProvider
     {
@@ -16,7 +16,7 @@ namespace NY.Dataverse.LINQPadDriver
 
         public EntityMetadata GetEntity(string logicalName)
         {
-            return Metadata.Single(x=>x.LogicalName == logicalName);
+            return Metadata.Single(x => x.LogicalName == logicalName);
         }
 
         public EntityMetadata GetEntity(int otc)

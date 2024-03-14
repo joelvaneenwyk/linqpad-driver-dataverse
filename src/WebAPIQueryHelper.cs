@@ -11,7 +11,7 @@ using LINQPad;
 using System.Diagnostics;
 using MarkMpn.FetchXmlToWebAPI;
 
-namespace NY.Dataverse.LINQPadDriver
+namespace Mycoshiro.Dataverse.LINQPad
 {
     public class WebAPIQueryHelper
     {
@@ -24,7 +24,7 @@ namespace NY.Dataverse.LINQPadDriver
             var mainEntity = DataverseClient.GetEntityMetadata(entityElement?.Attribute(FetchAttributes.Name)?.Value, EntityFilters.Entity | EntityFilters.Attributes | EntityFilters.Relationships);
             entityMetadata.Add(mainEntity);
 
-            if(fetchXml.Descendants(FetchAttributes.LinkEntity).Any())
+            if (fetchXml.Descendants(FetchAttributes.LinkEntity).Any())
                 entityMetadata.AddRange(fetchXml.Descendants(FetchAttributes.LinkEntity).Select(x => DataverseClient.GetEntityMetadata(x.Attribute(FetchAttributes.Name)?.Value, EntityFilters.Entity | EntityFilters.Attributes | EntityFilters.Relationships)).ToList());
 
             var converter = new FetchXmlToWebAPIConverter(new LINQPadMetadataProvider(entityMetadata), url);

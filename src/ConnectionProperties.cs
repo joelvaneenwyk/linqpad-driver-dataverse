@@ -9,7 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 
-namespace NY.Dataverse.LINQPadDriver
+namespace Mycoshiro.Dataverse.LINQPad
 {
 	/// <summary>
 	/// Wrapper to read/write connection properties. This acts as our ViewModel - we will bind to it in ConnectionDialog.xaml.
@@ -29,14 +29,14 @@ namespace NY.Dataverse.LINQPadDriver
 		{
 			get
 			{
-                return AuthenticationType switch
-                {
-                    "ClientSecret" => $"AuthType=ClientSecret; Url={EnvironmentUrl}; ClientId={ApplicationId}; ClientSecret={ClientSecret}; RequireNewInstance=true",
+				return AuthenticationType switch
+				{
+					"ClientSecret" => $"AuthType=ClientSecret; Url={EnvironmentUrl}; ClientId={ApplicationId}; ClientSecret={ClientSecret}; RequireNewInstance=true",
 					"Certificate" => $"AuthType=Certificate; Url={EnvironmentUrl}; ClientId={ApplicationId}; Thumbprint={CertificateThumbprint}; RequireNewInstance=true",
 					"OAuth" => $"AuthType=OAuth; Url={EnvironmentUrl}; ClientId={ApplicationId}; RedirectUri=http://localhost; LoginPrompt=Auto; TokenCacheStorePath={Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData)}; RequireNewInstance=true",
-                    _ => "",
-                };
-            }
+					_ => "",
+				};
+			}
 		}
 
 		public string? ApplicationId
@@ -47,8 +47,8 @@ namespace NY.Dataverse.LINQPadDriver
 
 		public string? ClientSecret
 		{
-			get 
-			{ 
+			get
+			{
 				var clientSecret = DriverData.Element("ClientSecret")?.ToString() ?? string.Empty;
 				return string.IsNullOrEmpty(clientSecret) ? string.Empty : ConnectionInfo.Decrypt(clientSecret);
 			}
@@ -73,13 +73,13 @@ namespace NY.Dataverse.LINQPadDriver
 		{
 			get => DriverData.Element("AuthenticationType")?.ToString() ?? "OAuth";
 			set
-            {
-                switch (value)
-                {
-                    case "ClientSecret":
+			{
+				switch (value)
+				{
+					case "ClientSecret":
 						CertificateThumbprint = null;
 						break;
-                    case "Certificate":
+					case "Certificate":
 						ClientSecret = null;
 						break;
 					case "Azure":
@@ -94,8 +94,8 @@ namespace NY.Dataverse.LINQPadDriver
 				}
 				DriverData.SetElementValue("AuthenticationType", value);
 			}
-        }
-        public string ConnectionName
+		}
+		public string ConnectionName
 		{
 			get => DriverData.Element("ConnectionName")?.ToString() ?? string.Empty;
 			set => DriverData.SetElementValue("ConnectionName", value);

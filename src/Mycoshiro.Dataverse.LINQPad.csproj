@@ -2,18 +2,18 @@
   <PropertyGroup>
     <TargetFrameworks>net6.0-windows;net7.0-windows;net8.0-windows</TargetFrameworks>
     <UseWpf>true</UseWpf>
-    <AssemblyName>NY.Dataverse.LINQPadDriver</AssemblyName>
+    <AssemblyName>Mycoshiro.Dataverse.LINQPad</AssemblyName>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageTags>dataverse,linqpaddriver,commondataservice,powerapps,dynamics365</PackageTags>
     <VersionPrefix>1.7.5</VersionPrefix>
     <Authors>Natraj Yegnaraman</Authors>
     <Company>Natraj Yegnaraman</Company>
-    <PackageId>NY.Dataverse.LINQPadDriver</PackageId>
+    <PackageId>Mycoshiro.Dataverse.LINQPad</PackageId>
     <Product>LINQPad Driver for Dataverse</Product>
     <Description>This driver helps you connect to Dataverse (previous known as CDS) API and query or execute actions against the API. This driver utilises the PowerPlatform-DataverseServiceClient package to generate the early bound classes. The authentication methods supported are Azure, OAuth, Client Secret and Certificate Thumbprint.</Description>
-    <RootNamespace>NY.Dataverse.LINQPadDriver</RootNamespace>
+    <RootNamespace>Mycoshiro.Dataverse.LINQPad</RootNamespace>
     <SignAssembly>true</SignAssembly>
-    <AssemblyOriginatorKeyFile>NY.Dataverse.LINQPadDriver.snk</AssemblyOriginatorKeyFile>
+    <AssemblyOriginatorKeyFile>Mycoshiro.Dataverse.LINQPad.snk</AssemblyOriginatorKeyFile>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageProjectUrl>https://github.com/rajyraman/Dataverse-LINQPad-Driver</PackageProjectUrl>
     <RepositoryUrl>https://github.com/rajyraman/Dataverse-LINQPad-Driver</RepositoryUrl>
@@ -36,7 +36,7 @@
     <WarningsNotAsErrors>1591</WarningsNotAsErrors>
     <DocumentationFile>$(SolutionDir).build\doc\$(Configuration)\$(Platform)\$(MSBuildProjectName).xml</DocumentationFile>
     <BaseOutputPath>$(SolutionDir).build\obj\$(Configuration)\$(Platform)\$(MSBuildProjectName)\</BaseOutputPath>
-    <Title>NY.Dataverse.LINQPadDriver</Title>
+    <Title>Mycoshiro.Dataverse.LINQPad</Title>
     <IncludeSymbols>True</IncludeSymbols>
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
     <EnforceCodeStyleInBuild>True</EnforceCodeStyleInBuild>

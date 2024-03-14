@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Xml.Linq;
 
-namespace NY.Dataverse.LINQPadDriver
+namespace Mycoshiro.Dataverse.LINQPad
 {
     public static class FetchAttributes
     {

@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Linq;
 
-namespace NY.Dataverse.LINQPadDriver
+namespace Mycoshiro.Dataverse.LINQPad
 {
     partial class CDSTemplate
     {

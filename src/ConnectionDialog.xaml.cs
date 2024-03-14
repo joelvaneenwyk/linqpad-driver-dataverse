@@ -1,23 +1,23 @@
 using LINQPad.Extensibility.DataContext;
 using System.Windows;
 
-namespace NY.Dataverse.LINQPadDriver
+namespace Mycoshiro.Dataverse.LINQPad
 {
 	public partial class ConnectionDialog : Window
 	{
 		IConnectionInfo _cxInfo;
 
-		public ConnectionDialog (IConnectionInfo cxInfo)
+		public ConnectionDialog(IConnectionInfo cxInfo)
 		{
 			_cxInfo = cxInfo;
 
 			// ConnectionProperties is your view-model.
-			DataContext = new ConnectionProperties (cxInfo);
+			DataContext = new ConnectionProperties(cxInfo);
 
-			InitializeComponent ();
+			InitializeComponent();
 		}
 
-		void btnOK_Click (object sender, RoutedEventArgs e)
+		void btnOK_Click(object sender, RoutedEventArgs e)
 		{
 			DialogResult = true;
 		}

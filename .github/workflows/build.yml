@@ -42,8 +42,8 @@ jobs:
       run: |
         $version = "$(Get-Date -Format "yyyy.MM.dd").${{ github.run_number }}";
         dotnet pack --configuration ${{ env.buildConfig }};
-        Compress-Archive bin/Release/netcoreapp*/* bin/Release/netcoreapp*/NY.Dataverse.LINQPadDriver.lpx6  -Verbose;
-        echo "::set-output name=driverFileName::NY.Dataverse.LINQPadDriver_$version.lpx6";
+          Compress-Archive bin/Release/netcoreapp*/* bin/Release/netcoreapp*/Mycoshiro.Dataverse.LINQPad.lpx6  -Verbose;
+          echo "::set-output name=driverFileName::Mycoshiro.Dataverse.LINQPad_$version.lpx6";
         echo "::set-output name=driverFileVersion::$version";
     
     - name: Create Release
@@ -65,7 +65,7 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: bin/Release/netcoreapp*/NY.Dataverse.LINQPadDriver.lpx6
+          asset_path: bin/Release/netcoreapp*/Mycoshiro.Dataverse.LINQPad.lpx6
         asset_name: ${{ steps.create-package.outputs.driverFileName }}
         asset_content_type: application/zip        
     
