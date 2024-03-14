@@ -4,9 +4,9 @@
     <UseWpf>true</UseWpf>
     <AssemblyName>Mycoshiro.Dataverse.LINQPad</AssemblyName>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <PackageTags>dataverse,linqpaddriver,commondataservice,powerapps,dynamics365</PackageTags>
+    <PackageTags>dataverse;linqpaddriver;commondataservice;powerapps;dynamics365</PackageTags>
     <VersionPrefix>1.7.5</VersionPrefix>
-    <Authors>Natraj Yegnaraman</Authors>
+    <Authors>Natraj Yegnaraman, Joel Van Eenwyk</Authors>
     <Company>Natraj Yegnaraman</Company>
     <PackageId>Mycoshiro.Dataverse.LINQPad</PackageId>
     <Product>LINQPad Driver for Dataverse</Product>
@@ -15,10 +15,10 @@
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>Mycoshiro.Dataverse.LINQPad.snk</AssemblyOriginatorKeyFile>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <PackageProjectUrl>https://github.com/rajyraman/Dataverse-LINQPad-Driver</PackageProjectUrl>
-    <RepositoryUrl>https://github.com/rajyraman/Dataverse-LINQPad-Driver</RepositoryUrl>
+    <PackageProjectUrl>https://github.com/joelvaneenwyk/linqpad-driver-dataverse</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/joelvaneenwyk/linqpad-driver-dataverse</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
-    <PackageReleaseNotes>Update Azure Identity (1.10.4) and Dataverse Client (1.3.0) packages</PackageReleaseNotes>
+    <PackageReleaseNotes>Switched to only supporting .NET 6 and newer</PackageReleaseNotes>
     <PackageIcon>LINQPadDriver.png</PackageIcon>
     <PackageIconUrl />
     <Copyright>Natraj Yegnaraman</Copyright>
@@ -41,6 +41,7 @@
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
     <EnforceCodeStyleInBuild>True</EnforceCodeStyleInBuild>
     <AnalysisLevel>latest-recommended</AnalysisLevel>
+    <NeutralLanguage>en</NeutralLanguage>
   </PropertyGroup>
   <ItemGroup>
     <Compile Remove="linqpad-samples\**" />
@@ -91,7 +92,7 @@
     </Compile>
   </ItemGroup>
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec Command="xcopy /i/y/s &quot;$(TargetDir)*.*&quot; &quot;%25LocalAppData%25\LINQPad\Drivers\DataContext\NetCore\$(TargetName)&quot;&#xD;&#xA;exit /b 0" />
+    <Exec Command="xcopy /i/y/s &quot;$(TargetDir)*.*&quot; &quot;%25LocalAppData%25\LINQPad\Drivers\DataContext\NetCore\$(TargetName)&quot; || true&#xD;&#xA;exit /b 0" />
   </Target>
   <Import Project="MarkMpn.FetchXmlToWebAPI\MarkMpn.FetchXmlToWebAPI\MarkMpn.FetchXmlToWebAPI.projitems" Label="Shared" />
 </Project>
