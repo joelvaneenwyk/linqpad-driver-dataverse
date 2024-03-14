@@ -7,18 +7,19 @@
 
     <ProjectRoot>$(MSBuildThisFileDirectory.TrimEnd('\/'))</ProjectRoot>
 
-    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">$(ProjectRoot)</SolutionDir>
-    <Deterministic>true</Deterministic>
-
-    <OutputPath>$(ProjectRoot)/bin/$(Configuration)/</OutputPath>
+    <OutputPath>$(ProjectRoot)/bin/$(Configuration)/$(Platform)$(TargetArchitecture)/</OutputPath>
     <OutDir>$(OutputPath)</OutDir>
     <BaseIntermediateOutputPath>$(ProjectRoot)/.build/$(MSBuildProjectName)/</BaseIntermediateOutputPath>
-    <BaseOutputPath>$(BaseIntermediateOutputPath)</BaseOutputPath>
     <IntermediateOutputPath>$(BaseIntermediateOutputPath)$(Configuration)/$(Platform)$(TargetArchitecture)/</IntermediateOutputPath>
-    <IntDir>$(IntermediateOutputPath)/</IntDir>
-    <UseCommonOutputDirectory>false</UseCommonOutputDirectory>
-    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+
+    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">$(ProjectRoot)</SolutionDir>
+    <BaseOutputPath>$(BaseIntermediateOutputPath)</BaseOutputPath>
+    <IntDir>$(IntermediateOutputPath)</IntDir>
 
     <DocumentationFile>$(OutputPath)$(MSBuildProjectName).xml</DocumentationFile>
+
+    <Deterministic>true</Deterministic>
+    <UseCommonOutputDirectory>false</UseCommonOutputDirectory>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
   </PropertyGroup>
 </Project>
