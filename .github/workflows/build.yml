@@ -34,7 +34,7 @@ jobs:
         run: dotnet restore
 
       - name: Build
-        run: dotnet build -c ${{ matrix.config }} --no-restore --self-contained --verbosity normal
+        run: dotnet build -c ${{ matrix.config }} --no-restore --verbosity normal
 
       #- name: Create the package
       #  id: create-package
