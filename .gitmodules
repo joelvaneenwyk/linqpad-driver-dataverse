@@ -1,4 +1,4 @@
 [submodule "src/MarkMpn.FetchXmlToWebAPI"]
-	path = src/MarkMpn.FetchXmlToWebAPI
-	url = https://github.com/joelvaneenwyk/MarkMpn.FetchXmlToWebAPI
-	branch = develop
+path = src/MarkMpn.FetchXmlToWebAPI
+url = https://github.com/joelvaneenwyk/MarkMpn.FetchXmlToWebAPI
+branch = develop
