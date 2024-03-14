@@ -3,9 +3,7 @@ using Azure.Identity;
 using LINQPad.Extensibility.DataContext;
 using Microsoft.PowerPlatform.Dataverse.Client;
 using System;
-using System.Collections.Generic;
 using System.Runtime.Caching;
-using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 

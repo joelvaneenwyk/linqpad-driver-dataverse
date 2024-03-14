@@ -1,6 +1,5 @@
 #define TRACE
 
-using LINQPad;
 using LINQPad.Extensibility.DataContext;
 using Microsoft.Crm.Sdk.Messages;
 using Microsoft.PowerPlatform.Dataverse.Client;
@@ -18,7 +17,6 @@ using System.Windows;
 using System.Xml.Linq;
 using System.Runtime.InteropServices;
 using System.Globalization;
-using System.CodeDom.Compiler;
 
 namespace Mycoshiro.Dataverse.LINQPad
 {

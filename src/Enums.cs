@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Xml.Linq;
-
-namespace Mycoshiro.Dataverse.LINQPad
+﻿namespace Mycoshiro.Dataverse.LINQPad
 {
     public static class FetchAttributes
     {
