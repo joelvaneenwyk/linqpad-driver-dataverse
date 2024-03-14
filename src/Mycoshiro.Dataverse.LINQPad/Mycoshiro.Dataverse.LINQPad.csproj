@@ -42,18 +42,18 @@
     <NeutralLanguage>en</NeutralLanguage>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Remove="linqpad-samples\**" />
-    <Compile Remove="MarkMpn.FetchXmlToWebAPI\**" />
-    <Compile Remove="obj\**" />
-    <EmbeddedResource Remove="linqpad-samples\**" />
-    <EmbeddedResource Remove="MarkMpn.FetchXmlToWebAPI\**" />
-    <EmbeddedResource Remove="obj\**" />
-    <None Remove="linqpad-samples\**" />
-    <None Remove="MarkMpn.FetchXmlToWebAPI\**" />
-    <None Remove="obj\**" />
-    <Page Remove="linqpad-samples\**" />
-    <Page Remove="MarkMpn.FetchXmlToWebAPI\**" />
-    <Page Remove="obj\**" />
+    <Compile Remove="linqpad-samples/**" />
+    <Compile Remove="MarkMpn.FetchXmlToWebAPI/**" />
+    <Compile Remove="obj/**" />
+    <EmbeddedResource Remove="linqpad-samples/**" />
+    <EmbeddedResource Remove="MarkMpn.FetchXmlToWebAPI/**" />
+    <EmbeddedResource Remove="obj/**" />
+    <None Remove="linqpad-samples/**" />
+    <None Remove="MarkMpn.FetchXmlToWebAPI/**" />
+    <None Remove="obj/**" />
+    <Page Remove="linqpad-samples/**" />
+    <Page Remove="MarkMpn.FetchXmlToWebAPI/**" />
+    <Page Remove="obj/**" />
   </ItemGroup>
   <ItemGroup>
     <None Update="CDSTemplate.tt">
@@ -63,12 +63,12 @@
     <None Update="ConnectionDialog.xaml">
       <Generator>MSBuild:Compile</Generator>
     </None>
-    <None Include="..\images\LINQPadDriver.png">
+    <None Include="../../images/LINQPadDriver.png">
       <Pack>True</Pack>
       <PackagePath>
       </PackagePath>
     </None>
-    <None Include="..\README.md">
+    <None Include="../../README.md">
       <Pack>True</Pack>
       <PackagePath>
       </PackagePath>
@@ -90,7 +90,7 @@
     </Compile>
   </ItemGroup>
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec Command="xcopy /i/y/s &quot;$(TargetDir)*.*&quot; &quot;%25LocalAppData%25\LINQPad\Drivers\DataContext\NetCore\$(TargetName)&quot; || true&#xD;&#xA;exit /b 0" />
+    <Exec Command="xcopy /i/y/s &quot;$(TargetDir)*.*&quot; &quot;%25LocalAppData%25/LINQPad/Drivers/DataContext/NetCore/$(TargetName)&quot; || true&#xD;&#xA;exit /b 0" />
   </Target>
-  <Import Project="MarkMpn.FetchXmlToWebAPI\MarkMpn.FetchXmlToWebAPI\MarkMpn.FetchXmlToWebAPI.projitems" Label="Shared" />
+  <Import Project="../MarkMpn.FetchXmlToWebAPI/MarkMpn.FetchXmlToWebAPI/MarkMpn.FetchXmlToWebAPI.projitems" Label="Shared" />
 </Project>
