@@ -28,6 +28,7 @@ jobs:
         with:
           dotnet-version: ${{ matrix.dotnet }}
           cache: true
+          cache-dependency-path: src/Mycoshiro.Dataverse.LINQPad/packages.lock.json
         env:
           NUGET_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
 
