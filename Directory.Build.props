@@ -19,5 +19,6 @@
     <UseCommonOutputDirectory>false</UseCommonOutputDirectory>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
 
+    <DocumentationFile>$(OutputPath)$(MSBuildProjectName).xml</DocumentationFile>
   </PropertyGroup>
 </Project>
