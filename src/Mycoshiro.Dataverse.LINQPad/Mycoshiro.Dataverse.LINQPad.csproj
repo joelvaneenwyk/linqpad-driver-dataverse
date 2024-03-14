@@ -1,96 +1,97 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-  <PropertyGroup>
-    <TargetFrameworks>net6.0-windows;net7.0-windows;net8.0-windows</TargetFrameworks>
-    <UseWpf>true</UseWpf>
-    <AssemblyName>Mycoshiro.Dataverse.LINQPad</AssemblyName>
-    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <PackageTags>dataverse;linqpaddriver;commondataservice;powerapps;dynamics365</PackageTags>
-    <VersionPrefix>1.7.5</VersionPrefix>
-    <Authors>Natraj Yegnaraman, Joel Van Eenwyk</Authors>
-    <Company>Natraj Yegnaraman</Company>
-    <PackageId>Mycoshiro.Dataverse.LINQPad</PackageId>
-    <Product>LINQPad Driver for Dataverse</Product>
-    <Description>This driver helps you connect to Dataverse (previous known as CDS) API and query or execute actions against the API. This driver utilises the PowerPlatform-DataverseServiceClient package to generate the early bound classes. The authentication methods supported are Azure, OAuth, Client Secret and Certificate Thumbprint.</Description>
-    <RootNamespace>Mycoshiro.Dataverse.LINQPad</RootNamespace>
-    <SignAssembly>true</SignAssembly>
-    <AssemblyOriginatorKeyFile>Mycoshiro.Dataverse.LINQPad.snk</AssemblyOriginatorKeyFile>
-    <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <PackageProjectUrl>https://github.com/joelvaneenwyk/linqpad-driver-dataverse</PackageProjectUrl>
-    <RepositoryUrl>https://github.com/joelvaneenwyk/linqpad-driver-dataverse</RepositoryUrl>
-    <RepositoryType>git</RepositoryType>
-    <PackageReleaseNotes>Switched to only supporting .NET 6 and newer</PackageReleaseNotes>
-    <PackageIcon>LINQPadDriver.png</PackageIcon>
-    <PackageIconUrl />
-    <Copyright>Natraj Yegnaraman</Copyright>
-    <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
-    <PackageReadmeFile>README.md</PackageReadmeFile>
-    <Version>1.7.5</Version>
-    <AssemblyVersion>1.7.5.0</AssemblyVersion>
-    <FileVersion>1.7.5.0</FileVersion>
-    <Platforms>AnyCPU;x86;ARM32;ARM64;x64</Platforms>
-    <Nullable>enable</Nullable>
-    <WarningLevel>7</WarningLevel>
-    <CheckForOverflowUnderflow>True</CheckForOverflowUnderflow>
-    <TreatWarningsAsErrors>True</TreatWarningsAsErrors>
-    <NoWarn>$(NoWarn);1701;1702;8981;SYSLIB0044;CS1591</NoWarn>
-    <WarningsNotAsErrors>1591</WarningsNotAsErrors>
-    <Title>Mycoshiro.Dataverse.LINQPad</Title>
-    <IncludeSymbols>True</IncludeSymbols>
-    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
-    <EnforceCodeStyleInBuild>True</EnforceCodeStyleInBuild>
-    <AnalysisLevel>latest-recommended</AnalysisLevel>
-    <NeutralLanguage>en</NeutralLanguage>
-  </PropertyGroup>
-  <ItemGroup>
-    <Compile Remove="linqpad-samples/**" />
-    <Compile Remove="MarkMpn.FetchXmlToWebAPI/**" />
-    <Compile Remove="obj/**" />
-    <EmbeddedResource Remove="linqpad-samples/**" />
-    <EmbeddedResource Remove="MarkMpn.FetchXmlToWebAPI/**" />
-    <EmbeddedResource Remove="obj/**" />
-    <None Remove="linqpad-samples/**" />
-    <None Remove="MarkMpn.FetchXmlToWebAPI/**" />
-    <None Remove="obj/**" />
-    <Page Remove="linqpad-samples/**" />
-    <Page Remove="MarkMpn.FetchXmlToWebAPI/**" />
-    <Page Remove="obj/**" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Update="CDSTemplate.tt">
-      <Generator>TextTemplatingFilePreprocessor</Generator>
-      <LastGenOutput>CDSTemplate.cs</LastGenOutput>
-    </None>
-    <None Update="ConnectionDialog.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </None>
-    <None Include="../../images/LINQPadDriver.png">
-      <Pack>True</Pack>
-      <PackagePath>
-      </PackagePath>
-    </None>
-    <None Include="../../README.md">
-      <Pack>True</Pack>
-      <PackagePath>
-      </PackagePath>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
-    <PackageReference Include="Azure.Identity" Version="1.10.4" />
-    <PackageReference Include="LINQPad.Reference" Version="1.3.0" />
-    <PackageReference Include="Microsoft.PowerPlatform.Dataverse.Client" Version="1.1.17" />
-  </ItemGroup>
-  <ItemGroup>
-    <Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Update="CDSTemplate.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>CDSTemplate.tt</DependentUpon>
-    </Compile>
-  </ItemGroup>
-  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec Command="xcopy /i/y/s &quot;$(TargetDir)*.*&quot; &quot;%25LocalAppData%25/LINQPad/Drivers/DataContext/NetCore/$(TargetName)&quot; || true&#xD;&#xA;exit /b 0" />
-  </Target>
-  <Import Project="../MarkMpn.FetchXmlToWebAPI/MarkMpn.FetchXmlToWebAPI/MarkMpn.FetchXmlToWebAPI.projitems" Label="Shared" />
+    <PropertyGroup>
+        <TargetFrameworks>net6.0-windows;net7.0-windows;net8.0-windows</TargetFrameworks>
+        <UseWpf>true</UseWpf>
+        <AssemblyName>Mycoshiro.Dataverse.LINQPad</AssemblyName>
+        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+        <PackageTags>dataverse;linqpaddriver;commondataservice;powerapps;dynamics365</PackageTags>
+        <VersionPrefix>1.7.5</VersionPrefix>
+        <Authors>Natraj Yegnaraman, Joel Van Eenwyk</Authors>
+        <Company>Natraj Yegnaraman</Company>
+        <PackageId>Mycoshiro.Dataverse.LINQPad</PackageId>
+        <Product>LINQPad Driver for Dataverse</Product>
+        <Description>This driver helps you connect to Dataverse (previous known as CDS) API and query or execute actions against the API. This driver utilises the PowerPlatform-DataverseServiceClient package to generate the early bound classes. The authentication methods supported are Azure, OAuth, Client Secret and Certificate Thumbprint.</Description>
+        <RootNamespace>Mycoshiro.Dataverse.LINQPad</RootNamespace>
+        <SignAssembly>true</SignAssembly>
+        <AssemblyOriginatorKeyFile>Mycoshiro.Dataverse.LINQPad.snk</AssemblyOriginatorKeyFile>
+        <PackageLicenseExpression>MIT</PackageLicenseExpression>
+        <PackageProjectUrl>https://github.com/joelvaneenwyk/linqpad-driver-dataverse</PackageProjectUrl>
+        <RepositoryUrl>https://github.com/joelvaneenwyk/linqpad-driver-dataverse</RepositoryUrl>
+        <RepositoryType>git</RepositoryType>
+        <PackageReleaseNotes>Switched to only supporting .NET 6 and newer</PackageReleaseNotes>
+        <PackageIcon>LINQPadDriver.png</PackageIcon>
+        <PackageIconUrl/>
+        <Copyright>Natraj Yegnaraman</Copyright>
+        <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
+        <PackageReadmeFile>README.md</PackageReadmeFile>
+        <Version>1.7.5</Version>
+        <AssemblyVersion>1.7.5.0</AssemblyVersion>
+        <FileVersion>1.7.5.0</FileVersion>
+        <Platforms>AnyCPU;x86;ARM32;ARM64;x64</Platforms>
+        <Nullable>enable</Nullable>
+        <WarningLevel>7</WarningLevel>
+        <CheckForOverflowUnderflow>True</CheckForOverflowUnderflow>
+        <TreatWarningsAsErrors>True</TreatWarningsAsErrors>
+        <NoWarn>$(NoWarn);1701;1702;8981;SYSLIB0044;CS1591</NoWarn>
+        <WarningsNotAsErrors>1591</WarningsNotAsErrors>
+        <Title>Mycoshiro.Dataverse.LINQPad</Title>
+        <IncludeSymbols>True</IncludeSymbols>
+        <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+        <EnforceCodeStyleInBuild>True</EnforceCodeStyleInBuild>
+        <AnalysisLevel>latest-recommended</AnalysisLevel>
+        <NeutralLanguage>en</NeutralLanguage>
+    </PropertyGroup>
+    <ItemGroup>
+        <Compile Remove="linqpad-samples/**"/>
+        <Compile Remove="MarkMpn.FetchXmlToWebAPI/**"/>
+        <Compile Remove="obj/**"/>
+        <EmbeddedResource Remove="linqpad-samples/**"/>
+        <EmbeddedResource Remove="MarkMpn.FetchXmlToWebAPI/**"/>
+        <EmbeddedResource Remove="obj/**"/>
+        <None Remove="linqpad-samples/**"/>
+        <None Remove="MarkMpn.FetchXmlToWebAPI/**"/>
+        <None Remove="obj/**"/>
+        <Page Remove="linqpad-samples/**"/>
+        <Page Remove="MarkMpn.FetchXmlToWebAPI/**"/>
+        <Page Remove="obj/**"/>
+    </ItemGroup>
+    <ItemGroup>
+        <None Update="CDSTemplate.tt">
+            <Generator>TextTemplatingFilePreprocessor</Generator>
+            <LastGenOutput>CDSTemplate.cs</LastGenOutput>
+        </None>
+        <None Update="ConnectionDialog.xaml">
+            <Generator>MSBuild:Compile</Generator>
+        </None>
+        <None Include="../../images/LINQPadDriver.png">
+            <Pack>True</Pack>
+            <PackagePath>
+            </PackagePath>
+        </None>
+        <None Include="../../README.md">
+            <Pack>True</Pack>
+            <PackagePath>
+            </PackagePath>
+        </None>
+    </ItemGroup>
+    <ItemGroup>
+        <PackageReference Include="Azure.Identity" Version="1.10.4"/>
+        <PackageReference Include="JetBrains.Annotations" Version="2023.3.0"/>
+        <PackageReference Include="LINQPad.Reference" Version="1.3.0"/>
+        <PackageReference Include="Microsoft.PowerPlatform.Dataverse.Client" Version="1.1.17"/>
+    </ItemGroup>
+    <ItemGroup>
+        <Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}"/>
+    </ItemGroup>
+    <ItemGroup>
+        <Compile Update="CDSTemplate.cs">
+            <DesignTime>True</DesignTime>
+            <AutoGen>True</AutoGen>
+            <DependentUpon>CDSTemplate.tt</DependentUpon>
+        </Compile>
+    </ItemGroup>
+    <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+        <Exec Command="xcopy /i/y/s &quot;$(TargetDir)*.*&quot; &quot;%25LocalAppData%25/LINQPad/Drivers/DataContext/NetCore/$(TargetName)&quot; || true&#xD;&#xA;exit /b 0"/>
+    </Target>
+    <Import Project="../MarkMpn.FetchXmlToWebAPI/MarkMpn.FetchXmlToWebAPI/MarkMpn.FetchXmlToWebAPI.projitems" Label="Shared"/>
 </Project>
