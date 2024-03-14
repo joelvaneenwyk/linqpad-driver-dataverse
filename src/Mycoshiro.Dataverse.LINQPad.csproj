@@ -34,8 +34,6 @@
     <TreatWarningsAsErrors>True</TreatWarningsAsErrors>
     <NoWarn>$(NoWarn);1701;1702;8981;SYSLIB0044;CS1591</NoWarn>
     <WarningsNotAsErrors>1591</WarningsNotAsErrors>
-    <DocumentationFile>$(SolutionDir).build\doc\$(Configuration)\$(Platform)\$(MSBuildProjectName).xml</DocumentationFile>
-    <BaseOutputPath>$(SolutionDir).build\obj\$(Configuration)\$(Platform)\$(MSBuildProjectName)\</BaseOutputPath>
     <Title>Mycoshiro.Dataverse.LINQPad</Title>
     <IncludeSymbols>True</IncludeSymbols>
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
