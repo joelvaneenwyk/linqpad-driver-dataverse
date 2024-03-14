@@ -5,22 +5,17 @@
     <!-- SolutionDir is not defined when building projects explicitly -->
     <Configuration Condition=" '$(Configuration)' == '' ">Release</Configuration>
 
-    <ProjectRoot Condition="Exists('$(MSBuildProjectDirectory)/Mycoshiro.Dataverse.LINQPad.sln')">$([System.IO.Path]::GetFullPath('$(MSBuildProjectDirectory)))</ProjectRoot>
-    <ProjectRoot Condition="Exists('$(MSBuildProjectDirectory)/../Mycoshiro.Dataverse.LINQPad.sln')">$([System.IO.Path]::GetFullPath('$(MSBuildProjectDirectory)/../'))</ProjectRoot>
-
-    <ProjectRootPrefix Condition="HasTrailingSlash('$(ProjectRoot)')">$(ProjectRoot)</ProjectRootPrefix>
-    <ProjectRootPrefix Condition="!HasTrailingSlash('$(ProjectRoot)')">$(ProjectRoot)/</ProjectRootPrefix>
+    <ProjectRoot>$(MSBuildThisFileDirectory.TrimEnd('\/'))</ProjectRoot>
 
     <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">$(ProjectRoot)</SolutionDir>
     <Deterministic>true</Deterministic>
-    <SolutionDir Condition=" '$(SolutionDir)' == '' ">$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildProjectDirectory), README.md))\</SolutionDir>
 
-    <OutputPath>$(ProjectRootPrefix)bin/$(Configuration)/</OutputPath>
-    <OutDir>$(OutputPath)/</OutDir>
-    <BaseIntermediateOutputPath>$(ProjectRootPrefix).build/$(MSBuildProjectName)/</BaseIntermediateOutputPath>
+    <OutputPath>$(ProjectRoot)/bin/$(Configuration)/</OutputPath>
+    <OutDir>$(OutputPath)</OutDir>
+    <BaseIntermediateOutputPath>$(ProjectRoot)/.build/$(MSBuildProjectName)/</BaseIntermediateOutputPath>
     <BaseOutputPath>$(BaseIntermediateOutputPath)</BaseOutputPath>
-    <IntermediateOutputPath>$(BaseIntermediateOutputPath)$(Configuration)/$(Platform)/</IntermediateOutputPath>
-    <IntDir>$(BaseIntermediateOutputPath)$(Configuration)/$(Platform)/</IntDir>
+    <IntermediateOutputPath>$(BaseIntermediateOutputPath)$(Configuration)/$(Platform)$(TargetArchitecture)/</IntermediateOutputPath>
+    <IntDir>$(IntermediateOutputPath)/</IntDir>
     <UseCommonOutputDirectory>false</UseCommonOutputDirectory>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
 
