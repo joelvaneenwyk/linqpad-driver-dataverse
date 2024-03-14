@@ -12,7 +12,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        dotnet: [8.0.x, 6.0.x]
+        dotnet: [8.x, 6.x]
         os: [windows-latest]
         config: [Debug, Release]
 
@@ -27,11 +27,12 @@ jobs:
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: ${{ matrix.dotnet }}
-        # env:
-        #   NUGET_AUTH_TOKEN: ${{secrets.NUGET_AUTH_TOKEN}}
+          cache: true
+        env:
+          NUGET_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
 
       - name: Restore dependencies
-        run: dotnet restore
+        run: dotnet restore --locked-mode
 
       # The '--graph' parameter is to address an occasional build error about files being
       # used by another process the during 'GenerateRuntimeConfigurationFiles'
