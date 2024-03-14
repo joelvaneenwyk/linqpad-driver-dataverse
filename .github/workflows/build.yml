@@ -33,8 +33,11 @@ jobs:
       - name: Restore dependencies
         run: dotnet restore
 
+      # The '--graph' parameter is to address an occasional build error about files being
+      # used by another process the during 'GenerateRuntimeConfigurationFiles'
+      # task: https://github.com/dotnet/msbuild/issues/6690#issuecomment-1553272562
       - name: Build
-        run: dotnet build -c ${{ matrix.config }} /p:Platform=x64 --no-restore --verbosity normal
+        run: dotnet build --graph -c ${{ matrix.config }} /p:Platform=x64 --no-restore --verbosity normal
 
       #- name: Create the package
       #  id: create-package
