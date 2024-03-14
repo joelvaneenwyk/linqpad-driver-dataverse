@@ -1,0 +1,11 @@
+version: "0.2"
+ignorePaths: []
+dictionaryDefinitions:
+  - name: linqpad-driver-dataverse-dictionary
+    path: ./.cspell/linqpad-driver-dataverse-dictionary.txt
+    addWords: true
+dictionaries:
+  - linqpad-driver-dataverse-dictionary
+words: []
+ignoreWords: []
+import: []

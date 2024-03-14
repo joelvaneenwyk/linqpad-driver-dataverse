@@ -1,0 +1,5 @@
+# Custom Dictionary Words
+dataverse
+linqpad
+netcoreapp
+nupkg
