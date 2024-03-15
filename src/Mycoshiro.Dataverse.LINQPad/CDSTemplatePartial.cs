@@ -12,18 +12,25 @@ namespace Mycoshiro.Dataverse.LINQPad
     [PublicAPI]
     public sealed class EntityMetadataCollection : EntityMetadataList
     {
-#pragma warning disable IDE0028
+        [SuppressMessage("Style", "IDE0028:Collection initialization can be simplified",
+            Justification = "Not supported on older .NET versions.")]
         [SuppressMessage("ReSharper", "ConvertToPrimaryConstructor")]
         [SuppressMessage("Style", "IDE0290:Use primary constructor",
             Justification = "Not supported on older .NET versions.")]
         [SuppressMessage("CodeQuality", "IDE0079:Remove unnecessary suppression",
             Justification = "It is not unnecessary but rather ReSharper only.")]
         [SuppressMessage("ReSharper", "UseCollectionExpression")]
-        internal EntityMetadataCollection(EntityMetadataList? baseCollection = null)
-            : base(baseCollection ?? new())
+        private EntityMetadataCollection(EntityMetadataList? baseCollection = null)
+            : base(baseCollection ?? new EntityMetadataList())
         {
         }
-#pragma warning restore IDE0028
+
+        [PublicAPI]
+        public static EntityMetadataCollection? TryCreate(EntityMetadataList? baseCollection = null) =>
+        baseCollection is null ? null : new EntityMetadataCollection(baseCollection);
+
+        [PublicAPI]
+        public static EntityMetadataCollection Empty() => new();
     }
 
     [PublicAPI]
@@ -39,7 +46,8 @@ namespace Mycoshiro.Dataverse.LINQPad
         [PublicAPI]
         public EntityMetadataCollection Metadata { get; private set; }
 
-#pragma warning disable IDE0028
+        [SuppressMessage("Style", "IDE0028:Collection initialization can be simplified",
+            Justification = "Not supported on older .NET versions.")]
         [SuppressMessage("ReSharper", "ConvertToPrimaryConstructor")]
         [SuppressMessage("Style", "IDE0290:Use primary constructor",
             Justification = "Not supported on older .NET versions.")]
@@ -51,12 +59,11 @@ namespace Mycoshiro.Dataverse.LINQPad
             string? ns = null,
             string? typeName = null)
         {
-            Metadata = metadata ?? new EntityMetadataCollection();
+            Metadata = metadata ?? EntityMetadataCollection.Empty();
 
             TypeName = typeName ?? "InvalidType";
             Namespace = ns ?? "InvalidNamespace";
         }
-#pragma warning restore IDE0028
 
         [PublicAPI]
         public static string TransformText(

@@ -10,6 +10,7 @@ using Microsoft.Xrm.Sdk.Query;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Reflection;
 using System.Windows;
@@ -70,6 +71,9 @@ namespace Mycoshiro.Dataverse.LINQPad
 
         public override bool ShowConnectionDialog(IConnectionInfo cxInfo, ConnectionDialogOptions dialogOptions)
             => new ConnectionDialog(cxInfo).ShowDialog() == true;
+
+        [SuppressMessage("Style", "IDE0300:Collection initialization can be simplified",
+            Justification = "Not supported on older .NET versions.")]
         public override IReadOnlyList<string> GetAssembliesToAdd(IConnectionInfo cxInfo)
         {
             return new[]
@@ -85,6 +89,8 @@ namespace Mycoshiro.Dataverse.LINQPad
         private void SaveContent(string code) =>
             File.WriteAllText(Path.Combine(GetContentFolder(), "LINQPad.EarlyBound.cs"), code);
 
+        [SuppressMessage("Style", "IDE0028:Collection initialization can be simplified",
+            Justification = "Not supported on older .NET versions.")]
         public override List<ExplorerItem> GetSchemaAndBuildAssembly(
             IConnectionInfo cxInfo, AssemblyName assemblyToBuild, ref string nameSpace, ref string typeName)
         {
@@ -169,16 +175,24 @@ namespace Mycoshiro.Dataverse.LINQPad
             {
                 _dataverseServiceClient = dataverseServiceClient;
             }
-            return new object[]
+            return new[]
             {
                 dataverseServiceClient
             };
         }
-        public override ParameterDescriptor[] GetContextConstructorParameters(IConnectionInfo cxInfo) => new[]
+
+        [SuppressMessage("Style", "IDE0300:Collection initialization can be simplified",
+            Justification = "Not supported on older .NET versions.")]
+        public override ParameterDescriptor[] GetContextConstructorParameters(IConnectionInfo cxInfo) =>
+            new[]
         {
             new ParameterDescriptor("dataverseServiceClient", typeof(ServiceClient).FullName)
         };
-        public override IReadOnlyList<string> GetNamespacesToAdd(IConnectionInfo cxInfo) => new List<string>
+
+        [SuppressMessage("Style", "IDE0028:Collection initialization can be simplified",
+            Justification = "Not supported on older .NET versions.")]
+        public override IReadOnlyList<string> GetNamespacesToAdd(IConnectionInfo cxInfo) =>
+            new List<string>
         {
             "Microsoft.Crm.Sdk.Messages",
             "Microsoft.Xrm.Sdk",
@@ -196,6 +210,8 @@ namespace Mycoshiro.Dataverse.LINQPad
             "Mycoshiro.Dataverse.LINQPad.Entities"
         };
 
+        [SuppressMessage("Style", "IDE0300:Collection initialization can be simplified",
+            Justification = "Not supported on older .NET versions.")]
         static void Compile(string cSharpSourceCode, string? outputFile, IConnectionInfo cxInfo)
         {
             var customAssemblies = new[]{
@@ -254,7 +270,7 @@ namespace Mycoshiro.Dataverse.LINQPad
             }
         }
 
-        private static EntityMetadataCollection GetEntityMetadata(ServiceClient client)
+        private static EntityMetadataCollection? GetEntityMetadata(ServiceClient client)
         {
             var metadata = client.GetAllEntityMetadata(filter: EntityFilters.Attributes | EntityFilters.Entity | EntityFilters.Relationships).ToList();
             //Fix for https://github.com/rajyraman/Dataverse-LINQPad-Driver/issues/19
@@ -264,28 +280,48 @@ namespace Mycoshiro.Dataverse.LINQPad
                 entityMetadata.EntitySetName = entityMetadata.SchemaName;
             });
             var result = (from e in metadata
-                    orderby e.LogicalName
-                    select (entityMetadata: e, optionMetadata: (from attribute in e.Attributes.Where(a => a.AttributeType == AttributeTypeCode.State || a.AttributeType == AttributeTypeCode.Status || a.AttributeType == AttributeTypeCode.Picklist).OrderBy(a => a.LogicalName)
-                                                                let allOptions = from a in ((EnumAttributeMetadata)attribute).OptionSet.Options
-                                                                                 select new { a.Label, a.Value, SanitisedLabel = a.Label.UserLocalizedLabel?.Label.Sanitise() ?? "" }
-                                                                select (attributeName: attribute.SchemaName, options: allOptions.Select(x =>
-                                                                {
-                                                                    var enumValue = x.SanitisedLabel;
-                                                                    if (string.IsNullOrEmpty(x.SanitisedLabel))
-                                                                    {
-                                                                        //When the value is a negative number, replace '-' with '_'.
-                                                                        enumValue = $"_{x.Value}".Replace("-", "_");
-                                                                    }
-                                                                    else if (IsCSharpKeyword(enumValue) || char.IsDigit(enumValue[0]) || allOptions.Count(o => o.SanitisedLabel == x.SanitisedLabel) > 1)
-                                                                    {
-                                                                        //When the value is a negative number, replace '-' with '_'.
-                                                                        enumValue = $"_{enumValue}_{x.Value}".Replace("-", "_");
-                                                                    }
-                                                                    return (Label: enumValue, x.Value);
-                                                                }).ToList())).ToList()
-                    )).ToList();
+                          orderby e.LogicalName
+                          select (entityMetadata: e, optionMetadata: (
+                                      from attribute in e.Attributes
+                                          .Where(a =>
+                                              a.AttributeType == AttributeTypeCode.State
+                                              || a.AttributeType == AttributeTypeCode.Status
+                                              || a.AttributeType == AttributeTypeCode.Picklist)
+                                          .OrderBy(a => a.LogicalName)
+                                      let allOptions = from a in (
+                                              (EnumAttributeMetadata)attribute).OptionSet.Options
+                                                       select new
+                                                       {
+                                                           a.Label,
+                                                           a.Value,
+                                                           SanitisedLabel = a.Label.UserLocalizedLabel?.Label.Sanitise() ?? string.Empty
+                                                       }
+                                      select (
+                                          attributeName: attribute.SchemaName,
+                                          options: allOptions
+                                              .Select(x =>
+                                              {
+                                                  var enumValue = x.SanitisedLabel;
+                                                  if (string.IsNullOrEmpty(x.SanitisedLabel))
+                                                  {
+                                                      //When the value is a negative number, replace '-' with '_'.
+                                                      enumValue = $"_{x.Value}".Replace("-", "_");
+                                                  }
+                                                  else if (IsCSharpKeyword(enumValue)
+                                                           || char.IsDigit(enumValue[0])
+                                                           || allOptions.Count(o =>
+                                                               o.SanitisedLabel == x.SanitisedLabel) > 1)
+                                                  {
+                                                      //When the value is a negative number, replace '-' with '_'.
+                                                      enumValue = $"_{enumValue}_{x.Value}".Replace("-", "_");
+                                                  }
+                                                  return (Label: enumValue, x.Value);
+                                              }).ToList()
+                                          )
+                                      ).ToList()
+                          )).ToList();
 
-            return new EntityMetadataCollection(result);
+            return EntityMetadataCollection.TryCreate(result);
         }
 
         private static void BuildEntityAndAttributeExplorerItems(List<ExplorerItem> explorerItems, List<(EntityMetadata entityMetadata, List<(string attributeName, List<(string Label, int? Value)> options)> optionMetadata)> entityMetadata)
