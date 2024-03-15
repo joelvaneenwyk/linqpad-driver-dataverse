@@ -9,23 +9,32 @@ using Microsoft.Xrm.Sdk.Metadata;
 using Microsoft.Xrm.Sdk.Query;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using System.Windows;
 using System.Xml.Linq;
 using System.Runtime.InteropServices;
 using System.Globalization;
+using System.IO;
+using System.Windows.Documents;
 
 namespace Mycoshiro.Dataverse.LINQPad
 {
     public class DynamicDriver : DynamicDataContextDriver
     {
-        static DynamicDriver? _driverInstance;
-        static ServiceClient? _dataverseServiceClient;
-        static QueryExecutionManager? _queryExecutionManager;
+        private static DynamicDriver? _driverInstance;
+        private static ServiceClient? _dataverseServiceClient;
+        private static QueryExecutionManager? _queryExecutionManager;
 
-#if DEBUG
         static DynamicDriver()
+        {
+            AddDebuggerHook();
+        }
+
+
+        [Conditional("DEBUG")]
+        private static void AddDebuggerHook()
         {
             // Uncomment the following code to attach to Visual Studio's debugger when an exception is thrown:
             AppDomain.CurrentDomain.FirstChanceException += (sender, args) =>
@@ -34,7 +43,7 @@ namespace Mycoshiro.Dataverse.LINQPad
                     Debugger.Launch();
             };
         }
-#endif
+
         public override string Name => "Dataverse LINQPad Driver";
 
         public override string Author => "Natraj Yegnaraman";
@@ -57,6 +66,10 @@ namespace Mycoshiro.Dataverse.LINQPad
                 };
         }
 
+        [Conditional("DEBUG")]
+        private void SaveContent(string code) =>
+            File.WriteAllText(Path.Combine(GetContentFolder(), "LINQPad.EarlyBound.cs"), code);
+
         public override List<ExplorerItem> GetSchemaAndBuildAssembly(
             IConnectionInfo cxInfo, AssemblyName assemblyToBuild, ref string nameSpace, ref string typeName)
         {
@@ -77,9 +90,9 @@ namespace Mycoshiro.Dataverse.LINQPad
                     if (entityMetadata != null)
                     {
                         var code = new CDSTemplate(entityMetadata) { Namespace = nameSpace, TypeName = typeName }.TransformText();
-#if DEBUG
-                        File.WriteAllText(Path.Combine(GetContentFolder(), "LINQPad.EarlyBound.cs"), code);
-#endif
+
+                        SaveContent(code);
+
                         Compile(code, assemblyToBuild.CodeBase, cxInfo);
 
                         BuildEntityAndAttributeExplorerItems(explorerItems, entityMetadata);
