@@ -7,6 +7,11 @@ on:
     branches: [main, develop]
   workflow_dispatch:
 
+env:
+  PROJECT_NAME: Mycoshiro.Dataverse.LINQPad
+  PROJECT_PATH: src/${PROJECT_NAME}
+  PROJECT_FILE_PATH: ${PROJECT_PATH}/${PROJECT_NAME}.csproj
+
 jobs:
   build:
     strategy:
@@ -14,7 +19,7 @@ jobs:
       matrix:
         dotnet: [8.x, 6.x]
         os: [windows-latest]
-        platform: [Any CPU]
+        runtime: [win-x64, win-x86]
         config: [Debug, Release]
 
     runs-on: ${{ matrix.os }}
@@ -29,7 +34,7 @@ jobs:
         with:
           dotnet-version: ${{ matrix.dotnet }}
           cache: true
-          cache-dependency-path: src/Mycoshiro.Dataverse.LINQPad/packages.lock.json
+          cache-dependency-path: ${PROJECT_PATH}/packages.lock.json
         env:
           NUGET_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
 
@@ -44,17 +49,16 @@ jobs:
           dotnet build
           --no-restore
           --configuration "${{ matrix.config }}"
-          -p:Platform="${{ matrix.platform }}"
+          --runtime "${{ matrix.runtime }}"
           --verbosity normal
           --graph
+          ${PROJECT_FILE_PATH}
 
       - name: Test
         run: >
           dotnet test
-          --no-build
-          --no-restore
           --configuration "${{ matrix.config }}"
-          -p:Platform="${{ matrix.platform }}"
+          --runtime "${{ matrix.runtime }}"
           --verbosity normal
           --collect:"XPlat Code Coverage"
           --results-directory:./TestResults
@@ -68,11 +72,8 @@ jobs:
           #coverage-path: ./TestResults/coverage.xml
           #coverage-threshold: 80
 
-      #- name: Create the package
-      #  run: dotnet pack --configuration Release
-
-      #- name: Publish the package to GPR
-      #  run: dotnet nuget push bin/Release/AnyCPU/*.nupkg
+      - name: Create the package
+        run: dotnet pack --configuration "${{ matrix.config }}"
 
       #- name: Create the package
       #  id: create-package
