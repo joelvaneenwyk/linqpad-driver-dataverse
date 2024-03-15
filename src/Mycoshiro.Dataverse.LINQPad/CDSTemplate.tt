@@ -275,12 +275,6 @@ namespace <#= this.Namespace #>
 }
 
 <#+
-public string Namespace { get; set; }
-
-public string TypeName { get; set; }
-#>
-
-<#+
 string GetTypeFromCode(AttributeTypeCode? attributeTypeCode)
 {
     var attributeType = "object";

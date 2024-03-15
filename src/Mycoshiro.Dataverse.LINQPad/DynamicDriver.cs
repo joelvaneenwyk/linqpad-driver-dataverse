@@ -51,6 +51,12 @@ namespace Mycoshiro.Dataverse.LINQPad
             };
         }
 
+        [Conditional("DEBUG")]
+        private static void LaunchDebugger()
+        {
+            Debugger.Launch();
+        }
+
         public override string Name => "Dataverse LINQPad Driver";
 
 
@@ -66,7 +72,7 @@ namespace Mycoshiro.Dataverse.LINQPad
             => new ConnectionDialog(cxInfo).ShowDialog() == true;
         public override IReadOnlyList<string> GetAssembliesToAdd(IConnectionInfo cxInfo)
         {
-            return new string[]
+            return new[]
                 {
                     //"Azure.Identity.dll",
                     "Microsoft.PowerPlatform.Dataverse.Client.dll",
@@ -84,9 +90,9 @@ namespace Mycoshiro.Dataverse.LINQPad
         {
             nameSpace = "Mycoshiro.Dataverse.LINQPad";
             typeName = "LINQPadOrganizationServiceContext";
-#if DEBUG
-            Debugger.Launch();
-#endif
+
+            LaunchDebugger();
+
             var connectionProperties = new ConnectionProperties(cxInfo);
             List<ExplorerItem> explorerItems = new();
             ServiceClient? client = null;
@@ -98,7 +104,7 @@ namespace Mycoshiro.Dataverse.LINQPad
                     var entityMetadata = GetEntityMetadata(client);
                     if (entityMetadata != null)
                     {
-                        var code = new CDSTemplate(entityMetadata) { Namespace = nameSpace, TypeName = typeName }.TransformText();
+                        var code = CDSTemplate.TransformText(entityMetadata, nameSpace, typeName);
 
                         SaveContent(code);
 
