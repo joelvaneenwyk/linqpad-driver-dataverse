@@ -25,7 +25,12 @@ namespace Mycoshiro.Dataverse.LINQPad
     public class DynamicDriver : DynamicDataContextDriver
     {
         [UsedImplicitly]
+        [System.Diagnostics.CodeAnalysis.SuppressMessage(
+            "CodeQuality",
+            "IDE0052:Remove unread private members",
+            Justification = "<Pending>")]
         private static DynamicDriver? _driverInstance;
+
         private static ServiceClient? _dataverseServiceClient;
         private static QueryExecutionManager? _queryExecutionManager;
 
@@ -275,7 +280,7 @@ namespace Mycoshiro.Dataverse.LINQPad
 
         private static void BuildEntityAndAttributeExplorerItems(List<ExplorerItem> explorerItems, List<(EntityMetadata entityMetadata, List<(string attributeName, List<(string Label, int? Value)> options)> optionMetadata)> entityMetadata)
         {
-            foreach (var entity in entityMetadata)
+            foreach (ref var entity in CollectionsMarshal.AsSpan(entityMetadata))
             {
                 var attributes = entity.entityMetadata.Attributes
                 .Where(x => (x.IsLogical == false || (x.IsLogical == true && x.IsValidForForm == true))
