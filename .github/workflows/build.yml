@@ -13,7 +13,6 @@ jobs:
       fail-fast: false
       matrix:
         dotnet: [8.x, 6.x]
-        framework: [net6.0]
         os: [windows-latest]
         platform: [Any CPU]
         config: [Debug, Release]
@@ -46,7 +45,6 @@ jobs:
           --no-restore
           --configuration "${{ matrix.config }}"
           -p:Platform="${{ matrix.platform }}"
-          --framework "${{ matrix.framework }}"
           --verbosity normal
           --graph
 
@@ -57,7 +55,6 @@ jobs:
           --no-restore
           --configuration "${{ matrix.config }}"
           -p:Platform="${{ matrix.platform }}"
-          --framework "${{ matrix.framework }}"
           --verbosity normal
           --collect:"XPlat Code Coverage"
           --results-directory:./TestResults
