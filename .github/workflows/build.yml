@@ -24,7 +24,7 @@ jobs:
     runs-on: ${{ matrix.os }}
 
     # Build: dotnet-8.x, win-x64, Debug
-    name: "Build: dotnet-${{ matrix.dotnet }}, ${{ matrix.runtime }}, ${{ matrix.config }}]"
+    name: "Build: dotnet-${{ matrix.dotnet }}, ${{ matrix.runtime }}, ${{ matrix.config }}"
 
     steps:
       - uses: actions/checkout@v4
@@ -47,8 +47,6 @@ jobs:
       # used by another process the during 'GenerateRuntimeConfigurationFiles'
       # task: https://github.com/dotnet/msbuild/issues/6690#issuecomment-1553272562
       - name: Build
-        env:
-          PROJECT_FILE_PATH: ${{ env.PROJECT_SOURCE_ROOT }}/${{ env.PROJECT_NAME }}/${{ env.PROJECT_NAME }}.csproj
         run: >
           dotnet build
           --no-restore
@@ -56,7 +54,7 @@ jobs:
           --runtime "${{ matrix.runtime }}"
           --verbosity normal
           --graph
-          $PROJECT_FILE_PATH
+          ${{ env.PROJECT_SOURCE_ROOT }}/${{ env.PROJECT_NAME }}/${{ env.PROJECT_NAME }}.csproj
 
       - name: Test
         run: >
