@@ -23,6 +23,9 @@ jobs:
 
     runs-on: ${{ matrix.os }}
 
+    # Build: dotnet-8.x, win-x64, Debug
+    name: "Build: dotnet-${{ matrix.dotnet }}, ${{ matrix.runtime }}, ${{ matrix.config }}]"
+
     steps:
       - uses: actions/checkout@v4
         with:
