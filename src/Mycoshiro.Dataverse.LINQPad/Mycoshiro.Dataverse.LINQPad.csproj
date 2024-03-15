@@ -56,16 +56,10 @@
         <Page Remove="obj/**" />
     </ItemGroup>
 
-    <PropertyGroup>
-        <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
-        <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
-        <TransformOnBuild>true</TransformOnBuild>
-        <OverwriteReadOnlyOutputFiles>true</OverwriteReadOnlyOutputFiles>
-        <TransformOutOfDateOnly>false</TransformOutOfDateOnly>
-    </PropertyGroup>
-
     <!-- This is the important line: -->
-    <Import Project="$(VSToolsPath)\TextTemplating\Microsoft.TextTemplating.targets" />
+    <Import
+        Condition="Exists('$(VSToolsPath)/TextTemplating/Microsoft.TextTemplating.targets')"
+        Project="$(VSToolsPath)/TextTemplating/Microsoft.TextTemplating.targets" />
 
     <ItemGroup>
         <None Update="CDSTemplate.tt">

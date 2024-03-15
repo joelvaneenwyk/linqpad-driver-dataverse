@@ -19,6 +19,14 @@
         <BaseOutputPath>$(BaseIntermediateOutputPath)</BaseOutputPath>
         <IntDir>$(IntermediateOutputPath)</IntDir>
 
+        <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
+        <VSToolsPath
+            Condition="'$(VSToolsPath)' == '' and Exists('$(MSBuildExtensionsPath32)/Microsoft/VisualStudio/v$(VisualStudioVersion)')">$(MSBuildExtensionsPath32)/Microsoft/VisualStudio/v$(VisualStudioVersion)</VSToolsPath>
+
+        <TransformOnBuild>true</TransformOnBuild>
+        <OverwriteReadOnlyOutputFiles>true</OverwriteReadOnlyOutputFiles>
+        <TransformOutOfDateOnly>true</TransformOutOfDateOnly>
+
         <DocumentationFile>$(OutputPath)$(MSBuildProjectName).xml</DocumentationFile>
 
         <DisableImplicitNuGetFallbackFolder>true</DisableImplicitNuGetFallbackFolder>
