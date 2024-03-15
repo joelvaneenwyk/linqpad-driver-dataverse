@@ -53,7 +53,9 @@ namespace Mycoshiro.Dataverse.LINQPad
 
         public override string Name => "Dataverse LINQPad Driver";
 
+
         public override string Author => "Natraj Yegnaraman";
+
         public override string GetConnectionDescription(IConnectionInfo cxInfo)
         {
             var connectionProperties = new ConnectionProperties(cxInfo);
