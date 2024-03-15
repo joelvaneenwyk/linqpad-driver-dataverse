@@ -7,6 +7,7 @@
 .gdn/
 .sarif/
 
+CDSTemplate.cs
 # User-specific files
 *.rsuser
 *.suo
