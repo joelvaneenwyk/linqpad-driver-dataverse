@@ -1,6 +1,7 @@
 # Custom Dictionary Words
 accountid
 ackages
+bibipkins
 binlog
 buildhelp
 cachefile

@@ -13,7 +13,9 @@ jobs:
       fail-fast: false
       matrix:
         dotnet: [8.x, 6.x]
-        os: [windows-latest]
+        framework: [net6.0]
+        os: [ubuntu-latest, windows-latest]
+        platform: [Any CPU]
         config: [Debug, Release]
 
     runs-on: ${{ matrix.os }}
@@ -39,7 +41,41 @@ jobs:
       # used by another process the during 'GenerateRuntimeConfigurationFiles'
       # task: https://github.com/dotnet/msbuild/issues/6690#issuecomment-1553272562
       - name: Build
-        run: dotnet build --graph -c ${{ matrix.config }} --no-restore --verbosity normal
+        run: >
+          dotnet build
+          --no-restore
+          --configuration "${{ matrix.config }}"
+          -p:Platform="${{ matrix.platform }}"
+          --framework "${{ matrix.framework }}"
+          --verbosity normal
+          --graph
+
+      - name: Test
+        run: >
+          dotnet test
+          --no-build
+          --no-restore
+          --configuration "${{ matrix.config }}"
+          -p:Platform="${{ matrix.platform }}"
+          --framework "${{ matrix.framework }}"
+          --verbosity normal
+          --collect:"XPlat Code Coverage"
+          --results-directory:./TestResults
+          --logger:trx
+
+      - uses: bibipkins/dotnet-test-reporter@v1.4.0
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          comment-title: "Unit Test Results"
+          results-path: ./TestResults/*.trx
+          #coverage-path: ./TestResults/coverage.xml
+          #coverage-threshold: 80
+
+      #- name: Create the package
+      #  run: dotnet pack --configuration Release
+
+      #- name: Publish the package to GPR
+      #  run: dotnet nuget push bin/Release/AnyCPU/*.nupkg
 
       #- name: Create the package
       #  id: create-package

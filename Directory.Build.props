@@ -11,16 +11,17 @@
         <ProjectRoot>$(MSBuildThisFileDirectory.TrimEnd('\/'))</ProjectRoot>
 
         <OutputPath>$(ProjectRoot)/bin/$(Configuration)/$(Platform)$(TargetArchitecture)/</OutputPath>
-        <OutDir>$(OutputPath)</OutDir>
-        <BaseIntermediateOutputPath>$(ProjectRoot)/.build/$(MSBuildProjectName)/</BaseIntermediateOutputPath>
-        <IntermediateOutputPath>$(BaseIntermediateOutputPath)$(Configuration)/$(Platform)$(TargetArchitecture)/</IntermediateOutputPath>
+        <BaseIntermediateOutputPath>$(ProjectRoot)/.build/$(MSBuildProjectName)/$(Configuration)/$(Platform)$(TargetArchitecture)/</BaseIntermediateOutputPath>
 
+        <IntermediateOutputPath>$(BaseIntermediateOutputPath)</IntermediateOutputPath>
+        <OutDir>$(OutputPath)</OutDir>
         <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">$(ProjectRoot)</SolutionDir>
         <BaseOutputPath>$(BaseIntermediateOutputPath)</BaseOutputPath>
         <IntDir>$(IntermediateOutputPath)</IntDir>
 
         <DocumentationFile>$(OutputPath)$(MSBuildProjectName).xml</DocumentationFile>
 
+        <DisableImplicitNuGetFallbackFolder>true</DisableImplicitNuGetFallbackFolder>
         <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
         <Deterministic>true</Deterministic>
         <UseCommonOutputDirectory>false</UseCommonOutputDirectory>
