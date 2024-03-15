@@ -9,8 +9,7 @@ on:
 
 env:
   PROJECT_NAME: Mycoshiro.Dataverse.LINQPad
-  PROJECT_PATH: src/$PROJECT_NAME
-  PROJECT_FILE_PATH: $PROJECT_PATH/$PROJECT_NAME.csproj
+  PROJECT_SOURCE_ROOT: src
 
 jobs:
   build:
@@ -34,7 +33,7 @@ jobs:
         with:
           dotnet-version: ${{ matrix.dotnet }}
           cache: true
-          cache-dependency-path: ${{ env.PROJECT_PATH }}/packages.lock.json
+          cache-dependency-path: ${{ env.PROJECT_SOURCE_ROOT }}/${{ env.PROJECT_NAME }}/packages.lock.json
         env:
           NUGET_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
 
@@ -45,6 +44,8 @@ jobs:
       # used by another process the during 'GenerateRuntimeConfigurationFiles'
       # task: https://github.com/dotnet/msbuild/issues/6690#issuecomment-1553272562
       - name: Build
+        env:
+          PROJECT_FILE_PATH: ${{ env.PROJECT_SOURCE_ROOT }}/${{ env.PROJECT_NAME }}
         run: >
           dotnet build
           --no-restore
@@ -52,7 +53,7 @@ jobs:
           --runtime "${{ matrix.runtime }}"
           --verbosity normal
           --graph
-          ${{ env.PROJECT_FILE_PATH }}
+          $PROJECT_FILE_PATH
 
       - name: Test
         run: >
