@@ -1,4 +1,4 @@
-﻿using Microsoft.PowerPlatform.Dataverse.Client;
+using Microsoft.PowerPlatform.Dataverse.Client;
 using Microsoft.PowerPlatform.Dataverse.Client.Extensions;
 using Microsoft.Xrm.Sdk.Discovery;
 using Microsoft.Xrm.Sdk.Metadata;
@@ -11,7 +11,7 @@ namespace Mycoshiro.Dataverse.LINQPad
 {
     public class WebAPIQueryHelper
     {
-        public static string GetWebApiUrl(ServiceClient DataverseClient, string query)
+        public static string? GetWebApiUrl(ServiceClient DataverseClient, string query)
         {
             var url = $"{DataverseClient.ConnectedOrgPublishedEndpoints[EndpointType.WebApplication]}api/data/v{DataverseClient.ConnectedOrgVersion.Major}.{DataverseClient.ConnectedOrgVersion.Minor}";
             var fetchXml = XElement.Parse(query);

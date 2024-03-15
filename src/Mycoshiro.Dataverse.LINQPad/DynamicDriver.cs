@@ -32,7 +32,6 @@ namespace Mycoshiro.Dataverse.LINQPad
 			// Uncomment the following code to attach to Visual Studio's debugger when an exception is thrown:
 			AppDomain.CurrentDomain.FirstChanceException += (sender, args) =>
 			{
-
 				if (args.Exception.StackTrace?.Contains("Mycoshiro.Dataverse.LINQPad") ?? false)
 					Debugger.Launch();
 			};
