@@ -45,7 +45,7 @@ jobs:
       # task: https://github.com/dotnet/msbuild/issues/6690#issuecomment-1553272562
       - name: Build
         env:
-          PROJECT_FILE_PATH: ${{ env.PROJECT_SOURCE_ROOT }}/${{ env.PROJECT_NAME }}
+          PROJECT_FILE_PATH: ${{ env.PROJECT_SOURCE_ROOT }}/${{ env.PROJECT_NAME }}/${{ env.PROJECT_NAME }}.csproj
         run: >
           dotnet build
           --no-restore
