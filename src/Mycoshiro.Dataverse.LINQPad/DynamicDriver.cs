@@ -17,12 +17,14 @@ using System.Xml.Linq;
 using System.Runtime.InteropServices;
 using System.Globalization;
 using System.IO;
-using System.Windows.Documents;
+using JetBrains.Annotations;
 
 namespace Mycoshiro.Dataverse.LINQPad
 {
+    [PublicAPI]
     public class DynamicDriver : DynamicDataContextDriver
     {
+        [UsedImplicitly]
         private static DynamicDriver? _driverInstance;
         private static ServiceClient? _dataverseServiceClient;
         private static QueryExecutionManager? _queryExecutionManager;
@@ -300,11 +302,12 @@ namespace Mycoshiro.Dataverse.LINQPad
                         Tag = a.LogicalName
                     };
                 }).ToList();
-                ExplorerItem item = new(
-                    entity.entityMetadata.SchemaName, ExplorerItemKind.QueryableObject, ExplorerIcon.Table);
-                item.IsEnumerable = true;
-                item.Children = attributes;
-                item.Tag = entity.entityMetadata.LogicalName;
+                ExplorerItem item = new(entity.entityMetadata.SchemaName, ExplorerItemKind.QueryableObject, ExplorerIcon.Table)
+                {
+                    IsEnumerable = true,
+                    Children = attributes,
+                    Tag = entity.entityMetadata.LogicalName
+                };
                 explorerItems.Add(item);
             }
         }
