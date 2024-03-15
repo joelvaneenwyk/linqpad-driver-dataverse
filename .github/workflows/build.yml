@@ -16,9 +16,9 @@ jobs:
     strategy:
       fail-fast: true
       matrix:
-        dotnet: [8.x, 6.x]
+        dotnet: [8.x]
         os: [windows-latest]
-        runtime: [win-x64, win-x86]
+        runtime: [win-x64]
         config: [Debug, Release]
 
     runs-on: ${{ matrix.os }}
@@ -42,10 +42,7 @@ jobs:
 
       - name: Restore dependencies
         run: >
-          dotnet restore
-          --locked-mode
-          --force-evaluate
-          --runtime "${{ matrix.runtime }}"
+          dotnet restore --locked-mode
 
       # The '--graph' parameter is to address an occasional build error about files being
       # used by another process the during 'GenerateRuntimeConfigurationFiles'
@@ -53,7 +50,6 @@ jobs:
       - name: Build
         run: >
           dotnet build
-          --no-restore
           --configuration "${{ matrix.config }}"
           --runtime "${{ matrix.runtime }}"
           --verbosity normal
@@ -66,52 +62,12 @@ jobs:
           --configuration "${{ matrix.config }}"
           --runtime "${{ matrix.runtime }}"
           --verbosity normal
-          --collect:"XPlat Code Coverage"
           --results-directory:./TestResults
           --logger:trx
+          src/Mycoshiro.Dataverse.LINQPad/Mycoshiro.Dataverse.LINQPad.csproj
 
       - uses: bibipkins/dotnet-test-reporter@v1.4.0
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           comment-title: "Unit Test Results"
           results-path: ./TestResults/*.trx
-          #coverage-path: ./TestResults/coverage.xml
-          #coverage-threshold: 80
-
-      - name: Create the package
-        run: dotnet pack --configuration "${{ matrix.config }}"
-
-      #- name: Create the package
-      #  id: create-package
-      #  run: |
-      #    $version = "$(Get-Date -Format "yyyy.MM.dd").${{ github.run_number }}";
-      #    dotnet pack --configuration ${{ env.buildConfig }};
-      #    Compress-Archive bin/Release/netcoreapp*/* bin/Release/netcoreapp*/Mycoshiro.Dataverse.LINQPad.lpx6  -Verbose;
-      #    echo "::set-output name=driverFileName::Mycoshiro.Dataverse.LINQPad_$version.lpx6";
-      #    echo "::set-output name=driverFileVersion::$version";
-
-      #- name: Create Release
-      #  id: create_release
-      #  uses: actions/create-release@v1
-      #  env:
-      #    GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      #  with:
-      #    tag_name: ${{ steps.create-package.outputs.driverFileVersion }}
-      #    release_name: ${{ steps.create-package.outputs.driverFileName }}
-      #    draft: true
-      #    prerelease: false
-
-      #- name: Upload LINQPad Driver
-      #  id: release-managed-solution
-      #  if: steps.create_release.conclusion == 'success'
-      #  uses: actions/upload-release-asset@v1
-      #  env:
-      #    GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      #  with:
-      #    upload_url: ${{ steps.create_release.outputs.upload_url }}
-      #    asset_path: bin/Release/netcoreapp*/Mycoshiro.Dataverse.LINQPad.lpx6
-      #    asset_name: ${{ steps.create-package.outputs.driverFileName }}
-      #    asset_content_type: application/zip
-
-    #- name: Publish the package to GPR
-    #  run: dotnet nuget push bin/Release/*.nupkg
