@@ -9,8 +9,8 @@ on:
 
 env:
   PROJECT_NAME: Mycoshiro.Dataverse.LINQPad
-  PROJECT_PATH: src/${PROJECT_NAME}
-  PROJECT_FILE_PATH: ${PROJECT_PATH}/${PROJECT_NAME}.csproj
+  PROJECT_PATH: src/$PROJECT_NAME
+  PROJECT_FILE_PATH: $PROJECT_PATH/$PROJECT_NAME.csproj
 
 jobs:
   build:
@@ -34,7 +34,7 @@ jobs:
         with:
           dotnet-version: ${{ matrix.dotnet }}
           cache: true
-          cache-dependency-path: ${PROJECT_PATH}/packages.lock.json
+          cache-dependency-path: ${{ env.PROJECT_PATH }}/packages.lock.json
         env:
           NUGET_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
 
@@ -52,7 +52,7 @@ jobs:
           --runtime "${{ matrix.runtime }}"
           --verbosity normal
           --graph
-          ${PROJECT_FILE_PATH}
+          ${{ env.PROJECT_FILE_PATH }}
 
       - name: Test
         run: >
