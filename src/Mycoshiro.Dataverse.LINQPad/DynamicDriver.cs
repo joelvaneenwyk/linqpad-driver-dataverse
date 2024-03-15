@@ -89,7 +89,19 @@ namespace Mycoshiro.Dataverse.LINQPad
         private void SaveContent(string code) =>
             File.WriteAllText(Path.Combine(GetContentFolder(), "LINQPad.EarlyBound.cs"), code);
 
-        [SuppressMessage("Style", "IDE0028:Collection initialization can be simplified",
+        [PublicAPI]
+        public static string TransformText(
+            EntityMetadataCollection? metadata, string? ns, string? typeName)
+        {
+            var template = new CDSTemplate(metadata, ns, typeName);
+            MethodInfo? transformText = typeof(CDSTemplate).GetMethod("TransformText");
+            var result = transformText?.Invoke(template, null);
+            return result?.ToString() ?? string.Empty;
+        }
+
+        [SuppressMessage(
+            "Style",
+            "IDE0028:Collection initialization can be simplified",
             Justification = "Not supported on older .NET versions.")]
         public override List<ExplorerItem> GetSchemaAndBuildAssembly(
             IConnectionInfo cxInfo, AssemblyName assemblyToBuild, ref string nameSpace, ref string typeName)
@@ -110,7 +122,7 @@ namespace Mycoshiro.Dataverse.LINQPad
                     var entityMetadata = GetEntityMetadata(client);
                     if (entityMetadata != null)
                     {
-                        var code = CDSTemplate.TransformText(entityMetadata, nameSpace, typeName);
+                        string code = TransformText(entityMetadata, nameSpace, typeName);
 
                         SaveContent(code);
 

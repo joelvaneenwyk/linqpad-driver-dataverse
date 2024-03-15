@@ -60,19 +60,8 @@ namespace Mycoshiro.Dataverse.LINQPad
             string? typeName = null)
         {
             Metadata = metadata ?? EntityMetadataCollection.Empty();
-
             TypeName = typeName ?? "InvalidType";
             Namespace = ns ?? "InvalidNamespace";
-        }
-
-        [PublicAPI]
-        public static string TransformText(
-            EntityMetadataCollection? metadata,
-            string? ns,
-            string? typeName)
-        {
-            var template = new CDSTemplate(metadata, ns, typeName);
-            return template.TransformText();
         }
     }
 }

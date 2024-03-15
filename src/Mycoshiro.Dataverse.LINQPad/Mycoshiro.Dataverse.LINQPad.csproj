@@ -43,6 +43,10 @@
         <AnalysisLevel>latest-recommended</AnalysisLevel>
         <NeutralLanguage>en</NeutralLanguage>
     </PropertyGroup>
+    <!-- This is the important line. -->
+    <Import
+        Condition="Exists('$(VSToolsPath)/TextTemplating/Microsoft.TextTemplating.targets')"
+        Project="$(VSToolsPath)/TextTemplating/Microsoft.TextTemplating.targets" />
     <ItemGroup>
         <Compile Remove="linqpad-samples/**" />
         <Compile Remove="MarkMpn.FetchXmlToWebAPI/**" />
@@ -57,10 +61,6 @@
         <Page Remove="MarkMpn.FetchXmlToWebAPI/**" />
         <Page Remove="obj/**" />
     </ItemGroup>
-
-    <!-- This is the important line: -->
-    <Import Condition="Exists('$(VSToolsPath)/TextTemplating/Microsoft.TextTemplating.targets')" Project="$(VSToolsPath)/TextTemplating/Microsoft.TextTemplating.targets" />
-
     <ItemGroup>
         <None Update="CDSTemplate.tt">
             <Generator>TextTemplatingFilePreprocessor</Generator>
@@ -95,6 +95,9 @@
         <AutoGen>True</AutoGen>
         <DependentUpon>CDSTemplate.tt</DependentUpon>
       </Compile>
+        <Compile Update="CDSTemplatePartial.cs">
+            <DependentUpon>CDSTemplate.cs</DependentUpon>
+        </Compile>
     </ItemGroup>
     <Target Name="PostBuild" AfterTargets="PostBuildEvent">
         <Exec Command="xcopy /i/y/s &quot;$(TargetDir)*.*&quot; &quot;%25LocalAppData%25/LINQPad/Drivers/DataContext/NetCore/$(TargetName)&quot; || true&#xD;&#xA;exit /b 0" />
