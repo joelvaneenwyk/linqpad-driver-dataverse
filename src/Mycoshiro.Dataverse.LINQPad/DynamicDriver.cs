@@ -254,7 +254,7 @@ namespace Mycoshiro.Dataverse.LINQPad
             }
         }
 
-        private static List<(EntityMetadata entityMetadata, List<(string attributeName, List<(string Label, int? Value)> options)> optionMetadata)> GetEntityMetadata(ServiceClient client)
+        private static EntityMetadataCollection GetEntityMetadata(ServiceClient client)
         {
             var metadata = client.GetAllEntityMetadata(filter: EntityFilters.Attributes | EntityFilters.Entity | EntityFilters.Relationships).ToList();
             //Fix for https://github.com/rajyraman/Dataverse-LINQPad-Driver/issues/19
@@ -263,7 +263,7 @@ namespace Mycoshiro.Dataverse.LINQPad
                 entityMetadata.SchemaName = !IsCSharpKeyword(entityMetadata.SchemaName) ? entityMetadata.SchemaName : $"_{entityMetadata.SchemaName}";
                 entityMetadata.EntitySetName = entityMetadata.SchemaName;
             });
-            return (from e in metadata
+            var result = (from e in metadata
                     orderby e.LogicalName
                     select (entityMetadata: e, optionMetadata: (from attribute in e.Attributes.Where(a => a.AttributeType == AttributeTypeCode.State || a.AttributeType == AttributeTypeCode.Status || a.AttributeType == AttributeTypeCode.Picklist).OrderBy(a => a.LogicalName)
                                                                 let allOptions = from a in ((EnumAttributeMetadata)attribute).OptionSet.Options
@@ -284,6 +284,8 @@ namespace Mycoshiro.Dataverse.LINQPad
                                                                     return (Label: enumValue, x.Value);
                                                                 }).ToList())).ToList()
                     )).ToList();
+
+            return new EntityMetadataCollection(result);
         }
 
         private static void BuildEntityAndAttributeExplorerItems(List<ExplorerItem> explorerItems, List<(EntityMetadata entityMetadata, List<(string attributeName, List<(string Label, int? Value)> options)> optionMetadata)> entityMetadata)
