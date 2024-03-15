@@ -14,7 +14,7 @@ env:
 jobs:
   build:
     strategy:
-      fail-fast: false
+      fail-fast: true
       matrix:
         dotnet: [8.x, 6.x]
         os: [windows-latest]
@@ -41,7 +41,11 @@ jobs:
           NUGET_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
 
       - name: Restore dependencies
-        run: dotnet restore --locked-mode
+        run: >
+          dotnet restore
+          --locked-mode
+          --force-evaluate
+          --runtime "${{ matrix.runtime }}"
 
       # The '--graph' parameter is to address an occasional build error about files being
       # used by another process the during 'GenerateRuntimeConfigurationFiles'
