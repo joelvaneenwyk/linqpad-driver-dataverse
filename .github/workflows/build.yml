@@ -64,7 +64,7 @@ jobs:
           --verbosity normal
           --results-directory:./TestResults
           --logger:trx
-          src/Mycoshiro.Dataverse.LINQPad/Mycoshiro.Dataverse.LINQPad.csproj
+          src/MarkMpn.FetchXmlToWebAPI/MarkMpn.FetchXmlToWebAPI.Tests/MarkMpn.FetchXmlToWebAPI.Tests.csproj
 
       - uses: bibipkins/dotnet-test-reporter@v1.4.0
         with:
