@@ -54,7 +54,7 @@ jobs:
           --runtime "${{ matrix.runtime }}"
           --verbosity normal
           --graph
-          ${{ env.PROJECT_SOURCE_ROOT }}/${{ env.PROJECT_NAME }}/${{ env.PROJECT_NAME }}.csproj
+          "${{ env.PROJECT_SOURCE_ROOT }}/${{ env.PROJECT_NAME }}/${{ env.PROJECT_NAME }}.csproj"
 
       - name: Test
         run: >
@@ -62,12 +62,12 @@ jobs:
           --configuration "${{ matrix.config }}"
           --runtime "${{ matrix.runtime }}"
           --verbosity normal
-          --results-directory:./TestResults
+          --results-directory:"./TestResults/${{ matrix.dotnet }}-${{ matrix.runtime }}-${{ matrix.config }}"
           --logger:trx
-          src/MarkMpn.FetchXmlToWebAPI/MarkMpn.FetchXmlToWebAPI.Tests/MarkMpn.FetchXmlToWebAPI.Tests.csproj
+          "src/MarkMpn.FetchXmlToWebAPI/MarkMpn.FetchXmlToWebAPI.Tests/MarkMpn.FetchXmlToWebAPI.Tests.csproj"
 
       - uses: bibipkins/dotnet-test-reporter@v1.4.0
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           comment-title: "Unit Test Results"
-          results-path: ./TestResults/*.trx
+          results-path: "./TestResults/${{ matrix.dotnet }}-${{ matrix.runtime }}-${{ matrix.config }}/*.trx"
