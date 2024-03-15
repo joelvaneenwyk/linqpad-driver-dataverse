@@ -7,7 +7,7 @@ using System.Linq;
 using System.Xml.Linq;
 using MarkMpn.FetchXmlToWebAPI;
 
-namespace Mycoshiro.Dataverse.LINQPad
+namespace NY.Dataverse.LINQPadDriver
 {
     public class WebAPIQueryHelper
     {

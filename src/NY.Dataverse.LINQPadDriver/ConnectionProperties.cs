@@ -7,7 +7,7 @@ using System.Runtime.Caching;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 
-namespace Mycoshiro.Dataverse.LINQPad
+namespace NY.Dataverse.LINQPadDriver
 {
 	/// <summary>
 	/// Wrapper to read/write connection properties. This acts as our ViewModel - we will bind to it in ConnectionDialog.xaml.

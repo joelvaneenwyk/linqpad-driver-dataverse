@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using JetBrains.Annotations;
 
-namespace Mycoshiro.Dataverse.LINQPad
+namespace NY.Dataverse.LINQPadDriver
 {
     using EntityMetadataList = List<(
         EntityMetadata entityMetadata,

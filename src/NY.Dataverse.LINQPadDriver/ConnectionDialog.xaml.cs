@@ -1,7 +1,7 @@
 using LINQPad.Extensibility.DataContext;
 using System.Windows;
 
-namespace Mycoshiro.Dataverse.LINQPad
+namespace NY.Dataverse.LINQPadDriver
 {
 	public partial class ConnectionDialog : Window
 	{

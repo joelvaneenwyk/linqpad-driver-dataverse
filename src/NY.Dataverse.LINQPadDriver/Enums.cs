@@ -1,4 +1,4 @@
-﻿namespace Mycoshiro.Dataverse.LINQPad
+﻿namespace NY.Dataverse.LINQPadDriver
 {
     public static class FetchAttributes
     {

@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using JetBrains.Annotations;
 
-namespace Mycoshiro.Dataverse.LINQPad
+namespace NY.Dataverse.LINQPadDriver
 {
     public class LINQPadMetadataProvider : IMetadataProvider
     {

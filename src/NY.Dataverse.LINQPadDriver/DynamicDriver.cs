@@ -20,7 +20,7 @@ using System.Globalization;
 using System.IO;
 using JetBrains.Annotations;
 
-namespace Mycoshiro.Dataverse.LINQPad
+namespace NY.Dataverse.LINQPadDriver
 {
     [PublicAPI]
     public class DynamicDriver : DynamicDataContextDriver
@@ -47,7 +47,7 @@ namespace Mycoshiro.Dataverse.LINQPad
             // Uncomment the following code to attach to Visual Studio's debugger when an exception is thrown:
             AppDomain.CurrentDomain.FirstChanceException += (sender, args) =>
             {
-                if (args.Exception.StackTrace?.Contains("Mycoshiro.Dataverse.LINQPad") ?? false)
+                if (args.Exception.StackTrace?.Contains("NY.Dataverse.LINQPadDriver") ?? false)
                     Debugger.Launch();
             };
         }
@@ -106,7 +106,7 @@ namespace Mycoshiro.Dataverse.LINQPad
         public override List<ExplorerItem> GetSchemaAndBuildAssembly(
             IConnectionInfo cxInfo, AssemblyName assemblyToBuild, ref string nameSpace, ref string typeName)
         {
-            nameSpace = "Mycoshiro.Dataverse.LINQPad";
+            nameSpace = "NY.Dataverse.LINQPadDriver";
             typeName = "LINQPadOrganizationServiceContext";
 
             LaunchDebugger();
@@ -219,7 +219,7 @@ namespace Mycoshiro.Dataverse.LINQPad
             "Microsoft.Xrm.Sdk.WebServiceClient",
             "Microsoft.PowerPlatform.Dataverse.Client",
             "Microsoft.PowerPlatform.Dataverse.Client.Extensions",
-            "Mycoshiro.Dataverse.LINQPad.Entities"
+            "NY.Dataverse.LINQPadDriver.Entities"
         };
 
         [SuppressMessage("Style", "IDE0300:Collection initialization can be simplified",

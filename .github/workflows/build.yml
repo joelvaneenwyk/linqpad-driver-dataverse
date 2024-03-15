@@ -8,7 +8,7 @@ on:
   workflow_dispatch:
 
 env:
-  PROJECT_NAME: Mycoshiro.Dataverse.LINQPad
+  PROJECT_NAME: NY.Dataverse.LINQPadDriver
   PROJECT_SOURCE_ROOT: src
 
 jobs:

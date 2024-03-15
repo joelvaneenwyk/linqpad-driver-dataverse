@@ -4,17 +4,21 @@
         <RuntimeIdentifiers>win-x64</RuntimeIdentifiers>
         <TargetPlatformIdentifier>windows</TargetPlatformIdentifier>
         <UseWpf>true</UseWpf>
-        <AssemblyName>Mycoshiro.Dataverse.LINQPad</AssemblyName>
+        <AssemblyName>NY.Dataverse.LINQPadDriver</AssemblyName>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
         <PackageTags>dataverse;linqpaddriver;commondataservice;powerapps;dynamics365</PackageTags>
         <Authors>Natraj Yegnaraman, Joel Van Eenwyk</Authors>
         <Company>Natraj Yegnaraman</Company>
-        <PackageId>Mycoshiro.Dataverse.LINQPad</PackageId>
+        <PackageId>NY.Dataverse.LINQPadDriver</PackageId>
         <Product>LINQPad Driver for Dataverse</Product>
-        <Description>This driver helps you connect to Dataverse (previous known as CDS) API and query or execute actions against the API. This driver utilises the PowerPlatform-DataverseServiceClient package to generate the early bound classes. The authentication methods supported are Azure, OAuth, Client Secret and Certificate Thumbprint.</Description>
-        <RootNamespace>Mycoshiro.Dataverse.LINQPad</RootNamespace>
+        <Description>This driver helps you connect to Dataverse (previous known as CDS) API and
+            query or execute actions against the API. This driver utilises the
+            PowerPlatform-DataverseServiceClient package to generate the early bound classes. The
+            authentication methods supported are Azure, OAuth, Client Secret and Certificate
+            Thumbprint.</Description>
+        <RootNamespace>NY.Dataverse.LINQPadDriver</RootNamespace>
         <SignAssembly>true</SignAssembly>
-        <AssemblyOriginatorKeyFile>Mycoshiro.Dataverse.LINQPad.snk</AssemblyOriginatorKeyFile>
+        <AssemblyOriginatorKeyFile>NY.Dataverse.LINQPadDriver.snk</AssemblyOriginatorKeyFile>
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
         <PackageProjectUrl>https://github.com/joelvaneenwyk/linqpad-driver-dataverse</PackageProjectUrl>
         <RepositoryUrl>https://github.com/joelvaneenwyk/linqpad-driver-dataverse</RepositoryUrl>
@@ -36,7 +40,7 @@
         <TreatWarningsAsErrors>True</TreatWarningsAsErrors>
         <NoWarn>$(NoWarn);1701;1702;8981;SYSLIB0044;CS1591</NoWarn>
         <WarningsNotAsErrors>1591</WarningsNotAsErrors>
-        <Title>Mycoshiro.Dataverse.LINQPad</Title>
+        <Title>NY.Dataverse.LINQPadDriver</Title>
         <IncludeSymbols>True</IncludeSymbols>
         <SymbolPackageFormat>snupkg</SymbolPackageFormat>
         <EnforceCodeStyleInBuild>True</EnforceCodeStyleInBuild>
@@ -90,17 +94,20 @@
         <Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
     </ItemGroup>
     <ItemGroup>
-      <Compile Update="CDSTemplate.cs">
-        <DesignTime>True</DesignTime>
-        <AutoGen>True</AutoGen>
-        <DependentUpon>CDSTemplate.tt</DependentUpon>
-      </Compile>
+        <Compile Update="CDSTemplate.cs">
+            <DesignTime>True</DesignTime>
+            <AutoGen>True</AutoGen>
+            <DependentUpon>CDSTemplate.tt</DependentUpon>
+        </Compile>
         <Compile Update="CDSTemplatePartial.cs">
             <DependentUpon>CDSTemplate.cs</DependentUpon>
         </Compile>
     </ItemGroup>
     <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-        <Exec Command="xcopy /i/y/s &quot;$(TargetDir)*.*&quot; &quot;%25LocalAppData%25/LINQPad/Drivers/DataContext/NetCore/$(TargetName)&quot; || true&#xD;&#xA;exit /b 0" />
+        <Exec
+            Command="xcopy /i/y/s &quot;$(TargetDir)*.*&quot; &quot;%25LocalAppData%25/LINQPad/Drivers/DataContext/NetCore/$(TargetName)&quot; || true&#xD;&#xA;exit /b 0" />
     </Target>
-    <Import Project="../MarkMpn.FetchXmlToWebAPI/MarkMpn.FetchXmlToWebAPI/MarkMpn.FetchXmlToWebAPI.projitems" Label="Shared" />
+    <Import
+        Project="../MarkMpn.FetchXmlToWebAPI/MarkMpn.FetchXmlToWebAPI/MarkMpn.FetchXmlToWebAPI.projitems"
+        Label="Shared" />
 </Project>
