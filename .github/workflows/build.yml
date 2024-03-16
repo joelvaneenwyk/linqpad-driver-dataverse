@@ -12,6 +12,15 @@ env:
   PROJECT_SOURCE_ROOT: src
 
 jobs:
+  spellcheck: # run the action
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - uses: streetsidesoftware/cspell-action@v6
+
   build:
     strategy:
       fail-fast: true
