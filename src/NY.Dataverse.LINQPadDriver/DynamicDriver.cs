@@ -145,7 +145,7 @@ namespace NY.Dataverse.LINQPadDriver
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Error occured while attemoting to connect to {connectionProperties.EnvironmentUrl} using {connectionProperties.AuthenticationType}: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show($"Error occurred while attemoting to connect to {connectionProperties.EnvironmentUrl} using {connectionProperties.AuthenticationType}: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
             finally
             {
