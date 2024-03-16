@@ -32,11 +32,11 @@ jobs:
       - name: Restore dependencies
         run: >
           dotnet restore
-          src/NY.Dataverse.LINQPadDriver.sln
+          NY.Dataverse.LINQPadDriver.sln
 
       - name: Build
         run: >
           dotnet build
           --no-restore
           --configuration ${{ env.buildConfig }}
-          src/NY.Dataverse.LINQPadDriver.sln
+          NY.Dataverse.LINQPadDriver.sln
