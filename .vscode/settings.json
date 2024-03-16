@@ -1,0 +1,16 @@
+{
+    "[xml]": {
+        "editor.autoClosingBrackets": "never",
+        "editor.codeActionsOnSave": {
+            "source.fixAll": "never"
+        },
+        "editor.formatOnSave": false,
+        "editor.formatOnPaste": false,
+        "editor.formatOnType": false,
+        "editor.formatOnSaveMode": "modificationsIfAvailable",
+        "files.trimFinalNewlines": true
+    },
+    "xml.codeLens.enabled": true,
+    "xml.format.grammarAwareFormatting": true,
+    "xml.format.maxLineWidth": 200
+}
