@@ -480,6 +480,7 @@ valueof
 versionnumber
 vspscc
 vspx
+licence
 vssscc
 Waitingonsomeoneelse
 webresource
