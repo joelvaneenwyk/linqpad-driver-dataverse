@@ -26,7 +26,7 @@
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <Version>1.7.5</Version>
     <AssemblyVersion>1.7.5.0</AssemblyVersion>
-    <FileVersion>1.7.5.0</FileVersion>    
+    <FileVersion>1.7.5.0</FileVersion>
   </PropertyGroup>
   <ItemGroup>
     <Compile Remove="MarkMpn.FetchXmlToWebAPI\**" />
@@ -42,32 +42,32 @@
     <None Update="ConnectionDialog.xaml">
       <Generator>MSBuild:Compile</Generator>
     </None>
-    <None Include="..\images\LINQPadDriver.png">
+    <None Include="..\..\images\LINQPadDriver.png">
       <Pack>True</Pack>
       <PackagePath></PackagePath>
     </None>
-    <None Include="..\README.md">
+    <None Include="..\..\README.md">
       <Pack>True</Pack>
       <PackagePath></PackagePath>
     </None>
   </ItemGroup>
   <ItemGroup>
-    <None Remove="linqpad-samples\Entity Created Information.linq" />
-    <None Remove="linqpad-samples\PCF Components.linq" />
-    <None Remove="linqpad-samples\Plugins by Message.linq" />
-    <None Remove="linqpad-samples\Record Count.linq" />
-    <None Remove="linqpad-samples\Required Attributes.linq" />
-    <None Remove="linqpad-samples\User Settings.linq" />
-    <None Remove="linqpad-samples\Webresource Images.linq" />
+    <None Remove="..\linqpad-samples\Entity Created Information.linq" />
+    <None Remove="..\linqpad-samples\PCF Components.linq" />
+    <None Remove="..\linqpad-samples\Plugins by Message.linq" />
+    <None Remove="..\linqpad-samples\Record Count.linq" />
+    <None Remove="..\linqpad-samples\Required Attributes.linq" />
+    <None Remove="..\linqpad-samples\User Settings.linq" />
+    <None Remove="..\linqpad-samples\Webresource Images.linq" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="linqpad-samples\Entity Created Information.linq" />
-    <Content Include="linqpad-samples\PCF Components.linq" />
-    <Content Include="linqpad-samples\Plugins by Message.linq" />
-    <Content Include="linqpad-samples\Record Count.linq" />
-    <Content Include="linqpad-samples\Required Attributes.linq" />
-    <Content Include="linqpad-samples\User Settings.linq" />
-    <Content Include="linqpad-samples\Webresource Images.linq" />
+    <Content Include="..\linqpad-samples\Entity Created Information.linq" />
+    <Content Include="..\linqpad-samples\PCF Components.linq" />
+    <Content Include="..\linqpad-samples\Plugins by Message.linq" />
+    <Content Include="..\linqpad-samples\Record Count.linq" />
+    <Content Include="..\linqpad-samples\Required Attributes.linq" />
+    <Content Include="..\linqpad-samples\User Settings.linq" />
+    <Content Include="..\linqpad-samples\Webresource Images.linq" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Azure.Identity" Version="1.10.4" />
@@ -87,5 +87,5 @@
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
     <Exec Command="xcopy /i/y/s &quot;$(TargetDir)*.*&quot; &quot;%25LocalAppData%25\LINQPad\Drivers\DataContext\NetCore\$(TargetName)&quot;" />
   </Target>
-  <Import Project="MarkMpn.FetchXmlToWebAPI\MarkMpn.FetchXmlToWebAPI\MarkMpn.FetchXmlToWebAPI.projitems" Label="Shared" />  
+  <Import Project="..\MarkMpn.FetchXmlToWebAPI\MarkMpn.FetchXmlToWebAPI\MarkMpn.FetchXmlToWebAPI.projitems" Label="Shared" />
 </Project>

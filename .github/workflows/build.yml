@@ -14,10 +14,15 @@ on:
 
 jobs:
   build:
-    env:
-      buildConfig: "Release"
+    strategy:
+      fail-fast: false
+      matrix:
+        dotnet: [3.1.x]
+        os: [windows-latest]
+        config: [Debug, Release]
 
-    runs-on: windows-latest
+    runs-on: ${{ matrix.os }}
+    name: "🪟🔥 Build | ${{ matrix.config }}"
 
     steps:
       - uses: actions/checkout@v4
@@ -27,16 +32,16 @@ jobs:
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: "3.1.x"
+          dotnet-version: ${{ matrix.dotnet }}
 
       - name: Restore dependencies
         run: >
           dotnet restore
-          src/NY.Dataverse.LINQPadDriver.sln
+          NY.Dataverse.LINQPadDriver.sln
 
       - name: Build
         run: >
           dotnet build
           --no-restore
-          --configuration ${{ env.buildConfig }}
-          src/NY.Dataverse.LINQPadDriver.sln
+          --configuration "${{ matrix.config }}"
+          NY.Dataverse.LINQPadDriver.sln
