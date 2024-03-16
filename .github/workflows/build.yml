@@ -12,16 +12,22 @@ env:
   PROJECT_SOURCE_ROOT: src
 
 jobs:
-  spellcheck: # run the action
+  spellcheck:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
         with:
           submodules: recursive
+          fetch-depth: 0
 
       - uses: streetsidesoftware/cspell-action@v6
+        with:
+          config: cspell.config.yaml
+          files: "**"
+          verbose: true
 
   build:
+    needs: spellcheck
     strategy:
       fail-fast: true
       matrix:
