@@ -3,6 +3,14 @@
 ##
 ## Get latest from https://github.com/github/gitignore/blob/master/VisualStudio.gitignore
 
+.build/
+.gdn/
+.sarif/
+
+# Ignore generated CDS template source file as it should be generated
+# with each build.
+CDSTemplate.cs
+
 # User-specific files
 *.rsuser
 *.suo
@@ -121,6 +129,7 @@ $tf/
 _ReSharper*/
 *.[Rr]e[Ss]harper
 *.DotSettings.user
+*.DotSettings
 
 # JustCode is a .NET coding add-in
 .JustCode
