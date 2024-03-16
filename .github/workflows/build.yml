@@ -9,6 +9,9 @@ on:
 
 permissions:
   contents: read
+  id-token: write
+  checks: write
+  pull-requests: write
 
 env:
   PROJECT_NAME: NY.Dataverse.LINQPadDriver
@@ -47,10 +50,6 @@ jobs:
         config: [Debug, Release]
 
     runs-on: ${{ matrix.os }}
-    permissions:
-      id-token: write
-      contents: read
-      checks: write
 
     # Build: dotnet-8.x, win-x64, Debug
     name: "🪟🔥 Build | ${{ matrix.config }}"
