@@ -1,0 +1,11 @@
+$schema: https://raw.githubusercontent.com/streetsidesoftware/cspell/main/cspell.schema.json
+ignorePaths: []
+dictionaryDefinitions:
+  - name: "linqpad-driver-dataverse-dictionary"
+    path: ./.cspell/linqpad-driver-dataverse-dictionary.txt
+    addWords: true
+dictionaries:
+  - "linqpad-driver-dataverse-dictionary"
+words: []
+ignoreWords: []
+import: []
