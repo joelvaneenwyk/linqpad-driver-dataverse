@@ -6,22 +6,24 @@ on:
   pull_request:
     branches: [main, develop]
   workflow_dispatch:
-    inputs:
-      release:
-        description: "Release?"
-        required: true
-        default: "false"
+
+env:
+  PROJECT_NAME: NY.Dataverse.LINQPadDriver
+  PROJECT_SOURCE_ROOT: src
 
 jobs:
   build:
     strategy:
-      fail-fast: false
+      fail-fast: true
       matrix:
-        dotnet: [3.1.x]
+        dotnet: [8.x]
         os: [windows-latest]
+        runtime: [win-x64]
         config: [Debug, Release]
 
     runs-on: ${{ matrix.os }}
+
+    # Build: dotnet-8.x, win-x64, Debug
     name: "🪟🔥 Build | ${{ matrix.config }}"
 
     steps:
@@ -33,15 +35,39 @@ jobs:
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: ${{ matrix.dotnet }}
+          cache: true
+          cache-dependency-path: ${{ env.PROJECT_SOURCE_ROOT }}/${{ env.PROJECT_NAME }}/packages.lock.json
+        env:
+          NUGET_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
 
       - name: Restore dependencies
         run: >
-          dotnet restore
-          NY.Dataverse.LINQPadDriver.sln
+          dotnet restore --locked-mode
 
+      # The '--graph' parameter is to address an occasional build error about files being
+      # used by another process the during 'GenerateRuntimeConfigurationFiles'
+      # task: https://github.com/dotnet/msbuild/issues/6690#issuecomment-1553272562
       - name: Build
         run: >
           dotnet build
-          --no-restore
           --configuration "${{ matrix.config }}"
-          NY.Dataverse.LINQPadDriver.sln
+          --runtime "${{ matrix.runtime }}"
+          --verbosity normal
+          --graph
+          "${{ env.PROJECT_SOURCE_ROOT }}/${{ env.PROJECT_NAME }}/${{ env.PROJECT_NAME }}.csproj"
+
+      - name: Test
+        run: >
+          dotnet test
+          --configuration "${{ matrix.config }}"
+          --runtime "${{ matrix.runtime }}"
+          --verbosity normal
+          --results-directory:"./TestResults/${{ matrix.dotnet }}-${{ matrix.runtime }}-${{ matrix.config }}"
+          --logger:trx
+          "src/MarkMpn.FetchXmlToWebAPI/MarkMpn.FetchXmlToWebAPI.Tests/MarkMpn.FetchXmlToWebAPI.Tests.csproj"
+
+      - uses: bibipkins/dotnet-test-reporter@v1.4.0
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          comment-title: "Unit Test Results"
+          results-path: "./TestResults/${{ matrix.dotnet }}-${{ matrix.runtime }}-${{ matrix.config }}/*.trx"

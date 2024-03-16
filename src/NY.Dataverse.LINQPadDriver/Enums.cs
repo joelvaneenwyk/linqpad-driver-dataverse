@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Xml.Linq;
-
-namespace NY.Dataverse.LINQPadDriver
+﻿namespace NY.Dataverse.LINQPadDriver
 {
     public static class FetchAttributes
     {

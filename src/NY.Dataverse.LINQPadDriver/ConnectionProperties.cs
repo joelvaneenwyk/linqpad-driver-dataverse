@@ -3,9 +3,7 @@ using Azure.Identity;
 using LINQPad.Extensibility.DataContext;
 using Microsoft.PowerPlatform.Dataverse.Client;
 using System;
-using System.Collections.Generic;
 using System.Runtime.Caching;
-using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 
@@ -14,10 +12,10 @@ namespace NY.Dataverse.LINQPadDriver
 	/// <summary>
 	/// Wrapper to read/write connection properties. This acts as our ViewModel - we will bind to it in ConnectionDialog.xaml.
 	/// </summary>
-	class ConnectionProperties
+	sealed class ConnectionProperties
 	{
 		public IConnectionInfo ConnectionInfo { get; private set; }
-		public string ContentPath { get; private set; }
+		public string? ContentPath { get; private set; }
 
 		static ObjectCache cache = MemoryCache.Default;
 
@@ -29,57 +27,57 @@ namespace NY.Dataverse.LINQPadDriver
 		{
 			get
 			{
-                return AuthenticationType switch
-                {
-                    "ClientSecret" => $"AuthType=ClientSecret; Url={EnvironmentUrl}; ClientId={ApplicationId}; ClientSecret={ClientSecret}; RequireNewInstance=true",
+				return AuthenticationType switch
+				{
+					"ClientSecret" => $"AuthType=ClientSecret; Url={EnvironmentUrl}; ClientId={ApplicationId}; ClientSecret={ClientSecret}; RequireNewInstance=true",
 					"Certificate" => $"AuthType=Certificate; Url={EnvironmentUrl}; ClientId={ApplicationId}; Thumbprint={CertificateThumbprint}; RequireNewInstance=true",
 					"OAuth" => $"AuthType=OAuth; Url={EnvironmentUrl}; ClientId={ApplicationId}; RedirectUri=http://localhost; LoginPrompt=Auto; TokenCacheStorePath={Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData)}; RequireNewInstance=true",
-                    _ => "",
-                };
-            }
+					_ => "",
+				};
+			}
 		}
 
-		public string ApplicationId
+		public string? ApplicationId
 		{
-			get => (string)DriverData.Element("ApplicationId") ?? "51f81489-12ee-4a9e-aaae-a2591f45987d"; //Default to MSFT's AppId provided for testing and prototyping as per https://docs.microsoft.com/en-us/dynamics365/customerengagement/on-premises/developer/xrm-tooling/use-connection-strings-xrm-tooling-connect
+			get => DriverData.Element("ApplicationId")?.ToString() ?? "51f81489-12ee-4a9e-aaae-a2591f45987d"; //Default to MSFT's AppId provided for testing and prototyping as per https://docs.microsoft.com/en-us/dynamics365/customerengagement/on-premises/developer/xrm-tooling/use-connection-strings-xrm-tooling-connect
 			set => DriverData.SetElementValue("ApplicationId", value);
 		}
 
-		public string ClientSecret
-		{
-			get 
-			{ 
-				var clientSecret = (string)DriverData.Element("ClientSecret");
-				return string.IsNullOrEmpty(clientSecret) ? "" : ConnectionInfo.Decrypt(clientSecret);
-			}
-			set => DriverData.SetElementValue("ClientSecret", ConnectionInfo.Encrypt(value));
-		}
-		public string CertificateThumbprint
+		public string? ClientSecret
 		{
 			get
 			{
-				var thumbprint = (string)DriverData.Element("CertificateThumbprint");
-				return string.IsNullOrEmpty(thumbprint) ? "" : ConnectionInfo.Decrypt(thumbprint);
+				var clientSecret = DriverData.Element("ClientSecret")?.ToString() ?? string.Empty;
+				return string.IsNullOrEmpty(clientSecret) ? string.Empty : ConnectionInfo.Decrypt(clientSecret);
+			}
+			set => DriverData.SetElementValue("ClientSecret", ConnectionInfo.Encrypt(value));
+		}
+		public string? CertificateThumbprint
+		{
+			get
+			{
+				var thumbprint = DriverData.Element("CertificateThumbprint")?.ToString();
+				return string.IsNullOrEmpty(thumbprint) ? string.Empty : ConnectionInfo.Decrypt(thumbprint);
 			}
 			set => DriverData.SetElementValue("CertificateThumbprint", ConnectionInfo.Encrypt(value));
 		}
 		public string EnvironmentUrl
 		{
-			get => (string)DriverData.Element("EnvironmentUrl") ?? "";
+			get => DriverData.Element("EnvironmentUrl")?.ToString() ?? string.Empty;
 			set => DriverData.SetElementValue("EnvironmentUrl", value);
 		}
 
 		public string AuthenticationType
 		{
-			get => (string)DriverData.Element("AuthenticationType") ?? "OAuth";
+			get => DriverData.Element("AuthenticationType")?.ToString() ?? "OAuth";
 			set
-            {
-                switch (value)
-                {
-                    case "ClientSecret":
+			{
+				switch (value)
+				{
+					case "ClientSecret":
 						CertificateThumbprint = null;
 						break;
-                    case "Certificate":
+					case "Certificate":
 						ClientSecret = null;
 						break;
 					case "Azure":
@@ -94,24 +92,24 @@ namespace NY.Dataverse.LINQPadDriver
 				}
 				DriverData.SetElementValue("AuthenticationType", value);
 			}
-        }
-        public string ConnectionName
+		}
+		public string ConnectionName
 		{
-			get => (string)DriverData.Element("ConnectionName") ?? "";
+			get => DriverData.Element("ConnectionName")?.ToString() ?? string.Empty;
 			set => DriverData.SetElementValue("ConnectionName", value);
 		}
 		public string UserName
 		{
-			get => (string)DriverData.Element("UserName") ?? "";
+			get => DriverData.Element("UserName")?.ToString() ?? string.Empty;
 			set => DriverData.SetElementValue("UserName", value);
 		}
 
 		public ServiceClient GetCdsClient()
 		{
-			return !string.IsNullOrEmpty(ConnectionString) ? new ServiceClient(ConnectionString) : new ServiceClient(tokenProviderFunction: f => GetToken(EnvironmentUrl), instanceUrl: new Uri(EnvironmentUrl));
+			return !string.IsNullOrEmpty(ConnectionString) ? new ServiceClient(ConnectionString) : new ServiceClient(tokenProviderFunction: f => ConnectionProperties.GetToken(EnvironmentUrl), instanceUrl: new Uri(EnvironmentUrl));
 		}
 
-		private async Task<string> GetToken(string environment)
+		private static async Task<string> GetToken(string environment)
 		{
 			var credential = new DefaultAzureCredential();
 			//TokenProviderFunction is called multiple times, so we need to check if we already have a token in the cache

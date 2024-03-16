@@ -7,17 +7,17 @@ namespace NY.Dataverse.LINQPadDriver
 	{
 		IConnectionInfo _cxInfo;
 
-		public ConnectionDialog (IConnectionInfo cxInfo)
+		public ConnectionDialog(IConnectionInfo cxInfo)
 		{
 			_cxInfo = cxInfo;
 
 			// ConnectionProperties is your view-model.
-			DataContext = new ConnectionProperties (cxInfo);
+			DataContext = new ConnectionProperties(cxInfo);
 
-			InitializeComponent ();
+			InitializeComponent();
 		}
 
-		void btnOK_Click (object sender, RoutedEventArgs e)
+		void btnOK_Click(object sender, RoutedEventArgs e)
 		{
 			DialogResult = true;
 		}

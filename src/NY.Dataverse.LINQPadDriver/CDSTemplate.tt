@@ -1,233 +1,230 @@
-﻿<#@ template language="C#" debug="true" #>
-<#@ assembly name="System.Core" #>
+<#@ template language="C#" debug="false" #>
 <#@ import namespace="System.Linq" #>
-<#@ import namespace="System.Text" #>
-<#@ import namespace="System.Text.RegularExpressions" #>
-<#@ import namespace="System.Collections.Generic" #>
-<#@ import namespace="Microsoft.Xrm.Sdk" #>
+<#@ import namespace="System.Runtime.InteropServices" #>
 <#@ import namespace="Microsoft.Xrm.Sdk.Metadata" #>
 
 using System;
 using System.Collections.Generic;
-using System.Reflection;
-using System.Xml.Linq;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Text;
-using System.Runtime.Serialization;
-
-using Microsoft.Xrm.Sdk;
 using Microsoft.Xrm.Sdk.Metadata;
-using Microsoft.Xrm.Sdk.Client;
-using Microsoft.Xrm.Sdk.Query;
-using Microsoft.Xrm.Sdk.Linq;
-using Microsoft.PowerPlatform.Dataverse.Client;
-using Microsoft.Crm.Sdk.Messages;
-using Microsoft.Xrm.Sdk.Messages;
+using Microsoft.Xrm.Sdk;
+using JetBrains.Annotations;
 
 [assembly: Microsoft.Xrm.Sdk.Client.ProxyTypesAssemblyAttribute()]
 namespace <#=this.Namespace#>.Entities
 {
-	<#foreach (var entity in Metadata)
-	{#>
+    <#foreach (ref var entity in CollectionsMarshal.AsSpan(Metadata))
+    {#>
 
-		[System.Runtime.Serialization.DataContractAttribute()]
-		[Microsoft.Xrm.Sdk.Client.EntityLogicalNameAttribute("<#=entity.entityMetadata.LogicalName#>")]
-		public partial class <#=entity.entityMetadata.SchemaName#>Table : Microsoft.Xrm.Sdk.Entity, System.ComponentModel.INotifyPropertyChanging, System.ComponentModel.INotifyPropertyChanged
-		{
-	
-			public <#=entity.entityMetadata.SchemaName#>Table() : 
-					base("<#=entity.entityMetadata.LogicalName#>")
-			{
-			}
-	
-			public const string EntityLogicalName = "<#=entity.entityMetadata.LogicalName#>";
-			
-			public const string EntitySchemaName = "<#=entity.entityMetadata.SchemaName#>";
-		
-			public const string PrimaryIdAttribute = "<#=entity.entityMetadata.PrimaryIdAttribute#>";
-		
-			public const string PrimaryNameAttribute = "<#=(entity.entityMetadata.PrimaryNameAttribute ?? "")#>";
-			
-			public const string EntityLogicalCollectionName = "<#=(entity.entityMetadata.LogicalCollectionName ?? "")#>";
-	
-			public const int EntityTypeCode = <#=entity.entityMetadata.ObjectTypeCode#>;
-	
-			public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
-	
-			public event System.ComponentModel.PropertyChangingEventHandler PropertyChanging;
-	
-			private void OnPropertyChanged(string propertyName)
-			{
-				if ((this.PropertyChanged != null))
-				{
-					this.PropertyChanged(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
-				}
-			}
-	
-			private void OnPropertyChanging(string propertyName)
-			{
-				if ((this.PropertyChanging != null))
-				{
-					this.PropertyChanging(this, new System.ComponentModel.PropertyChangingEventArgs(propertyName));
-				}
-			}
-			<#foreach (var attribute in entity.entityMetadata.Attributes.Where(x=>(x.IsLogical == false
-			|| (x.IsLogical == true && x.IsValidForForm == true)) && x.AttributeType != AttributeTypeCode.Virtual 
-			&& x.AttributeType != AttributeTypeCode.CalendarRules))
-			{
-				var attributeType = GetTypeFromCode(attribute.AttributeType);
-				var attributeName = (attribute.SchemaName == entity.entityMetadata.SchemaName || 
-				attribute.SchemaName == "EntityLogicalName" ||
-				attribute.SchemaName == "EntityTypeCode" ||
-				attribute.SchemaName == "Id") 
-				? $"{attribute.SchemaName}1" : attribute.SchemaName;
-			#>
-				<#if(attribute.LogicalName == entity.entityMetadata.PrimaryIdAttribute) 
-				{#>
-					[AttributeLogicalNameAttribute("<#=attribute.LogicalName#>")]
-					public Guid? <#=attributeName#>
-					{
-						get
-						{
-							return this.GetAttributeValue<Guid?>("<#=attribute.LogicalName#>");
-						}
-						set
-						{
-							this.OnPropertyChanging("<#=attributeName#>");
-							this.SetAttributeValue("<#=attribute.LogicalName#>", value);
-							if (value.HasValue)
-							{
-								base.Id = value.Value;
-							}
-							else
-							{
-								base.Id = System.Guid.Empty;
-							}
-							this.OnPropertyChanged("<#=attributeName#>");
-						}
-					}
-					[AttributeLogicalNameAttribute("<#=attribute.LogicalName#>")]
-					public override Guid Id
-					{
-						get
-						{
-							return this.GetAttributeValue<Guid>("<#=attribute.LogicalName#>");
-						}
-						set
-						{
-							this.<#=attributeName#> = value;
-						}
-					}
-				<#} else if(attributeType == "PartyList") 
-				{
-					attributeName = char.ToUpper(attributeName[0]) + attributeName[1..];
-				#>
-				[AttributeLogicalNameAttribute("<#=attribute.LogicalName#>")]
-				public IEnumerable<ActivityPartyTable> <#=attributeName#>
-				{
-					get
-					{
-						var collection = this.GetAttributeValue<EntityCollection>("<#=attribute.LogicalName#>");
-						if (collection != null && collection.Entities != null)
-						{
-							return Enumerable.Cast<ActivityPartyTable>(collection.Entities);
-						}
-						else
-						{
-							return null;
-						}
-					}
-					set
-					{
-						this.OnPropertyChanging("<#=attribute.LogicalName#>");
-						if ((value == null))
-						{
-							this.SetAttributeValue("<#=attribute.LogicalName#>", value);
-						}
-						else
-						{
-							this.SetAttributeValue("<#=attribute.LogicalName#>", 
-							new EntityCollection(new List<Microsoft.Xrm.Sdk.Entity>(value)));
-						}
-						this.OnPropertyChanged("<#=attribute.LogicalName#>");
-					}
-				}
-				<#} else if(attributeType == "OptionSetValue") 
-				{
-				   var enumName = $"{entity.entityMetadata.SchemaName}_{attribute.SchemaName}";
-				#>
-					[AttributeLogicalNameAttribute("<#=attribute.LogicalName#>")]
-					public virtual <#=enumName#>? <#=attributeName#>
-					{
-						[System.Diagnostics.DebuggerNonUserCode()]
-						get
-						{
-							return (<#=enumName#>?)this.GetAttributeValue<OptionSetValue>("<#=attribute.LogicalName#>")?.Value;
-						}
-				<#if(attribute.IsValidForUpdate == true || attribute.IsValidForCreate == true) 
-				{#>
-						[System.Diagnostics.DebuggerNonUserCode()]
-						set
-						{
-							this.OnPropertyChanging("<#=attributeName#>");
-							this.SetAttributeValue("<#=attribute.LogicalName#>", value.HasValue ? new OptionSetValue((int)value) : null);
-							this.OnPropertyChanged("<#=attributeName#>");
-						}
-				<#}#>
-					}
-				<#} else { #>
-				[AttributeLogicalNameAttribute("<#=attribute.LogicalName#>")]		
-				public <#=attributeType#> <#=attributeName#>
-				{
-					get
-					{
-						return this.GetAttributeValue<<#=attributeType#>>("<#=attribute.LogicalName#>")<#=attribute.AttributeType == AttributeTypeCode.DateTime ? "?.ToLocalTime()" : ""#>;
-					}
-				<#if(attribute.IsValidForUpdate == true || attribute.IsValidForCreate == true) 
-				{#>
-					set
-					{
-						this.OnPropertyChanging("<#=attributeName#>");
-						this.SetAttributeValue("<#=attribute.LogicalName#>", value);
-						this.OnPropertyChanged("<#=attributeName#>");
-					}
-				<#}#>
-				}
-				<#}#>
-			<#}#>
-		}
-	<#}#>
+        [System.Runtime.Serialization.DataContractAttribute()]
+        [Microsoft.Xrm.Sdk.Client.EntityLogicalNameAttribute("<#=entity.entityMetadata.LogicalName#>")]
+        [PublicAPI]
+        public partial class <#=entity.entityMetadata.SchemaName#>Table : Microsoft.Xrm.Sdk.Entity, System.ComponentModel.INotifyPropertyChanging, System.ComponentModel.INotifyPropertyChanged
+        {
+            public <#=entity.entityMetadata.SchemaName#>Table()
+                : base("<#=entity.entityMetadata.LogicalName#>")
+            {
+            }
+
+            public const string EntityLogicalName = "<#=entity.entityMetadata.LogicalName#>";
+
+            public const string EntitySchemaName = "<#=entity.entityMetadata.SchemaName#>";
+
+            public const string PrimaryIdAttribute = "<#=entity.entityMetadata.PrimaryIdAttribute#>";
+
+            public const string PrimaryNameAttribute = "<#=(entity.entityMetadata.PrimaryNameAttribute ?? "")#>";
+
+            public const string EntityLogicalCollectionName = "<#=(entity.entityMetadata.LogicalCollectionName ?? "")#>";
+
+            public const int? EntityTypeCode = <#=entity.entityMetadata.ObjectTypeCode#>;
+
+            public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
+
+            public event System.ComponentModel.PropertyChangingEventHandler PropertyChanging;
+
+            private void OnPropertyChanged(string propertyName)
+            {
+                if ((this.PropertyChanged != null))
+                {
+                    this.PropertyChanged(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
+                }
+            }
+
+            private void OnPropertyChanging(string propertyName)
+            {
+                if ((this.PropertyChanging != null))
+                {
+                    this.PropertyChanging(this, new System.ComponentModel.PropertyChangingEventArgs(propertyName));
+                }
+            }
+
+            <#foreach (var attribute in entity.entityMetadata
+                    .Attributes
+                    .Where(x => (
+                            x.IsLogical == false
+                            || (x.IsLogical == true && x.IsValidForForm == true)
+                        ) && x.AttributeType != AttributeTypeCode.Virtual
+                        && x.AttributeType != AttributeTypeCode.CalendarRules)
+                    )
+            {
+                var attributeType = GetTypeFromCode(attribute.AttributeType);
+                var attributeName = (attribute.SchemaName == entity.entityMetadata.SchemaName ||
+                attribute.SchemaName == "EntityLogicalName" ||
+                attribute.SchemaName == "EntityTypeCode" ||
+                attribute.SchemaName == "Id")
+                ? $"{attribute.SchemaName}1" : attribute.SchemaName;
+            #>
+                <#if(attribute.LogicalName == entity.entityMetadata.PrimaryIdAttribute)
+                {#>
+                    [AttributeLogicalNameAttribute("<#=attribute.LogicalName#>")]
+                    public Guid? <#=attributeName#>
+                    {
+                        get
+                        {
+                            return this.GetAttributeValue<Guid?>("<#=attribute.LogicalName#>");
+                        }
+                        set
+                        {
+                            this.OnPropertyChanging("<#=attributeName#>");
+                            this.SetAttributeValue("<#=attribute.LogicalName#>", value);
+                            if (value.HasValue)
+                            {
+                                base.Id = value.Value;
+                            }
+                            else
+                            {
+                                base.Id = System.Guid.Empty;
+                            }
+                            this.OnPropertyChanged("<#=attributeName#>");
+                        }
+                    }
+                    [AttributeLogicalNameAttribute("<#=attribute.LogicalName#>")]
+                    public override Guid Id
+                    {
+                        get
+                        {
+                            return this.GetAttributeValue<Guid>("<#=attribute.LogicalName#>");
+                        }
+                        set
+                        {
+                            this.<#=attributeName#> = value;
+                        }
+                    }
+                <#} else if(attributeType == "PartyList")
+                {
+                    attributeName = char.ToUpper(attributeName[0]) + attributeName[1..];
+                #>
+                [AttributeLogicalNameAttribute("<#=attribute.LogicalName#>")]
+                public IEnumerable<ActivityPartyTable> <#=attributeName#>
+                {
+                    get
+                    {
+                        var collection = this.GetAttributeValue<EntityCollection>("<#=attribute.LogicalName#>");
+                        if (collection != null && collection.Entities != null)
+                        {
+                            return Enumerable.Cast<ActivityPartyTable>(collection.Entities);
+                        }
+                        else
+                        {
+                            return null;
+                        }
+                    }
+                    set
+                    {
+                        this.OnPropertyChanging("<#=attribute.LogicalName#>");
+                        if ((value == null))
+                        {
+                            this.SetAttributeValue("<#=attribute.LogicalName#>", value);
+                        }
+                        else
+                        {
+                            this.SetAttributeValue("<#=attribute.LogicalName#>",
+                            new EntityCollection(new List<Microsoft.Xrm.Sdk.Entity>(value)));
+                        }
+                        this.OnPropertyChanged("<#=attribute.LogicalName#>");
+                    }
+                }
+                <#} else if(attributeType == "OptionSetValue")
+                {
+                   var enumName = $"{entity.entityMetadata.SchemaName}_{attribute.SchemaName}";
+                #>
+                    [AttributeLogicalNameAttribute("<#=attribute.LogicalName#>")]
+                    public virtual <#=enumName#>? <#=attributeName#>
+                    {
+                        [System.Diagnostics.DebuggerNonUserCode()]
+                        get
+                        {
+                            return (<#=enumName#>?)this.GetAttributeValue<OptionSetValue>("<#=attribute.LogicalName#>")?.Value;
+                        }
+                <#if(attribute.IsValidForUpdate == true || attribute.IsValidForCreate == true)
+                {#>
+                        [System.Diagnostics.DebuggerNonUserCode()]
+                        set
+                        {
+                            this.OnPropertyChanging("<#=attributeName#>");
+                            this.SetAttributeValue("<#=attribute.LogicalName#>", value.HasValue ? new OptionSetValue((int)value) : null);
+                            this.OnPropertyChanged("<#=attributeName#>");
+                        }
+                <#}#>
+                    }
+                <#} else { #>
+                [AttributeLogicalNameAttribute("<#=attribute.LogicalName#>")]
+                public <#=attributeType#> <#=attributeName#>
+                {
+                    get
+                    {
+                        return this.GetAttributeValue<<#=attributeType#>>("<#=attribute.LogicalName#>")<#=attribute.AttributeType == AttributeTypeCode.DateTime ? "?.ToLocalTime()" : ""#>;
+                    }
+                <#if(attribute.IsValidForUpdate == true || attribute.IsValidForCreate == true)
+                {#>
+                    set
+                    {
+                        this.OnPropertyChanging("<#=attributeName#>");
+                        this.SetAttributeValue("<#=attribute.LogicalName#>", value);
+                        this.OnPropertyChanged("<#=attributeName#>");
+                    }
+                <#}#>
+                }
+                <#}#>
+            <#}#>
+        }
+    <#}#>
 }
 
 namespace <#= this.Namespace #>
 {
-	using Entities;
-	public static class Tables
-	{
-	<#foreach (var entity in Metadata)
-	{#>
-		public static string <#=entity.entityMetadata.SchemaName#> = "<#=entity.entityMetadata.LogicalName#>";
-	<#}#>
-	}
-	<#foreach (var entity in Metadata)
-	{#>
-		<#foreach (var optionMetadata in entity.optionMetadata)
-		{#>
-			[System.Runtime.Serialization.DataContractAttribute()]
-			public enum <#=entity.entityMetadata.SchemaName#>_<#=optionMetadata.attributeName#>
-			{
-				<#foreach (var option in optionMetadata.options)
-				{
-				#>
-					[System.Runtime.Serialization.EnumMemberAttribute()]
-					<#=option.Label#> = <#=option.Value#>,
-				<#}#>
-			}			
-		<#}#>
-	<#}#>
+    using Entities;
 
-	public class LINQPadOrganizationServiceContext : OrganizationServiceContext
-	{	
+    [PublicAPI]
+    public static class Tables
+    {
+    <#foreach (ref var entity in CollectionsMarshal.AsSpan(Metadata))
+    {#>
+        public static string <#=entity.entityMetadata.SchemaName#> = "<#=entity.entityMetadata.LogicalName#>";
+    <#}#>
+    }
+    <#foreach (ref var entity in CollectionsMarshal.AsSpan(Metadata))
+    {#>
+        <#foreach (ref var optionMetadata in CollectionsMarshal.AsSpan(entity.optionMetadata))
+        {#>
+            [System.Runtime.Serialization.DataContractAttribute()]
+            public enum <#=entity.entityMetadata.SchemaName#>_<#=optionMetadata.attributeName#>
+            {
+                <#foreach (ref var option in CollectionsMarshal.AsSpan(optionMetadata.options))
+                {
+                #>
+                    [System.Runtime.Serialization.EnumMemberAttribute()]
+                    <#=option.Label#> = <#=option.Value#>,
+                <#}#>
+            }
+        <#}#>
+    <#}#>
+
+    [PublicAPI]
+    public class LINQPadOrganizationServiceContext : OrganizationServiceContext
+    {
         public event EventHandler PreExecute;
 
         public LINQPadOrganizationServiceContext(IOrganizationService service) : base(service)
@@ -237,8 +234,8 @@ namespace <#= this.Namespace #>
 
         protected override void OnExecute(OrganizationRequest request, OrganizationResponse response)
         {
-			if(PreExecute != null && request is RetrieveMultipleRequest r)
-			{
+            if(PreExecute != null && request is RetrieveMultipleRequest r)
+            {
                 PreExecute(this, new OnExecuteEventArgs((QueryExpression)r.Query));
             }
             base.OnExecute(request, response);
@@ -250,86 +247,81 @@ namespace <#= this.Namespace #>
             private set;
         }
 
-		<# foreach (var entity in Metadata)
-		{
-		#>
-		public IQueryable<<#=this.Namespace#>.Entities.<#=entity.entityMetadata.SchemaName#>Table> <#=entity.entityMetadata.EntitySetName#>
-		{
-			[System.Diagnostics.DebuggerNonUserCode()]
-			get
-			{
-				return this.CreateQuery<<#=this.Namespace#>.Entities.<#=entity.entityMetadata.SchemaName#>Table>();
-			}
-		}
-		<#}#>
-	}
+        <# foreach (ref var entity in CollectionsMarshal.AsSpan(Metadata))
+        {
+        #>
+        public IQueryable<<#=this.Namespace#>.Entities.<#=entity.entityMetadata.SchemaName#>Table> <#=entity.entityMetadata.EntitySetName#>
+        {
+            [System.Diagnostics.DebuggerNonUserCode()]
+            get
+            {
+                return this.CreateQuery<<#=this.Namespace#>.Entities.<#=entity.entityMetadata.SchemaName#>Table>();
+            }
+        }
+        <#}#>
+    }
 
-	public class OnExecuteEventArgs : EventArgs
-	{
-		public QueryExpression query { get; set; }
-		public OnExecuteEventArgs(QueryExpression query)
-		{
-			this.query = query;
-		}
-	}
+    [PublicAPI]
+    public class OnExecuteEventArgs : EventArgs
+    {
+        public QueryExpression query { get; set; }
+        public OnExecuteEventArgs(QueryExpression query)
+        {
+            this.query = query;
+        }
+    }
 }
-
-<#+
-public string Namespace { get; set; }
-
-public string TypeName { get; set; }
-#>
 
 <#+
 string GetTypeFromCode(AttributeTypeCode? attributeTypeCode)
 {
-	var attributeType = "object";
-	switch (attributeTypeCode)
-	{
-		case AttributeTypeCode.BigInt:
-		case AttributeTypeCode.Integer:	
-			attributeType = "int";
-			break;
-		case AttributeTypeCode.Boolean:
-			attributeType = "bool";
-			break;
-		case AttributeTypeCode.ManagedProperty:
-			attributeType = "BooleanManagedProperty";
-			break;
-		case AttributeTypeCode.Customer:
-		case AttributeTypeCode.Lookup:	
-		case AttributeTypeCode.Owner:		
-			attributeType = "EntityReference";
-			break;
-		case AttributeTypeCode.DateTime:
-			attributeType = "DateTime?";
-			break;
-		case AttributeTypeCode.Decimal:
-			attributeType = "decimal";
-			break;
-		case AttributeTypeCode.Double:
-			attributeType = "double";
-			break;
-		case AttributeTypeCode.EntityName:
-		case AttributeTypeCode.Memo:
-		case AttributeTypeCode.String:	
-			attributeType = "string";
-			break;
-		case AttributeTypeCode.Money:
-			attributeType = "Money";
-			break;
-		case AttributeTypeCode.Picklist:
-		case AttributeTypeCode.State:
-		case AttributeTypeCode.Status:
-			attributeType = "OptionSetValue";
-			break;
-		case AttributeTypeCode.Uniqueidentifier:
-			attributeType = "Guid";
-			break;
-		case AttributeTypeCode.PartyList:
-			attributeType = "PartyList";
-			break;
-	}
-	return attributeType;
+    var attributeType = "object";
+    switch (attributeTypeCode)
+    {
+        case AttributeTypeCode.BigInt:
+        case AttributeTypeCode.Integer:
+            attributeType = "int";
+            break;
+        case AttributeTypeCode.Boolean:
+            attributeType = "bool";
+            break;
+        case AttributeTypeCode.ManagedProperty:
+            attributeType = "BooleanManagedProperty";
+            break;
+        case AttributeTypeCode.Customer:
+        case AttributeTypeCode.Lookup:
+        case AttributeTypeCode.Owner:
+            attributeType = "EntityReference";
+            break;
+        case AttributeTypeCode.DateTime:
+            attributeType = "DateTime?";
+            break;
+        case AttributeTypeCode.Decimal:
+            attributeType = "decimal";
+            break;
+        case AttributeTypeCode.Double:
+            attributeType = "double";
+            break;
+        case AttributeTypeCode.EntityName:
+        case AttributeTypeCode.Memo:
+        case AttributeTypeCode.String:
+            attributeType = "string";
+            break;
+        case AttributeTypeCode.Money:
+            attributeType = "Money";
+            break;
+        case AttributeTypeCode.Picklist:
+        case AttributeTypeCode.State:
+        case AttributeTypeCode.Status:
+            attributeType = "OptionSetValue";
+            break;
+        case AttributeTypeCode.Uniqueidentifier:
+            attributeType = "Guid";
+            break;
+        case AttributeTypeCode.PartyList:
+            attributeType = "PartyList";
+            break;
+    }
+    return attributeType;
 }
 #>
