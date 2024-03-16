@@ -7,6 +7,9 @@ on:
     branches: [main, develop]
   workflow_dispatch:
 
+permissions:
+  contents: read
+
 env:
   PROJECT_NAME: NY.Dataverse.LINQPadDriver
   PROJECT_SOURCE_ROOT: src
@@ -14,13 +17,19 @@ env:
 jobs:
   spellcheck:
     runs-on: ubuntu-latest
+    name: "📝🔥 Spellcheck"
     steps:
       - uses: actions/checkout@v4
+        name: 📤 Checkout
         with:
           submodules: recursive
           fetch-depth: 0
 
+      - uses: actions/setup-node@v4
+        name: 📦 Setup Node
+
       - uses: streetsidesoftware/cspell-action@v6
+        name: 📝 Check Spelling
         with:
           config: cspell.config.yaml
           files: "**"
