@@ -7,6 +7,12 @@ on:
     branches: [main, develop]
   workflow_dispatch:
 
+permissions:
+  contents: read
+  id-token: write
+  checks: write
+  pull-requests: write
+
 env:
   PROJECT_NAME: NY.Dataverse.LINQPadDriver
   PROJECT_SOURCE_ROOT: src
@@ -35,14 +41,11 @@ jobs:
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: ${{ matrix.dotnet }}
-          cache: true
-          cache-dependency-path: ${{ env.PROJECT_SOURCE_ROOT }}/${{ env.PROJECT_NAME }}/packages.lock.json
-        env:
-          NUGET_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
 
       - name: Restore dependencies
         run: >
           dotnet restore --locked-mode
+          "${{ env.PROJECT_NAME }}.sln"
 
       # The '--graph' parameter is to address an occasional build error about files being
       # used by another process the during 'GenerateRuntimeConfigurationFiles'

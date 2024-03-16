@@ -1,33 +1,53 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-    <!-- Common properties -->
+    <!-- Set Default Properties -->
     <PropertyGroup>
-        <!-- See: https://docs.microsoft.com/en-us/visualstudio/msbuild/customize-your-build?view=vs-2019#directorybuildprops-and-directorybuildtargets -->
+        <!--
+        See: https://learn.microsoft.com/en-us/visualstudio/msbuild/customize-your-build?view=vs-2022
+        -->
         <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
 
         <!-- SolutionDir is not defined when building projects explicitly -->
         <Configuration Condition=" '$(Configuration)' == '' ">Release</Configuration>
+    </PropertyGroup>
 
-        <ProjectRoot>$(MSBuildThisFileDirectory.TrimEnd('\/'))</ProjectRoot>
+    <!-- Set Folder Variables -->
+    <PropertyGroup>
+        <WorkspaceFolder>$(MSBuildThisFileDirectory.TrimEnd('\/'))</WorkspaceFolder>
+        <OutNoSlash>$(WorkspaceFolder)/bin/$(Configuration)/$(Platform)$(TargetArchitecture)</OutNoSlash>
+        <IntNoSlash>$(WorkspaceFolder)/.build/$(MSBuildProjectName)/$(Configuration)/$(Platform)$(TargetArchitecture)</IntNoSlash>
+    </PropertyGroup>
 
-        <OutputPath>$(ProjectRoot)/bin/$(Configuration)/$(Platform)$(TargetArchitecture)/</OutputPath>
-        <BaseIntermediateOutputPath>$(ProjectRoot)/.build/$(MSBuildProjectName)/$(Configuration)/$(Platform)$(TargetArchitecture)/</BaseIntermediateOutputPath>
-
-        <IntermediateOutputPath>$(BaseIntermediateOutputPath)</IntermediateOutputPath>
-        <OutDir>$(OutputPath)</OutDir>
-        <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">$(ProjectRoot)</SolutionDir>
-        <BaseOutputPath>$(BaseIntermediateOutputPath)</BaseOutputPath>
-        <IntDir>$(IntermediateOutputPath)</IntDir>
-
+    <!-- Set Base Variables -->
+    <PropertyGroup>
+        <!-- SolutionDir is not defined when building projects explicitly -->
+        <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">$(WorkspaceFolder)</SolutionDir>
         <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
         <VSToolsPath
-            Condition="'$(VSToolsPath)' == '' and Exists('$(MSBuildExtensionsPath32)/Microsoft/VisualStudio/v$(VisualStudioVersion)')">$(MSBuildExtensionsPath32)/Microsoft/VisualStudio/v$(VisualStudioVersion)</VSToolsPath>
+            Condition="'$(VSToolsPath)' == '' and Exists('$(MSBuildExtensionsPath32)/Microsoft/VisualStudio/v$(VisualStudioVersion)')"
+        >$(MSBuildExtensionsPath32)/Microsoft/VisualStudio/v$(VisualStudioVersion)</VSToolsPath>
+    </PropertyGroup>
+
+    <!-- Normalize Output Paths -->
+    <PropertyGroup>
+        <OutputPath>$([System.IO.Path]::Combine($(OutNoSlash),$(DirectorySeparatorChar)))</OutputPath>
+        <IntermediateOutputPath>$([System.IO.Path]::Combine($(IntNoSlash),$(DirectorySeparatorChar)))</IntermediateOutputPath>
+    </PropertyGroup>
+
+    <!-- Set Base Paths -->
+    <PropertyGroup>
+        <!--
+        We intentionally do NOT set 'OutDir' and 'IntDir' since we would rather rely on
+        internal implementation to set these.
+        -->
+        <BaseOutputPath>$(OutputPath)</BaseOutputPath>
+        <BaseIntermediateOutputPath>$(IntermediateOutputPath)</BaseIntermediateOutputPath>
+
+        <DocumentationFile>$(IntNoSlash)/$(MSBuildProjectName).xml</DocumentationFile>
 
         <TransformOnBuild>true</TransformOnBuild>
         <OverwriteReadOnlyOutputFiles>true</OverwriteReadOnlyOutputFiles>
         <TransformOutOfDateOnly>true</TransformOutOfDateOnly>
-
-        <DocumentationFile>$(OutputPath)$(MSBuildProjectName).xml</DocumentationFile>
 
         <DisableImplicitNuGetFallbackFolder>true</DisableImplicitNuGetFallbackFolder>
         <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
