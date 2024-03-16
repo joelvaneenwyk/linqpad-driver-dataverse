@@ -9,8 +9,10 @@ namespace NY.Dataverse.LINQPadDriver
 {
     public class BooleanToVisibilityInverseConvertor : IValueConverter
     {
-        public object Convert(object value, Type targetType, object param, CultureInfo culture) => (bool)value ? Visibility.Collapsed : Visibility.Visible;
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture) =>
+            (bool)value ? Visibility.Collapsed : Visibility.Visible;
 
-        public object ConvertBack(object value, Type targetType, object param, CultureInfo culture) => !(value?.Equals(param)).GetValueOrDefault() ? param : Binding.DoNothing;
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture) =>
+            !(value?.Equals(parameter)).GetValueOrDefault() ? parameter : Binding.DoNothing;
     }
 }
