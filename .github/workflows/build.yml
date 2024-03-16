@@ -70,6 +70,7 @@ jobs:
       - name: Restore dependencies
         run: >
           dotnet restore --locked-mode
+          "${{ env.PROJECT_NAME }}.sln"
 
       # The '--graph' parameter is to address an occasional build error about files being
       # used by another process the during 'GenerateRuntimeConfigurationFiles'
