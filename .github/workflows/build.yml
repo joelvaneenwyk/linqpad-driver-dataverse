@@ -47,7 +47,6 @@ jobs:
       - name: Build
         run: >
           dotnet build
-          --no-restore
           --configuration "${{ matrix.config }}"
           --runtime "${{ matrix.runtime }}"
           --verbosity normal
