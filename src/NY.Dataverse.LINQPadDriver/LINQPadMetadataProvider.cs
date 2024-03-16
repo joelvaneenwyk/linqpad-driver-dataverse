@@ -14,12 +14,12 @@ namespace NY.Dataverse.LINQPadDriver
 
         public bool IsConnected => true;
 
-        public EntityMetadata GetEntity(string logicalName)
+        public EntityMetadata GetEntity(string? logicalName)
         {
             return Metadata.Single(x=>x.LogicalName == logicalName);
         }
 
-        public EntityMetadata GetEntity(int otc)
+        public EntityMetadata GetEntity(int? otc)
         {
             return Metadata.Single(x => x.ObjectTypeCode == otc);
         }
