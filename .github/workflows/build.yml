@@ -16,11 +16,14 @@ jobs:
     strategy:
       fail-fast: true
       matrix:
-        dotnet: [3.1.x]
+        dotnet: [8.x]
         os: [windows-latest]
+        runtime: [win-x64]
         config: [Debug, Release]
 
     runs-on: ${{ matrix.os }}
+
+    # Build: dotnet-8.x, win-x64, Debug
     name: "🪟🔥 Build | ${{ matrix.config }}"
 
     steps:
