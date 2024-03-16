@@ -34,6 +34,7 @@ jobs:
           config: cspell.config.yaml
           files: "**"
           verbose: true
+          incremental_files_only: false
 
   build:
     needs: spellcheck
