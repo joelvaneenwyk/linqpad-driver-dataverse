@@ -2,81 +2,53 @@
 
 using LINQPad.Extensibility.DataContext;
 using Microsoft.Crm.Sdk.Messages;
-using Microsoft.PowerPlatform.Dataverse.Client;
-using Microsoft.PowerPlatform.Dataverse.Client.Extensions;
-using Microsoft.Xrm.Sdk;
 using Microsoft.Xrm.Sdk.Metadata;
 using Microsoft.Xrm.Sdk.Query;
-using System;
+using Microsoft.Xrm.Sdk;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Diagnostics.CodeAnalysis;
-using System.Linq;
 using System.Reflection;
 using System.Windows;
 using System.Xml.Linq;
-using System.Runtime.InteropServices;
-using System.Globalization;
-using System.IO;
+using System;
+using Microsoft.PowerPlatform.Dataverse.Client;
+using Microsoft.PowerPlatform.Dataverse.Client.Extensions;
+using System.Linq;
 using JetBrains.Annotations;
 
 namespace NY.Dataverse.LINQPadDriver
 {
-    [PublicAPI]
     public class DynamicDriver : DynamicDataContextDriver
     {
-        [UsedImplicitly]
-        [System.Diagnostics.CodeAnalysis.SuppressMessage(
-            "CodeQuality",
-            "IDE0052:Remove unread private members",
-            Justification = "<Pending>")]
-        private static DynamicDriver? _driverInstance;
+        static DynamicDriver? _driverInstance;
+        static ServiceClient? _dataverseServiceClient;
+        static QueryExecutionManager? _queryExecutionManager;
 
-        private static ServiceClient? _dataverseServiceClient;
-        private static QueryExecutionManager? _queryExecutionManager;
-
+#if DEBUG
         static DynamicDriver()
-        {
-            AddDebuggerHook();
-        }
-
-
-        [Conditional("DEBUG")]
-        private static void AddDebuggerHook()
         {
             // Uncomment the following code to attach to Visual Studio's debugger when an exception is thrown:
             AppDomain.CurrentDomain.FirstChanceException += (sender, args) =>
             {
-                if (args.Exception.StackTrace?.Contains("NY.Dataverse.LINQPadDriver") ?? false)
+
+                if (args.Exception.StackTrace.Contains("NY.Dataverse.LINQPadDriver"))
                     Debugger.Launch();
             };
         }
-
-        [Conditional("DEBUG")]
-        private static void LaunchDebugger()
-        {
-            Debugger.Launch();
-        }
-
+#endif
         public override string Name => "Dataverse LINQPad Driver";
 
-
         public override string Author => "Natraj Yegnaraman";
-
-        public override string GetConnectionDescription(IConnectionInfo cxInfo)
+        public override string GetConnectionDescription(IConnectionInfo connectionInfo)
         {
-            var connectionProperties = new ConnectionProperties(cxInfo);
+            var connectionProperties = new ConnectionProperties(connectionInfo);
             return !string.IsNullOrEmpty(connectionProperties.ConnectionName) ? $"{connectionProperties.ConnectionName} ({connectionProperties.EnvironmentUrl})" : connectionProperties.EnvironmentUrl;
         }
 
         public override bool ShowConnectionDialog(IConnectionInfo cxInfo, ConnectionDialogOptions dialogOptions)
             => new ConnectionDialog(cxInfo).ShowDialog() == true;
-
-        [SuppressMessage("Style", "IDE0300:Collection initialization can be simplified",
-            Justification = "Not supported on older .NET versions.")]
-        public override IReadOnlyList<string> GetAssembliesToAdd(IConnectionInfo cxInfo)
+        public override IEnumerable<string> GetAssembliesToAdd(IConnectionInfo cxInfo)
         {
-            return new[]
+            return new string[]
                 {
                     //"Azure.Identity.dll",
                     "Microsoft.PowerPlatform.Dataverse.Client.dll",
@@ -85,34 +57,16 @@ namespace NY.Dataverse.LINQPadDriver
                 };
         }
 
-        [Conditional("DEBUG")]
-        private void SaveContent(string code) =>
-            File.WriteAllText(Path.Combine(GetContentFolder(), "LINQPad.EarlyBound.cs"), code);
-
-        [PublicAPI]
-        public static string TransformText(
-            EntityMetadataCollection? metadata, string? ns, string? typeName)
-        {
-            var template = new CDSTemplate(metadata, ns, typeName);
-            MethodInfo? transformText = typeof(CDSTemplate).GetMethod("TransformText");
-            var result = transformText?.Invoke(template, null);
-            return result?.ToString() ?? string.Empty;
-        }
-
-        [SuppressMessage(
-            "Style",
-            "IDE0028:Collection initialization can be simplified",
-            Justification = "Not supported on older .NET versions.")]
         public override List<ExplorerItem> GetSchemaAndBuildAssembly(
             IConnectionInfo cxInfo, AssemblyName assemblyToBuild, ref string nameSpace, ref string typeName)
         {
             nameSpace = "NY.Dataverse.LINQPadDriver";
             typeName = "LINQPadOrganizationServiceContext";
-
-            LaunchDebugger();
-
+#if DEBUG
+            Debugger.Launch();
+#endif
             var connectionProperties = new ConnectionProperties(cxInfo);
-            List<ExplorerItem> explorerItems = new();
+            List<ExplorerItem> explorerItems = new List<ExplorerItem>();
             ServiceClient? client = null;
             try
             {
@@ -120,32 +74,30 @@ namespace NY.Dataverse.LINQPadDriver
                 if (client.IsReady)
                 {
                     var entityMetadata = GetEntityMetadata(client);
-                    if (entityMetadata != null)
+                    var template = new CDSTemplate(EntityMetadataCollection.TryCreate(entityMetadata), nameSpace, typeName);
+                    var code = template.TransformText();
+#if DEBUG
+                    File.WriteAllText(Path.Combine(GetContentFolder(), "LINQPad.EarlyBound.cs"), code);
+#endif
+                    Compile(code, assemblyToBuild.CodeBase, cxInfo);
+
+                    BuildEntityAndAttributeExplorerItems(explorerItems, entityMetadata);
+
+                    foreach (var entity in entityMetadata)
                     {
-                        string code = TransformText(entityMetadata, nameSpace, typeName);
+                        var source = explorerItems.FirstOrDefault(e => e.Kind == ExplorerItemKind.QueryableObject && (string)e.Tag == entity.entityMetadata.LogicalName);
 
-                        SaveContent(code);
-
-                        Compile(code, assemblyToBuild.CodeBase, cxInfo);
-
-                        BuildEntityAndAttributeExplorerItems(explorerItems, entityMetadata);
-
-                        foreach (ref var entity in CollectionsMarshal.AsSpan(entityMetadata))
-                        {
-                            var entityLogicalName = entity.entityMetadata.LogicalName;
-                            var source = explorerItems.FirstOrDefault(
-                                e => e.Kind == ExplorerItemKind.QueryableObject
-                                && (string)e.Tag == entityLogicalName);
-
-                            BuildOneToManyRelationLinks(explorerItems, entity, source);
-                            BuildManyToOneRelationLinks(explorerItems, entity, source);
-                        }
+                        BuildOneToManyRelationLinks(explorerItems, entity, source);
+                        BuildManyToOneRelationLinks(explorerItems, entity, source);
                     }
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Error occurred while attemoting to connect to {connectionProperties.EnvironmentUrl} using {connectionProperties.AuthenticationType}: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show(
+                    $"Error occured while attempting to connect to {connectionProperties.EnvironmentUrl} using {connectionProperties.AuthenticationType}: {ex.Message}", 
+                    "Error",
+                    MessageBoxButton.OK, MessageBoxImage.Error);
             }
             finally
             {
@@ -160,23 +112,21 @@ namespace NY.Dataverse.LINQPadDriver
             return explorerItems;
         }
 
-        public override void InitializeContext(IConnectionInfo cxInfo, object context,
-                                                QueryExecutionManager executionManager)
+        public override void InitializeContext(
+            IConnectionInfo cxInfo, object? context, QueryExecutionManager executionManager)
         {
             _driverInstance = this;
-            var preExecuteEvent = context.GetType().GetEvent("PreExecute");
-            var preExecuteEventHandler = GetType().GetMethod("OnPreExecute", BindingFlags.Static | BindingFlags.NonPublic);
-            if (preExecuteEvent?.EventHandlerType != null && preExecuteEventHandler != null)
-            {
-                preExecuteEvent?.AddEventHandler(context, Delegate.CreateDelegate(preExecuteEvent.EventHandlerType, null, preExecuteEventHandler));
-            }
+            EventInfo? preExecuteEvent = context?.GetType().GetEvent("PreExecute");
+            MethodInfo? preExecuteEventHandler = GetType().GetMethod("OnPreExecute", BindingFlags.Static | BindingFlags.NonPublic);
+            preExecuteEvent?.AddEventHandler(
+                context, Delegate.CreateDelegate(preExecuteEvent.EventHandlerType, null, preExecuteEventHandler));
             _queryExecutionManager = executionManager;
             base.InitializeContext(cxInfo, context, executionManager);
         }
 
-        public override bool AreRepositoriesEquivalent(IConnectionInfo c1, IConnectionInfo c2)
+        public override bool AreRepositoriesEquivalent(IConnectionInfo r1, IConnectionInfo r2)
         {
-            return Equals(c1.DriverData.Element("EnvironmentUrl"), c2.DriverData.Element("EnvironmentUrl"));
+            return Equals(r1.DriverData.Element("EnvironmentUrl"), r2.DriverData.Element("EnvironmentUrl"));
         }
 
         public override object[] GetContextConstructorArguments(IConnectionInfo cxInfo)
@@ -187,24 +137,16 @@ namespace NY.Dataverse.LINQPadDriver
             {
                 _dataverseServiceClient = dataverseServiceClient;
             }
-            return new[]
+            return new object[]
             {
                 dataverseServiceClient
             };
         }
-
-        [SuppressMessage("Style", "IDE0300:Collection initialization can be simplified",
-            Justification = "Not supported on older .NET versions.")]
-        public override ParameterDescriptor[] GetContextConstructorParameters(IConnectionInfo cxInfo) =>
-            new[]
+        public override ParameterDescriptor[] GetContextConstructorParameters(IConnectionInfo cxInfo) => new[]
         {
             new ParameterDescriptor("dataverseServiceClient", typeof(ServiceClient).FullName)
         };
-
-        [SuppressMessage("Style", "IDE0028:Collection initialization can be simplified",
-            Justification = "Not supported on older .NET versions.")]
-        public override IReadOnlyList<string> GetNamespacesToAdd(IConnectionInfo cxInfo) =>
-            new List<string>
+        public override IEnumerable<string> GetNamespacesToAdd(IConnectionInfo cxInfo) => new List<string>
         {
             "Microsoft.Crm.Sdk.Messages",
             "Microsoft.Xrm.Sdk",
@@ -222,9 +164,7 @@ namespace NY.Dataverse.LINQPadDriver
             "NY.Dataverse.LINQPadDriver.Entities"
         };
 
-        [SuppressMessage("Style", "IDE0300:Collection initialization can be simplified",
-            Justification = "Not supported on older .NET versions.")]
-        static void Compile(string cSharpSourceCode, string? outputFile, IConnectionInfo cxInfo)
+        static void Compile(string cSharpSourceCode, string outputFile, IConnectionInfo cxInfo)
         {
             var customAssemblies = new[]{
                 typeof(ServiceClient).Assembly.Location,
@@ -241,23 +181,15 @@ namespace NY.Dataverse.LINQPadDriver
                 SourceCode = new[] { cSharpSourceCode }
             });
             if (compileResult.Errors.Length > 0)
-                throw new TypeCompileException($"Cannot compile typed context: {compileResult.Errors[0]}");
-        }
-
-        [Serializable]
-        public class TypeCompileException : Exception
-        {
-            public TypeCompileException() : base() { }
-            public TypeCompileException(string message) : base(message) { }
-            public TypeCompileException(string message, Exception inner) : base(message, inner) { }
+                throw new Exception("Cannot compile typed context: " + compileResult.Errors[0]);
         }
 
         #region Helper Methods
         private static void OnPreExecute(object sender, EventArgs e)
         {
-            if (_dataverseServiceClient != null
-                && e.GetType()?.GetProperty("query")?.GetValue(e) is QueryExpression query)
+            if (_dataverseServiceClient != null)
             {
+                QueryExpression? query = (QueryExpression?)e.GetType()?.GetProperty("query")?.GetValue(e);
                 var expressionToFetchXmlRequest = new QueryExpressionToFetchXmlRequest
                 {
                     Query = query
@@ -282,7 +214,7 @@ namespace NY.Dataverse.LINQPadDriver
             }
         }
 
-        private static EntityMetadataCollection? GetEntityMetadata(ServiceClient client)
+        private static List<(EntityMetadata entityMetadata, List<(string attributeName, List<(string Label, int? Value)> options)> optionMetadata)> GetEntityMetadata(ServiceClient client)
         {
             var metadata = client.GetAllEntityMetadata(filter: EntityFilters.Attributes | EntityFilters.Entity | EntityFilters.Relationships).ToList();
             //Fix for https://github.com/rajyraman/Dataverse-LINQPad-Driver/issues/19
@@ -291,54 +223,32 @@ namespace NY.Dataverse.LINQPadDriver
                 entityMetadata.SchemaName = !IsCSharpKeyword(entityMetadata.SchemaName) ? entityMetadata.SchemaName : $"_{entityMetadata.SchemaName}";
                 entityMetadata.EntitySetName = entityMetadata.SchemaName;
             });
-            var result = (from e in metadata
-                          orderby e.LogicalName
-                          select (entityMetadata: e, optionMetadata: (
-                                      from attribute in e.Attributes
-                                          .Where(a =>
-                                              a.AttributeType == AttributeTypeCode.State
-                                              || a.AttributeType == AttributeTypeCode.Status
-                                              || a.AttributeType == AttributeTypeCode.Picklist)
-                                          .OrderBy(a => a.LogicalName)
-                                      let allOptions = from a in (
-                                              (EnumAttributeMetadata)attribute).OptionSet.Options
-                                                       select new
-                                                       {
-                                                           a.Label,
-                                                           a.Value,
-                                                           SanitisedLabel = a.Label.UserLocalizedLabel?.Label.Sanitise() ?? string.Empty
-                                                       }
-                                      select (
-                                          attributeName: attribute.SchemaName,
-                                          options: allOptions
-                                              .Select(x =>
-                                              {
-                                                  var enumValue = x.SanitisedLabel;
-                                                  if (string.IsNullOrEmpty(x.SanitisedLabel))
-                                                  {
-                                                      //When the value is a negative number, replace '-' with '_'.
-                                                      enumValue = $"_{x.Value}".Replace("-", "_");
-                                                  }
-                                                  else if (IsCSharpKeyword(enumValue)
-                                                           || char.IsDigit(enumValue[0])
-                                                           || allOptions.Count(o =>
-                                                               o.SanitisedLabel == x.SanitisedLabel) > 1)
-                                                  {
-                                                      //When the value is a negative number, replace '-' with '_'.
-                                                      enumValue = $"_{enumValue}_{x.Value}".Replace("-", "_");
-                                                  }
-                                                  return (Label: enumValue, x.Value);
-                                              }).ToList()
-                                          )
-                                      ).ToList()
-                          )).ToList();
-
-            return EntityMetadataCollection.TryCreate(result);
+            return (from e in metadata
+                    orderby e.LogicalName
+                    select (entityMetadata: e, optionMetadata: (from attribute in e.Attributes.Where(a => a.AttributeType == AttributeTypeCode.State || a.AttributeType == AttributeTypeCode.Status || a.AttributeType == AttributeTypeCode.Picklist).OrderBy(a => a.LogicalName)
+                                                                let allOptions = from a in ((EnumAttributeMetadata)attribute).OptionSet.Options
+                                                                                 select new { a.Label, a.Value, SanitisedLabel = a.Label.UserLocalizedLabel?.Label.Sanitise() ?? "" }
+                                                                select (attributeName: attribute.SchemaName, options: allOptions.Select(x =>
+                                                                {
+                                                                    var enumValue = x.SanitisedLabel;
+                                                                    if (string.IsNullOrEmpty(x.SanitisedLabel))
+                                                                    {
+                                                                        //When the value is a negative number, replace '-' with '_'.
+                                                                        enumValue = $"_{x.Value}".Replace("-", "_");
+                                                                    }
+                                                                    else if (IsCSharpKeyword(enumValue) || char.IsDigit(enumValue[0]) || allOptions.Count(o => o.SanitisedLabel == x.SanitisedLabel) > 1)
+                                                                    {
+                                                                        //When the value is a negative number, replace '-' with '_'.
+                                                                        enumValue = $"_{enumValue}_{x.Value}".Replace("-", "_");
+                                                                    }
+                                                                    return (Label: enumValue, x.Value);
+                                                                }).ToList())).ToList()
+                    )).ToList();
         }
 
         private static void BuildEntityAndAttributeExplorerItems(List<ExplorerItem> explorerItems, List<(EntityMetadata entityMetadata, List<(string attributeName, List<(string Label, int? Value)> options)> optionMetadata)> entityMetadata)
         {
-            foreach (ref var entity in CollectionsMarshal.AsSpan(entityMetadata))
+            foreach (var entity in entityMetadata)
             {
                 var attributes = entity.entityMetadata.Attributes
                 .Where(x => (x.IsLogical == false || (x.IsLogical == true && x.IsValidForForm == true))
@@ -357,7 +267,7 @@ namespace NY.Dataverse.LINQPadDriver
                     }
                     if (a.AttributeType == AttributeTypeCode.PartyList)
                     {
-                        attributeName = char.ToUpper(attributeName[0], CultureInfo.CurrentCulture) + attributeName[1..];
+                        attributeName = char.ToUpper(attributeName[0]) + attributeName[1..];
                     }
                     return new ExplorerItem($"{attributeName} ({GetTypeFromCode(a.AttributeType)})", ExplorerItemKind.Parameter, ExplorerIcon.Column)
                     {
@@ -365,7 +275,7 @@ namespace NY.Dataverse.LINQPadDriver
                         Tag = a.LogicalName
                     };
                 }).ToList();
-                ExplorerItem item = new(entity.entityMetadata.SchemaName, ExplorerItemKind.QueryableObject, ExplorerIcon.Table)
+                ExplorerItem item = new ExplorerItem(entity.entityMetadata.SchemaName, ExplorerItemKind.QueryableObject, ExplorerIcon.Table)
                 {
                     IsEnumerable = true,
                     Children = attributes,
@@ -375,7 +285,15 @@ namespace NY.Dataverse.LINQPadDriver
             }
         }
 
-        private static void BuildOneToManyRelationLinks(List<ExplorerItem> explorerItems, (EntityMetadata entityMetadata, List<(string attributeName, List<(string Label, int? Value)> options)> optionMetadata) entity, ExplorerItem? source)
+        private static void BuildOneToManyRelationLinks(
+            List<ExplorerItem> explorerItems, 
+            (
+                EntityMetadata entityMetadata, 
+                List<(
+                    string attributeName, 
+                    List<(string Label, int? Value)> options
+                    )> optionMetadata) entity, 
+            ExplorerItem source)
         {
             foreach (var oneToMany in entity.entityMetadata.OneToManyRelationships)
             {
@@ -391,7 +309,13 @@ namespace NY.Dataverse.LINQPadDriver
             }
         }
 
-        private static void BuildManyToOneRelationLinks(List<ExplorerItem> explorerItems, (EntityMetadata entityMetadata, List<(string attributeName, List<(string Label, int? Value)> options)> optionMetadata) entity, ExplorerItem? source)
+        private static void BuildManyToOneRelationLinks(
+            List<ExplorerItem> explorerItems, 
+            (EntityMetadata entityMetadata, 
+                List<(
+                    string attributeName,
+                    List<(string Label, int? Value)> options)> optionMetadata) entity, 
+            ExplorerItem source)
         {
             foreach (var manyToOne in entity.entityMetadata.ManyToOneRelationships)
             {
