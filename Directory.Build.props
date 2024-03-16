@@ -2,8 +2,9 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
     <!-- Set Default Properties -->
     <PropertyGroup>
-        <!-- See:
-        https://docs.microsoft.com/en-us/visualstudio/msbuild/customize-your-build?view=vs-2019#directorybuildprops-and-directorybuildtargets -->
+        <!--
+        See: https://learn.microsoft.com/en-us/visualstudio/msbuild/customize-your-build?view=vs-2022
+        -->
         <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
 
         <!-- SolutionDir is not defined when building projects explicitly -->
@@ -23,7 +24,8 @@
         <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">$(WorkspaceFolder)</SolutionDir>
         <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
         <VSToolsPath
-            Condition="'$(VSToolsPath)' == '' and Exists('$(MSBuildExtensionsPath32)/Microsoft/VisualStudio/v$(VisualStudioVersion)')">$(MSBuildExtensionsPath32)/Microsoft/VisualStudio/v$(VisualStudioVersion)</VSToolsPath>
+            Condition="'$(VSToolsPath)' == '' and Exists('$(MSBuildExtensionsPath32)/Microsoft/VisualStudio/v$(VisualStudioVersion)')"
+        >$(MSBuildExtensionsPath32)/Microsoft/VisualStudio/v$(VisualStudioVersion)</VSToolsPath>
     </PropertyGroup>
 
     <!-- Normalize Output Paths -->
@@ -34,13 +36,12 @@
 
     <!-- Set Base Paths -->
     <PropertyGroup>
+        <!--
+        We intentionally do NOT set 'OutDir' and 'IntDir' since we would rather rely on
+        internal implementation to set these.
+        -->
         <BaseOutputPath>$(OutputPath)</BaseOutputPath>
         <BaseIntermediateOutputPath>$(IntermediateOutputPath)</BaseIntermediateOutputPath>
-
-        <!--
-        <OutDir>$(OutputPath)</OutDir>
-        <IntDir>$(IntermediateOutputPath)</IntDir>
-        -->
 
         <DocumentationFile>$(IntNoSlash)/$(MSBuildProjectName).xml</DocumentationFile>
 
