@@ -2,39 +2,43 @@ name: .NET
 
 on:
   push:
-  branches: [ main, develop ]
-  pull_request: [ main, develop ]
- # pull_request:
- #   branches: [ master ]
+    branches: [main, develop]
+  pull_request:
+    branches: [main, develop]
   workflow_dispatch:
-     inputs:
-       release:
-         description: "Release?"
-         required: true
-         default: false  
+    inputs:
+      release:
+        description: "Release?"
+        required: true
+        default: "false"
+
 jobs:
   build:
     env:
-      buildConfig: 'Release'
+      buildConfig: "Release"
     defaults:
       run:
         working-directory: src
     runs-on: windows-latest
 
     steps:
-    - uses: actions/checkout@v4
-      with:
-        - submodules: recursive
-      
-    - name: Setup .NET
-      uses: actions/setup-dotnet@v4
-      with:
-        dotnet-version: '3.1.x'
-      env:
-        NUGET_AUTH_TOKEN: ${{secrets.NUGET_AUTH_TOKEN}}      
-          
-    - name: Restore dependencies
-      run: dotnet restore
-            
-    - name: Build
-      run: dotnet build --no-restore --configuration ${{ env.buildConfig }}
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "3.1.x"
+        env:
+          NUGET_AUTH_TOKEN: ${{secrets.NUGET_AUTH_TOKEN}}
+
+      - name: Restore dependencies
+        run: dotnet restore
+
+      - name: Build
+        run: >
+          dotnet build
+          --no-restore
+          --configuration ${{ env.buildConfig }}
+          src/NY.Dataverse.LINQPadDriver.sln
