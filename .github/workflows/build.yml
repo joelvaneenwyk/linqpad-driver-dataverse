@@ -16,9 +16,7 @@ jobs:
   build:
     env:
       buildConfig: "Release"
-    defaults:
-      run:
-        working-directory: src
+
     runs-on: windows-latest
 
     steps:
@@ -30,8 +28,6 @@ jobs:
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: "3.1.x"
-        env:
-          NUGET_AUTH_TOKEN: ${{secrets.NUGET_AUTH_TOKEN}}
 
       - name: Restore dependencies
         run: dotnet restore
