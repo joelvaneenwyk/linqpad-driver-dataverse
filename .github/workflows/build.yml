@@ -30,7 +30,9 @@ jobs:
           dotnet-version: "3.1.x"
 
       - name: Restore dependencies
-        run: dotnet restore
+        run: >
+          dotnet restore
+          src/NY.Dataverse.LINQPadDriver.sln
 
       - name: Build
         run: >
