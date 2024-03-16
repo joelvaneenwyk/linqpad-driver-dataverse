@@ -33,6 +33,10 @@ jobs:
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: ${{ matrix.dotnet }}
+          cache: true
+          cache-dependency-path: ${{ env.PROJECT_SOURCE_ROOT }}/${{ env.PROJECT_NAME }}/packages.lock.json
+        env:
+          NUGET_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
 
       - name: Restore dependencies
         run: >
