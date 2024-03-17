@@ -13,7 +13,7 @@ using NUnit.Framework;
 namespace NY.Dataverse.LINQPadDriver.Tests;
 
 /// <summary>
-///
+/// Basic tests to validate that LPRun is working.
 /// </summary>
 [TestFixture]
 [SuppressMessage("ReSharper", "InconsistentNaming")]
@@ -40,9 +40,9 @@ public sealed partial class LPRunTests
         Driver.EnsureNotInstalledViaNuGet(driverFileName);
         Driver.InstallWithDepsJson(driverFileName, $"{driverFileName}.dll", "src");
 
-        CreateFileEncodings(@"Encoding\Utf8Cp65001", Encoding.Default);
-        CreateFileEncodings(@"Encoding\German\Cp1252", Encoding.GetEncoding("Windows-1252"));
-        
+        CreateFileEncodings(@"Encoding/Utf8Cp65001", Encoding.Default);
+        CreateFileEncodings(@"Encoding/German/Cp1252", Encoding.GetEncoding("Windows-1252"));
+
         return;
 
         static void CreateFileEncodings(string baseFile, Encoding encoding)
@@ -51,7 +51,7 @@ public sealed partial class LPRunTests
             var content = File.ReadAllText(GetFilePath(baseFile), encoding);
 
             Array.ForEach(GetFileEncodings().ToArray(), WriteFiles);
-            
+
             return;
 
             static IEnumerable<FileEncoding> GetFileEncodings()
