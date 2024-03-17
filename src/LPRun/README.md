@@ -7,36 +7,40 @@
 
 ## Table of Contents ##
 
-* [Description](#description)
-* [LPRun .NET Versions](#lprun-net-versions)
-* [Website](#website)
-* [Download](#download)
-* [Usage](#usage)
-  * [Setup](#setup)
-  * [LINQPad Test Script Example](#linqpad-test-script-example)
-  * [NUnit Test Example](#nunit-test-example)
-* [Known Issues](#known-issues)
-  * [Unit-testing Frameworks Support](#unit-testing-frameworks-support)
-  * [LINQPad Runtime Reference](#linqpad-runtime-reference)
-* [Troubleshooting](#troubleshooting)
-* [Authors](#authors)
-* [Credits](#credits)
-  * [Tools](#tools)
-  * [NuGet](#nuget)
-* [Licenses](#licenses)
+- [LINQPad Driver LPRun Unit/Integration Tests Runner](#linqpad-driver-lprun-unitintegration-tests-runner)
+  - [Table of Contents](#table-of-contents)
+  - [Description](#description)
+  - [LPRun .NET Versions](#lprun-net-versions)
+  - [Website](#website)
+  - [Download](#download)
+  - [Usage](#usage)
+    - [Setup](#setup)
+    - [LINQPad Test Script Example](#linqpad-test-script-example)
+    - [NUnit Test Example](#nunit-test-example)
+  - [Known Issues](#known-issues)
+    - [Unit-testing Frameworks Support](#unit-testing-frameworks-support)
+    - [LINQPad Runtime Reference](#linqpad-runtime-reference)
+  - [Authors](#authors)
+  - [Credits](#credits)
+    - [Tools](#tools)
+    - [NuGet](#nuget)
+  - [Licenses](#licenses)
 
 ## Description ##
 
-LINQPad driver [LPRun](https://www.linqpad.net/lprun.aspx) unit/integration tests runner. Can be used for testing [LINQPad 8](https://www.linqpad.net/LINQPad8.aspx)/[LINQPad 7](https://www.linqpad.net/LINQPad7.aspx)/[LINQPad 6](https://www.linqpad.net/LINQPad6.aspx) drivers using LPRun or for running LINQPad scripts.
+LINQPad driver [LPRun](https://www.linqpad.net/lprun.aspx) unit/integration tests runner. Can be used for
+testing [LINQPad 8](https://www.linqpad.net/LINQPad8.aspx)/[LINQPad 7](https://www.linqpad.net/LINQPad7.aspx)/[LINQPad 6](https://www.linqpad.net/LINQPad6.aspx)
+drivers using LPRun or for running LINQPad scripts.
 
 ## LPRun .NET Versions ##
 
-.NET versions supported by LPRun are listed below. In case of unsupported version LPRun fallbacks to the latest production .NET installed.
+.NET versions supported by LPRun are listed below. In case of unsupported version LPRun fallbacks to the latest
+production .NET installed.
 
-| LPRun   | .NET 8.0 | .NET 7.0 | .NET 6.0 | .NET 5.0 | .NET 3.1 |
-|:-------:|:--------:|:--------:|:--------:|:--------:|:--------:|
-|    8    |    ✔️    |    ✔️    |    ✔️    |          |          |
-|    7    |          |    ✔️    |    ✔️    |    ✔️    |    ✔️    |
+| LPRun | .NET 8.0 | .NET 7.0 | .NET 6.0 | .NET 5.0 | .NET 3.1 |
+|:-----:|:--------:|:--------:|:--------:|:--------:|:--------:|
+|   8   |    ✔️     |    ✔️     |    ✔️     |          |          |
+|   7   |          |    ✔️     |    ✔️     |    ✔️     |    ✔️     |
 
 Use the following script to check the .NET version used by LPRun:
 
@@ -48,7 +52,8 @@ System.Environment.Version
 
 ## Website ##
 
-LPRun is a part of the [CsvLINQPadDriver for LINQPad 8/7/6/5](https://github.com/i2van/CsvLINQPadDriver). LPRun source code can be found [here](https://github.com/i2van/CsvLINQPadDriver/tree/master/Src/LPRun).
+LPRun is a part of the [CsvLINQPadDriver for LINQPad 8/7/6/5](https://github.com/i2van/CsvLINQPadDriver). LPRun source
+code can be found [here](https://github.com/i2van/CsvLINQPadDriver/tree/master/Src/LPRun).
 
 ## Download ##
 
@@ -72,9 +77,11 @@ LPRun # Created by LPRun NuGet.
 
 ### LINQPad Test Script Example ###
 
-LPRun executes LINQPad test script. Test script uses [Fluent Assertions](https://github.com/fluentassertions/fluentassertions) for assertion checks.
+LPRun executes LINQPad test script. Test script
+uses [Fluent Assertions](https://github.com/fluentassertions/fluentassertions) for assertion checks.
 
-[StringComparison.linq](https://github.com/i2van/CsvLINQPadDriver/blob/master/Tests/CsvLINQPadDriverTest/LPRun/Templates/StringComparison.linq) LINQPad test script example:
+[StringComparison.linq](https://github.com/i2van/CsvLINQPadDriver/blob/master/Tests/CsvLINQPadDriverTest/LPRun/Templates/StringComparison.linq)
+LINQPad test script example:
 
 ```csharp
 var original = Books.First();
@@ -90,11 +97,13 @@ original.GetHashCode()
     .Be(expectedEquality, Reason());
 ```
 
-`Reason()` method (prints exact line number if assertion fails) and `context` variable are injected by [test](https://github.com/i2van/CsvLINQPadDriver/blob/master/Tests/CsvLINQPadDriverTest/LPRunTests.cs) [below](#nunit-test-example).
+`Reason()` method (prints exact line number if assertion fails) and `context` variable are injected
+by [test](https://github.com/i2van/CsvLINQPadDriver/blob/master/Tests/CsvLINQPadDriverTest/LPRunTests.cs) [below](#nunit-test-example).
 
 ### NUnit Test Example ###
 
-Full NUnit test code can be found [here](https://github.com/i2van/CsvLINQPadDriver/blob/master/Tests/CsvLINQPadDriverTest/LPRunTests.cs).
+Full NUnit test code can be
+found [here](https://github.com/i2van/CsvLINQPadDriver/blob/master/Tests/CsvLINQPadDriverTest/LPRunTests.cs).
 
 ```csharp
 [TestFixture]
@@ -246,7 +255,8 @@ var connectionInfoMock = new Mock<LINQPad.Extensibility.DataContext.IConnectionI
 var driverProperties   = new DriverProperties(connectionInfoMock.Object);
 ```
 
-This code compiles but fails in runtime with `Could not load file or assembly LINQPad.Runtime` error. If you still need to reference it, add the following target which copies assembly to output folder of the test project:
+This code compiles but fails in runtime with `Could not load file or assembly LINQPad.Runtime` error. If you still need
+to reference it, add the following target which copies assembly to output folder of the test project:
 
 ```xml
 <Target Name="CopyLINQPadRuntimeToOutput" AfterTargets="Build">
@@ -254,7 +264,9 @@ This code compiles but fails in runtime with `Could not load file or assembly LI
 </Target>
 ```
 
-Your can avoid referencing `LINQPad.Runtime.dll` assembly by using mock framework facilities, e.g. for [Moq](https://github.com/moq/moq4) you can extract `IDriverProperties` interface and setup driver properties as follows:
+Your can avoid referencing `LINQPad.Runtime.dll` assembly by using mock framework facilities, e.g.
+for [Moq](https://github.com/moq/moq4) you can extract `IDriverProperties` interface and setup driver properties as
+follows:
 
 ```csharp
 var driverProperties = Mock.Of<IDriverProperties>(props =>
@@ -266,22 +278,22 @@ var driverProperties = Mock.Of<IDriverProperties>(props =>
 
 ## Authors ##
 
-* [Ivan Ivon](https://github.com/i2van)
+- [Ivan Ivon](https://github.com/i2van)
 
 ## Credits ##
 
 ### Tools ###
 
-* [LINQPad 8](https://www.linqpad.net/LINQPad8.aspx)
-* [LINQPad Command-Line and Scripting](https://www.linqpad.net/lprun.aspx)
+- [LINQPad 8](https://www.linqpad.net/LINQPad8.aspx)
+- [LINQPad Command-Line and Scripting](https://www.linqpad.net/lprun.aspx)
 
 ### NuGet ###
 
-* [Fluent Assertions](https://github.com/fluentassertions/fluentassertions)
-* [Moq](https://github.com/moq/moq4)
-* [NUnit](https://github.com/nunit/nunit)
+- [Fluent Assertions](https://github.com/fluentassertions/fluentassertions)
+- [Moq](https://github.com/moq/moq4)
+- [NUnit](https://github.com/nunit/nunit)
 
 ## Licenses ##
 
-* [LICENSE](https://github.com/i2van/CsvLINQPadDriver/blob/master/Src/LPRun/LICENSE) ([MIT](https://opensource.org/licenses/MIT))
-* [LINQPad End User License Agreement](https://www.linqpad.net/eula.txt)
+- [LICENSE](https://github.com/i2van/CsvLINQPadDriver/blob/master/Src/LPRun/LICENSE) ([MIT](https://opensource.org/licenses/MIT))
+- [LINQPad End User License Agreement](https://www.linqpad.net/eula.txt)
