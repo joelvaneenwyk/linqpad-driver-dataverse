@@ -39,13 +39,13 @@ public static class Driver
     /// );
     /// </code>
     /// </example>
-    /// <seealso cref="GetDepsJsonRelativePath(string, string)" />
-    /// <seealso cref="GetDepsJsonRelativePath(string, System.Func{string,string}(string))" />
-    /// <seealso cref="InstallWithDepsJson(string, string, string, string[])" />
-    /// <seealso cref="InstallWithDepsJson(string, string, System.Func{string,string}(string), string[])" />
+    /// <seealso cref="Context.GetDepsJsonRelativePath(string,string)" />
+    /// <seealso cref="InstallWithDepsJson(string,string,string,string[])" />
     public static void Install(string driverDir, params string[] files)
     {
         Wrap(Execute);
+
+        return;
 
         void Execute()
         {
@@ -56,6 +56,7 @@ public static class Driver
             if (!files.Any()) throw new ArgumentException("At least one file should be specified", nameof(files));
 
             Array.ForEach(files, CopyFile);
+            return;
 
             void CopyFile(string file)
             {
@@ -100,8 +101,15 @@ public static class Driver
     public static void InstallWithDepsJson(string driverDir, string driverFileName, string testsFolderPath,
         params string[] files)
     {
-        Install(driverDir,
-            files.Concat(new[] { driverFileName, GetDepsJsonRelativePath(driverFileName, testsFolderPath) }).ToArray());
+        Install(
+            driverDir,
+            files
+                .Concat(new[]
+                {
+                    driverFileName,
+                    GetDepsJsonRelativePath(driverFileName, testsFolderPath)
+                })
+                .ToArray());
     }
 
     /// <summary>
@@ -132,8 +140,13 @@ public static class Driver
     public static void InstallWithDepsJson(string driverDir, string driverFileName,
         Func<string, string> getDepsJsonFileFullPath, params string[] files)
     {
-        Install(driverDir,
-            files.Concat(new[] { driverFileName, GetDepsJsonRelativePath(driverFileName, getDepsJsonFileFullPath) })
+        Install(
+            driverDir,
+            files.Concat(new[]
+                {
+                    driverFileName,
+                    GetDepsJsonRelativePath(driverFileName, getDepsJsonFileFullPath)
+                })
                 .ToArray());
     }
 
@@ -155,6 +168,8 @@ public static class Driver
     {
         Wrap(CheckForDriverDir);
 
+        return;
+
         void CheckForDriverDir()
         {
             try
@@ -163,7 +178,9 @@ public static class Driver
 
                 if (GetDirectories(path, driverDir).Any())
                     throw new LPRunException(
-                        $@"""{driverDir}"" has been installed via NuGet under ""{path}"". LPRun will use it instead of local one. Please uninstall the driver via LINQPad or delete it manually. You can also remove call of {nameof(EnsureNotInstalledViaNuGet)} if this is intended");
+                        $"""
+                         "{driverDir}" has been installed via NuGet under "{path}". LPRun will use it instead of local one. Please uninstall the driver via LINQPad or delete it manually. You can also remove call of {nameof(EnsureNotInstalledViaNuGet)} if this is intended
+                         """);
             }
             catch (Exception e) when (e is not LPRunException)
             {

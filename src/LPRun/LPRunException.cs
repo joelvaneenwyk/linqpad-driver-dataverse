@@ -9,6 +9,7 @@ namespace LPRun;
 
 /// <summary>Represents errors that occur during LPRun execution.</summary>
 [Serializable]
+[SuppressMessage("ReSharper", "InconsistentNaming")]
 public class LPRunException : Exception
 {
     /// <summary>

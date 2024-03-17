@@ -24,6 +24,7 @@ public static class FrameworkInfo
         IsSupportedOs = IsOSPlatform(OSPlatform.Windows);
 
         Version = Environment.Version;
+        return;
 
         static bool Is(string what)
         {
