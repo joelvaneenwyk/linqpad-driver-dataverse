@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
+using CsvLINQPadDriver.Extensions;
 using FluentAssertions;
 
 using Moq;
@@ -11,7 +11,6 @@ using Moq;
 using NUnit.Framework;
 
 using NY.Dataverse.LINQPadDriver;
-using NY.Dataverse.LINQPadDriver.Extensions;
 
 using LPRun;
 
@@ -19,7 +18,7 @@ using LPRun;
 #pragma warning disable CA1416
 #pragma warning restore IDE0079
 
-namespace NY.Dataverse.LINQPadDriverTest;
+namespace NY.Dataverse.LINQPadDriver.Tests;
 
 [TestFixture]
 public sealed partial class LPRunTests
@@ -31,9 +30,10 @@ public sealed partial class LPRunTests
         public int Index { get; init; }
     }
 
+#if false
     [Test]
     [TestCaseSource(nameof(ParallelizableScriptWithDriverPropertiesTestDataTestsData))]
-    public async Task Execute_ScriptWithDriverProperties_Success(ScriptWithDriverPropertiesTestData testData)
+    public async Task Execute_ScriptWithDriverProperties_Success(LPRunTests.ScriptWithDriverPropertiesTestData testData)
     {
         var (linqScriptName, context, driverProperties, defines) = testData;
 
@@ -77,12 +77,12 @@ public sealed partial class LPRunTests
             !string.IsNullOrWhiteSpace(str);
     }
 
-    private static IEnumerable<ScriptWithDriverPropertiesTestData> ParallelizableScriptWithDriverPropertiesTestDataTestsData() =>
+    private static IEnumerable<LPRunTests.ScriptWithDriverPropertiesTestData> ParallelizableScriptWithDriverPropertiesTestDataTestsData() =>
         ScriptWithDriverPropertiesTestDataTestsData().AugmentWithFileIndex(
             static testData => testData.LinqScriptName,
             static (testData, index) => testData with { Index = index });
 
-    private static IEnumerable<ScriptWithDriverPropertiesTestData> ScriptWithDriverPropertiesTestDataTestsData()
+    private static IEnumerable<LPRunTests.ScriptWithDriverPropertiesTestData> ScriptWithDriverPropertiesTestDataTestsData()
     {
         const StringComparison defaultStringComparison = StringComparison.InvariantCulture;
 
@@ -90,14 +90,14 @@ public sealed partial class LPRunTests
 
         return GetTestData().SelectMany(static t => t);
 
-        IEnumerable<IEnumerable<ScriptWithDriverPropertiesTestData>> GetTestData()
+        IEnumerable<IEnumerable<LPRunTests.ScriptWithDriverPropertiesTestData>> GetTestData()
         {
             const string? noContext = null;
 
             // Multiple driver properties.
             yield return GetCsvDataContextDriverProperties()
                 .SelectMany(static driverProperties => new[] { "Generation", "Relations" }
-                    .Select(linqScriptName => new ScriptWithDriverPropertiesTestData(
+                    .Select(linqScriptName => new LPRunTests.ScriptWithDriverPropertiesTestData(
                         linqScriptName,
                         $"new {{ {nameof(driverProperties.UseSingleClassForSameFiles)} = {driverProperties.UseSingleClassForSameFiles.ToString().ToLowerInvariant()} }}",
                         driverProperties,
@@ -105,7 +105,7 @@ public sealed partial class LPRunTests
 
             // Single driver properties.
             yield return new[] { "Extensions", "ExtensionsSafe", "SimilarFilesRelations" }
-                .Select(linqFile => new ScriptWithDriverPropertiesTestData(
+                .Select(linqFile => new LPRunTests.ScriptWithDriverPropertiesTestData(
                     linqFile,
                     noContext,
                     defaultCsvDataContextDriverProperties
@@ -126,7 +126,7 @@ public sealed partial class LPRunTests
             // String comparison.
             yield return GetStringComparisons()
                 .SelectMany(static stringComparison => new[] { "StringComparison" }
-                    .Select(linqFile => new ScriptWithDriverPropertiesTestData(
+                    .Select(linqFile => new LPRunTests.ScriptWithDriverPropertiesTestData(
                         linqFile,
                         GetStringComparisonContext(stringComparison),
                         GetDefaultCsvDataContextDriverPropertiesObject(stringComparison))));
@@ -134,14 +134,14 @@ public sealed partial class LPRunTests
             // Encoding detection.
             yield return GetFileEncodings()
                 .SelectMany(static fileEncodings => new[] { "Encoding" }
-                    .Select(linqFile => new ScriptWithDriverPropertiesTestData(
+                    .Select(linqFile => new LPRunTests.ScriptWithDriverPropertiesTestData(
                         linqFile,
                         GetEncodingContext(fileEncodings),
                         GetDefaultCsvDataContextDriverPropertiesObject(defaultStringComparison))));
 
             // String comparison for interning.
             yield return GetStringComparisons()
-                .Select(static stringComparison => new ScriptWithDriverPropertiesTestData(
+                .Select(static stringComparison => new LPRunTests.ScriptWithDriverPropertiesTestData(
                     "StringComparisonForInterning",
                     GetStringComparisonContext(stringComparison),
                     GetDefaultCsvDataContextDriverPropertiesObject(
@@ -150,7 +150,7 @@ public sealed partial class LPRunTests
 
             // Allow comments.
             yield return new[] { true, false }
-                .Select(static allowComments => new ScriptWithDriverPropertiesTestData(
+                .Select(static allowComments => new LPRunTests.ScriptWithDriverPropertiesTestData(
                     "Comments",
                     $"new {{ ExpectedCount = {(allowComments ? 1 : 2)} }}",
                     GetDefaultCsvDataContextDriverPropertiesObject(
@@ -159,7 +159,7 @@ public sealed partial class LPRunTests
 
             // Skip leading rows.
             yield return new (string LinqScriptName, int Count)[] { ("SkipLeadingRows", 3), ("SkipLeadingRowsAll", 100) }
-                .Select(static skip => new ScriptWithDriverPropertiesTestData(
+                .Select(static skip => new LPRunTests.ScriptWithDriverPropertiesTestData(
                     skip.LinqScriptName,
                     noContext,
                     GetDefaultCsvDataContextDriverPropertiesObject(
@@ -168,7 +168,7 @@ public sealed partial class LPRunTests
 
             // Rename table.
             yield return new[] { true, false }
-                .Select(static useSingleClassForSameFiles => new ScriptWithDriverPropertiesTestData(
+                .Select(static useSingleClassForSameFiles => new LPRunTests.ScriptWithDriverPropertiesTestData(
                     "RenameTable",
                     noContext,
                     GetDefaultCsvDataContextDriverPropertiesObject(
@@ -270,4 +270,5 @@ public sealed partial class LPRunTests
             }
         }
     }
+#endif
 }

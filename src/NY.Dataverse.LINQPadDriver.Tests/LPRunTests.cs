@@ -11,7 +11,7 @@ using LPRun;
 
 [assembly: Parallelizable(ParallelScope.ContextMask)]
 
-namespace NY.Dataverse.LINQPadDriverTest;
+namespace NY.Dataverse.LINQPadDriver.Tests;
 
 [TestFixture]
 public sealed partial class LPRunTests
@@ -21,6 +21,7 @@ public sealed partial class LPRunTests
 
     private static readonly TimeSpan RetryTimeout = TimeSpan.FromSeconds(10);
 #endif
+
     private static readonly TimeSpan WaitTimeout = TimeSpan.FromMinutes(3);
 
     private sealed record FileEncoding(string FileName, Encoding Encoding);

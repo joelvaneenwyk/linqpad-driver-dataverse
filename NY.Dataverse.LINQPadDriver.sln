@@ -3,11 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.8.34511.84
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NY.Dataverse.LINQPadDriver", "src/NY.Dataverse.LINQPadDriver/NY.Dataverse.LINQPadDriver.csproj", "{1AEC13A1-A7A0-4E31-8C55-E9E0A2C54511}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NY.Dataverse.LINQPadDriver", "src\NY.Dataverse.LINQPadDriver\NY.Dataverse.LINQPadDriver.csproj", "{1AEC13A1-A7A0-4E31-8C55-E9E0A2C54511}"
 EndProject
-Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "MarkMpn.FetchXmlToWebAPI", "src/MarkMpn.FetchXmlToWebAPI/MarkMpn.FetchXmlToWebAPI/MarkMpn.FetchXmlToWebAPI.shproj", "{543E6D79-2913-4B00-AAAC-5661F6ADB1A5}"
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "MarkMpn.FetchXmlToWebAPI", "src\MarkMpn.FetchXmlToWebAPI\MarkMpn.FetchXmlToWebAPI\MarkMpn.FetchXmlToWebAPI.shproj", "{543E6D79-2913-4B00-AAAC-5661F6ADB1A5}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MarkMpn.FetchXmlToWebAPI.Tests", "src/MarkMpn.FetchXmlToWebAPI/MarkMpn.FetchXmlToWebAPI.Tests/MarkMpn.FetchXmlToWebAPI.Tests.csproj", "{2F49870B-5B83-468D-9DA7-C7D0299CAE81}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MarkMpn.FetchXmlToWebAPI.Tests", "src\MarkMpn.FetchXmlToWebAPI\MarkMpn.FetchXmlToWebAPI.Tests\MarkMpn.FetchXmlToWebAPI.Tests.csproj", "{2F49870B-5B83-468D-9DA7-C7D0299CAE81}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Globals", "Globals", "{51052DE1-DB0E-4D5B-BC09-BBF40B4BB833}"
 	ProjectSection(SolutionItems) = preProject
@@ -25,8 +25,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".github", ".github", "{838F
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "workflows", "workflows", "{1D7DC876-8B80-4E66-A8A9-C6B1974F5BBD}"
 	ProjectSection(SolutionItems) = preProject
-		.github/workflows/build.yml = .github/workflows/build.yml
+		.github\workflows\build.yml = .github\workflows\build.yml
 	EndProjectSection
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NY.Dataverse.LINQPadDriver.Tests", "src\NY.Dataverse.LINQPadDriver.Tests\NY.Dataverse.LINQPadDriver.Tests.csproj", "{39C7B7C1-F63C-4D44-96DC-A9B1D8BC4E04}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -82,6 +84,26 @@ Global
 		{2F49870B-5B83-468D-9DA7-C7D0299CAE81}.Release|x64.Build.0 = Release|Any CPU
 		{2F49870B-5B83-468D-9DA7-C7D0299CAE81}.Release|x86.ActiveCfg = Release|Any CPU
 		{2F49870B-5B83-468D-9DA7-C7D0299CAE81}.Release|x86.Build.0 = Release|Any CPU
+		{39C7B7C1-F63C-4D44-96DC-A9B1D8BC4E04}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{39C7B7C1-F63C-4D44-96DC-A9B1D8BC4E04}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{39C7B7C1-F63C-4D44-96DC-A9B1D8BC4E04}.Debug|ARM32.ActiveCfg = Debug|Any CPU
+		{39C7B7C1-F63C-4D44-96DC-A9B1D8BC4E04}.Debug|ARM32.Build.0 = Debug|Any CPU
+		{39C7B7C1-F63C-4D44-96DC-A9B1D8BC4E04}.Debug|ARM64.ActiveCfg = Debug|Any CPU
+		{39C7B7C1-F63C-4D44-96DC-A9B1D8BC4E04}.Debug|ARM64.Build.0 = Debug|Any CPU
+		{39C7B7C1-F63C-4D44-96DC-A9B1D8BC4E04}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{39C7B7C1-F63C-4D44-96DC-A9B1D8BC4E04}.Debug|x64.Build.0 = Debug|Any CPU
+		{39C7B7C1-F63C-4D44-96DC-A9B1D8BC4E04}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{39C7B7C1-F63C-4D44-96DC-A9B1D8BC4E04}.Debug|x86.Build.0 = Debug|Any CPU
+		{39C7B7C1-F63C-4D44-96DC-A9B1D8BC4E04}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{39C7B7C1-F63C-4D44-96DC-A9B1D8BC4E04}.Release|Any CPU.Build.0 = Release|Any CPU
+		{39C7B7C1-F63C-4D44-96DC-A9B1D8BC4E04}.Release|ARM32.ActiveCfg = Release|Any CPU
+		{39C7B7C1-F63C-4D44-96DC-A9B1D8BC4E04}.Release|ARM32.Build.0 = Release|Any CPU
+		{39C7B7C1-F63C-4D44-96DC-A9B1D8BC4E04}.Release|ARM64.ActiveCfg = Release|Any CPU
+		{39C7B7C1-F63C-4D44-96DC-A9B1D8BC4E04}.Release|ARM64.Build.0 = Release|Any CPU
+		{39C7B7C1-F63C-4D44-96DC-A9B1D8BC4E04}.Release|x64.ActiveCfg = Release|Any CPU
+		{39C7B7C1-F63C-4D44-96DC-A9B1D8BC4E04}.Release|x64.Build.0 = Release|Any CPU
+		{39C7B7C1-F63C-4D44-96DC-A9B1D8BC4E04}.Release|x86.ActiveCfg = Release|Any CPU
+		{39C7B7C1-F63C-4D44-96DC-A9B1D8BC4E04}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -94,8 +116,8 @@ Global
 		SolutionGuid = {DE088616-0D66-4525-A34F-4D36042A5B1C}
 	EndGlobalSection
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
-		src/MarkMpn.FetchXmlToWebAPI/MarkMpn.FetchXmlToWebAPI/MarkMpn.FetchXmlToWebAPI.projitems*{1aec13a1-a7a0-4e31-8c55-e9e0a2c54511}*SharedItemsImports = 5
-		src/MarkMpn.FetchXmlToWebAPI/MarkMpn.FetchXmlToWebAPI/MarkMpn.FetchXmlToWebAPI.projitems*{2f49870b-5b83-468d-9da7-c7d0299cae81}*SharedItemsImports = 5
-		src/MarkMpn.FetchXmlToWebAPI/MarkMpn.FetchXmlToWebAPI/MarkMpn.FetchXmlToWebAPI.projitems*{543e6d79-2913-4b00-aaac-5661f6adb1a5}*SharedItemsImports = 13
+		src\MarkMpn.FetchXmlToWebAPI\MarkMpn.FetchXmlToWebAPI\MarkMpn.FetchXmlToWebAPI.projitems*{1aec13a1-a7a0-4e31-8c55-e9e0a2c54511}*SharedItemsImports = 5
+		src\MarkMpn.FetchXmlToWebAPI\MarkMpn.FetchXmlToWebAPI\MarkMpn.FetchXmlToWebAPI.projitems*{2f49870b-5b83-468d-9da7-c7d0299cae81}*SharedItemsImports = 5
+		src\MarkMpn.FetchXmlToWebAPI\MarkMpn.FetchXmlToWebAPI\MarkMpn.FetchXmlToWebAPI.projitems*{543e6d79-2913-4b00-aaac-5661f6adb1a5}*SharedItemsImports = 13
 	EndGlobalSection
 EndGlobal

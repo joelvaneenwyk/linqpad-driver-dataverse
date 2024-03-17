@@ -8,7 +8,7 @@ using NUnit.Framework;
 
 using LPRun;
 
-namespace NY.Dataverse.LINQPadDriverTest;
+namespace NY.Dataverse.LINQPadDriver.Tests;
 
 [TestFixture]
 public sealed partial class LPRunTests
