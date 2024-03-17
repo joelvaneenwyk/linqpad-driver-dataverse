@@ -27,6 +27,7 @@ tasks:
     cmds:
       # - cmd: 'dotnet build -c Release -p:Platform="Any CPU" "src/{{.PROJECT_NAME}}/{{.PROJECT_NAME}}.csproj"'
       - cmd: 'dotnet publish -o "${NUGET_PACKAGE_PATH:-{{.PROJECT_DIR}}/.deploy}" --artifacts-path artifacts -c Debug -p:Platform="Any CPU" --framework net8.0 -r "win-x64" "src/{{.PROJECT_NAME}}/{{.PROJECT_NAME}}.csproj"'
+      - cmd: 'dotnet publish -o "${NUGET_PACKAGE_PATH:-{{.PROJECT_DIR}}/.deploy}" --artifacts-path artifacts -c Debug -p:Platform="Any CPU" --framework net8.0 -r "win-x64" "src/{{.PROJECT_NAME}}.Tests/{{.PROJECT_NAME}}.Tests.csproj"'
 
   init:
     cmds:
