@@ -1,11 +1,13 @@
 using LINQPad.Extensibility.DataContext;
 using System.Windows;
+using JetBrains.Annotations;
 
 namespace NY.Dataverse.LINQPadDriver
 {
-    public partial class ConnectionDialog
-    {
-        private readonly IConnectionInfo _cxInfo;
+	public partial class ConnectionDialog : Window
+	{
+        [UsedImplicitly]
+		private readonly IConnectionInfo _cxInfo;
 
         public ConnectionDialog(IConnectionInfo cxInfo)
         {

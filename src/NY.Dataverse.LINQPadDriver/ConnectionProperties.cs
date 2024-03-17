@@ -10,17 +10,18 @@ using JetBrains.Annotations;
 
 namespace NY.Dataverse.LINQPadDriver
 {
-    /// <summary>
-    /// Wrapper to read/write connection properties. This acts as our ViewModel - we will bind to it in ConnectionDialog.xaml.
-    /// </summary>
-    [PublicAPI]
-    public class ConnectionProperties
-    {
-        private readonly IConnectionInfo _connectionInfo;
+	/// <summary>
+	/// Wrapper to read/write connection properties. This acts as our ViewModel - we will bind to it in ConnectionDialog.xaml.
+	/// </summary>
+	[PublicAPI]
+	public sealed class ConnectionProperties
+	{
+		public IConnectionInfo ConnectionInfo { get; private set; }
+		public string? ContentPath { get; private set; }
 
-        public IConnectionInfo ConnectionInfo => _connectionInfo;
+		internal static ObjectCache Cache = MemoryCache.Default;
 
-        public string? ContentPath { get; private set; }
+		internal XElement DriverData => ConnectionInfo.DriverData;
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage(
             "Usage", "CA2211:Non-constant fields should not be visible", Justification = "<Pending>")]
@@ -59,103 +60,32 @@ namespace NY.Dataverse.LINQPadDriver
             set => DriverData.SetElementValue("ApplicationId", value);
         }
 
-        public string? ClientSecret
-        {
-            get
-            {
-                var clientSecret = GetElement("ClientSecret");
-                return string.IsNullOrEmpty(clientSecret) ? string.Empty : _connectionInfo.Decrypt(clientSecret);
-            }
-            set => DriverData.SetElementValue("ClientSecret", _connectionInfo.Encrypt(value));
-        }
-
-        public string? CertificateThumbprint
-        {
-            get
-            {
-                var thumbprint = GetElement("CertificateThumbprint");
-                return string.IsNullOrEmpty(thumbprint)
-                    ? string.Empty
-                    : _connectionInfo.Decrypt(thumbprint);
-            }
-            set => DriverData.SetElementValue("CertificateThumbprint", _connectionInfo.Encrypt(value));
-        }
-
-        public string EnvironmentUrl
-        {
-            get => GetElement("EnvironmentUrl") ?? string.Empty;
-            set => DriverData.SetElementValue("EnvironmentUrl", value);
-        }
-
-        public string AuthenticationType
-        {
-            get => GetElement("AuthenticationType") ?? "OAuth";
-            set
-            {
-                switch (value)
-                {
-                    case "ClientSecret":
-                        CertificateThumbprint = null;
-                        break;
-                    case "Certificate":
-                        ClientSecret = null;
-                        break;
-                    case "Azure":
-                        ApplicationId = null;
-                        CertificateThumbprint = null;
-                        ClientSecret = null;
-                        break;
-                    default:
-                        CertificateThumbprint = null;
-                        ClientSecret = null;
-                        break;
-                }
-                DriverData.SetElementValue("AuthenticationType", value);
-            }
-        }
-
-        private string? GetElement(string name) =>
-            DriverData.Element(name)?.Value;
-
-        public string ConnectionName
-        {
-            get => GetElement("ConnectionName") ?? string.Empty;
-            set => DriverData.SetElementValue("ConnectionName", value);
-        }
-
-        public string UserName
-        {
-            get => GetElement("UserName") ?? string.Empty;
-            set => DriverData.SetElementValue("UserName", value);
-        }
-
-        public ServiceClient GetCdsClient()
-        {
-            return !string.IsNullOrEmpty(ConnectionString)
+		public ServiceClient GetCdsClient()
+		{
+			return !string.IsNullOrEmpty(ConnectionString)
                 ? new ServiceClient(ConnectionString)
-                : new ServiceClient(
-                    tokenProviderFunction: f => GetToken(EnvironmentUrl),
-                    instanceUrl: new Uri(EnvironmentUrl));
-        }
+                : new ServiceClient(tokenProviderFunction: _ => GetToken(EnvironmentUrl), instanceUrl: new Uri(EnvironmentUrl));
+		}
 
-        private static async Task<string> GetToken(string environment)
-        {
+		private static async Task<string> GetToken(string environment)
+		{
             DefaultAzureCredential credential = new();
 
-            // TokenProviderFunction is called multiple times, so we need to check if we already have a token in the cache
-            if (Cache.Get(environment) is not AccessToken accessToken)
-            {
-                accessToken = await credential.GetTokenAsync(new TokenRequestContext(new[] { $"{environment}/.default" }));
-                Cache.Set(
+			// TokenProviderFunction is called multiple times, so we need to check if we already have a token in the cache
+			if (Cache.Get(environment) is not AccessToken accessToken)
+			{
+				accessToken = await credential.GetTokenAsync(
+                    new TokenRequestContext(new[] { $"{environment}/.default" }));
+				Cache.Set(
                     environment,
                     accessToken,
                     new CacheItemPolicy
                     {
                         AbsoluteExpiration = DateTimeOffset.UtcNow.AddMinutes(50)
                     });
-            }
+			}
 
-            return accessToken.Token;
-        }
-    }
+			return accessToken.Token;
+		}
+	}
 }

@@ -13,7 +13,7 @@ using Microsoft.Xrm.Sdk;
 using JetBrains.Annotations;
 
 [assembly: Microsoft.Xrm.Sdk.Client.ProxyTypesAssemblyAttribute()]
-namespace <#=this.Namespace#>.Entities
+namespace <#=Namespace#>.Entities
 {
     <#foreach (ref var entity in CollectionsMarshal.AsSpan(Metadata))
     {#>
@@ -63,8 +63,8 @@ namespace <#=this.Namespace#>.Entities
             <#foreach (var attribute in entity.entityMetadata
                     .Attributes
                     .Where(x => (
-                            x.IsLogical == false
-                            || (x.IsLogical == true && x.IsValidForForm == true)
+                            x.IsLogical is false
+                            || x is { IsLogical: true, IsValidForForm: true }
                         ) && x.AttributeType != AttributeTypeCode.Virtual
                         && x.AttributeType != AttributeTypeCode.CalendarRules)
                     )
@@ -193,7 +193,7 @@ namespace <#=this.Namespace#>.Entities
     <#}#>
 }
 
-namespace <#= this.Namespace #>
+namespace <#= Namespace #>
 {
     using Entities;
 
@@ -250,12 +250,12 @@ namespace <#= this.Namespace #>
         <# foreach (ref var entity in CollectionsMarshal.AsSpan(Metadata))
         {
         #>
-        public IQueryable<<#=this.Namespace#>.Entities.<#=entity.entityMetadata.SchemaName#>Table> <#=entity.entityMetadata.EntitySetName#>
+        public IQueryable<<#=Namespace#>.Entities.<#=entity.entityMetadata.SchemaName#>Table> <#=entity.entityMetadata.EntitySetName#>
         {
             [System.Diagnostics.DebuggerNonUserCode()]
             get
             {
-                return this.CreateQuery<<#=this.Namespace#>.Entities.<#=entity.entityMetadata.SchemaName#>Table>();
+                return this.CreateQuery<<#=Namespace#>.Entities.<#=entity.entityMetadata.SchemaName#>Table>();
             }
         }
         <#}#>
