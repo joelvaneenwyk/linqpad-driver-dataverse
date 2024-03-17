@@ -30,6 +30,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "workflows", "workflows", "{
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NY.Dataverse.LINQPadDriver.Tests", "src\NY.Dataverse.LINQPadDriver.Tests\NY.Dataverse.LINQPadDriver.Tests.csproj", "{39C7B7C1-F63C-4D44-96DC-A9B1D8BC4E04}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LPRun", "src\LPRun\LPRun.csproj", "{9336AC63-C210-4ED6-87CE-BABD341A5426}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -104,6 +106,26 @@ Global
 		{39C7B7C1-F63C-4D44-96DC-A9B1D8BC4E04}.Release|x64.Build.0 = Release|Any CPU
 		{39C7B7C1-F63C-4D44-96DC-A9B1D8BC4E04}.Release|x86.ActiveCfg = Release|Any CPU
 		{39C7B7C1-F63C-4D44-96DC-A9B1D8BC4E04}.Release|x86.Build.0 = Release|Any CPU
+		{9336AC63-C210-4ED6-87CE-BABD341A5426}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9336AC63-C210-4ED6-87CE-BABD341A5426}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9336AC63-C210-4ED6-87CE-BABD341A5426}.Debug|ARM32.ActiveCfg = Debug|Any CPU
+		{9336AC63-C210-4ED6-87CE-BABD341A5426}.Debug|ARM32.Build.0 = Debug|Any CPU
+		{9336AC63-C210-4ED6-87CE-BABD341A5426}.Debug|ARM64.ActiveCfg = Debug|Any CPU
+		{9336AC63-C210-4ED6-87CE-BABD341A5426}.Debug|ARM64.Build.0 = Debug|Any CPU
+		{9336AC63-C210-4ED6-87CE-BABD341A5426}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{9336AC63-C210-4ED6-87CE-BABD341A5426}.Debug|x64.Build.0 = Debug|Any CPU
+		{9336AC63-C210-4ED6-87CE-BABD341A5426}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{9336AC63-C210-4ED6-87CE-BABD341A5426}.Debug|x86.Build.0 = Debug|Any CPU
+		{9336AC63-C210-4ED6-87CE-BABD341A5426}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9336AC63-C210-4ED6-87CE-BABD341A5426}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9336AC63-C210-4ED6-87CE-BABD341A5426}.Release|ARM32.ActiveCfg = Release|Any CPU
+		{9336AC63-C210-4ED6-87CE-BABD341A5426}.Release|ARM32.Build.0 = Release|Any CPU
+		{9336AC63-C210-4ED6-87CE-BABD341A5426}.Release|ARM64.ActiveCfg = Release|Any CPU
+		{9336AC63-C210-4ED6-87CE-BABD341A5426}.Release|ARM64.Build.0 = Release|Any CPU
+		{9336AC63-C210-4ED6-87CE-BABD341A5426}.Release|x64.ActiveCfg = Release|Any CPU
+		{9336AC63-C210-4ED6-87CE-BABD341A5426}.Release|x64.Build.0 = Release|Any CPU
+		{9336AC63-C210-4ED6-87CE-BABD341A5426}.Release|x86.ActiveCfg = Release|Any CPU
+		{9336AC63-C210-4ED6-87CE-BABD341A5426}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

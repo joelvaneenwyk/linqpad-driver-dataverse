@@ -1,18 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using CsvLINQPadDriver.Extensions;
-using FluentAssertions;
-
-using Moq;
-
-using NUnit.Framework;
-
-using NY.Dataverse.LINQPadDriver;
-
+﻿using System.Diagnostics.CodeAnalysis;
+using JetBrains.Annotations;
 using LPRun;
+using NUnit.Framework;
 
 #pragma warning disable IDE0079
 #pragma warning disable CA1416
@@ -21,12 +10,29 @@ using LPRun;
 namespace NY.Dataverse.LINQPadDriver.Tests;
 
 [TestFixture]
+[SuppressMessage("ReSharper", "InconsistentNaming")]
 public sealed partial class LPRunTests
 {
+    [UsedImplicitly]
     private static readonly string Files = Context.GetDataFullPath("**.csv");
 
-    public sealed record ScriptWithDriverPropertiesTestData(string LinqScriptName, string? Context, ICsvDataContextDriverProperties DriverProperties, params string?[] Defines)
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="LinqScriptName"></param>
+    /// <param name="Context"></param>
+    /// <param name="DriverProperties"></param>
+    /// <param name="Defines"></param>
+    [PublicAPI]
+    public sealed record ScriptWithDriverPropertiesTestData(
+        string LinqScriptName,
+        string? Context,
+        IDataverseContextDriverProperties DriverProperties,
+        params string?[] Defines)
     {
+        /// <summary>
+        /// Index of the property.
+        /// </summary>
         public int Index { get; init; }
     }
 
@@ -48,7 +54,8 @@ public sealed partial class LPRunTests
             return stringBuilder;
         }).ToString();
 
-        var linqScript = LinqScript.FromFile($"{linqScriptName}.linq", queryConfig, $"{linqScriptName}_{testData.Index}");
+        var linqScript =
+ LinqScript.FromFile($"{linqScriptName}.linq", queryConfig, $"{linqScriptName}_{testData.Index}");
 
         Console.Write($"{linqScript}{Environment.NewLine}{Environment.NewLine}{queryConfig}");
 
@@ -86,7 +93,8 @@ public sealed partial class LPRunTests
     {
         const StringComparison defaultStringComparison = StringComparison.InvariantCulture;
 
-        var defaultCsvDataContextDriverProperties = GetDefaultCsvDataContextDriverPropertiesObject(defaultStringComparison);
+        var defaultCsvDataContextDriverProperties =
+ GetDefaultCsvDataContextDriverPropertiesObject(defaultStringComparison);
 
         return GetTestData().SelectMany(static t => t);
 
@@ -177,15 +185,15 @@ public sealed partial class LPRunTests
                         renameTable: true)));
         }
 
-        IEnumerable<ICsvDataContextDriverProperties> GetCsvDataContextDriverProperties()
+        IEnumerable<IDataverseContextDriverProperties> GetCsvDataContextDriverProperties()
         {
             yield return defaultCsvDataContextDriverProperties;
 
             yield return GetCsvDataContextDriverPropertiesWithUseRecordType(false);
             yield return GetCsvDataContextDriverPropertiesWithUseRecordType(true);
 
-            static ICsvDataContextDriverProperties GetCsvDataContextDriverPropertiesWithUseRecordType(bool useRecordType) =>
-                Mock.Of<ICsvDataContextDriverProperties>(csvDataContextDriverProperties =>
+            static IDataverseContextDriverProperties GetCsvDataContextDriverPropertiesWithUseRecordType(bool useRecordType) =>
+                Mock.Of<IDataverseContextDriverProperties>(csvDataContextDriverProperties =>
                         csvDataContextDriverProperties.Files == Files &&
                         csvDataContextDriverProperties.AutoDetectEncoding &&
                         csvDataContextDriverProperties.DebugInfo &&
@@ -203,7 +211,7 @@ public sealed partial class LPRunTests
                 );
         }
 
-        static ICsvDataContextDriverProperties GetDefaultCsvDataContextDriverPropertiesObject(
+        static IDataverseContextDriverProperties GetDefaultCsvDataContextDriverPropertiesObject(
             StringComparison stringComparison,
             bool allowComments = false,
             bool useStringComparerForStringIntern = false,
@@ -211,7 +219,7 @@ public sealed partial class LPRunTests
             bool renameTable = false,
             bool useSingleClassForSameFiles = true,
             TableNameFormat tableNameFormat = TableNameFormat.table_1) =>
-            Mock.Of<ICsvDataContextDriverProperties>(csvDataContextDriverProperties =>
+            Mock.Of<IDataverseContextDriverProperties>(csvDataContextDriverProperties =>
                 csvDataContextDriverProperties.Files == Files &&
                 csvDataContextDriverProperties.AutoDetectEncoding &&
                 csvDataContextDriverProperties.DebugInfo &&

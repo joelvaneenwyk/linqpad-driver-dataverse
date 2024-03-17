@@ -17,12 +17,6 @@
         "resolved": "2.14.1",
         "contentHash": "lQKvtaTDOXnoVJ20ibTuSIOf2i0uO0MPbDhd1jm238I+U/2ZnRENj0cktKZhtchBMtCUSRQ5v4xBCUbKNmyVMw=="
       },
-      "LPRun": {
-        "type": "Direct",
-        "requested": "[8.3.2, )",
-        "resolved": "8.3.2",
-        "contentHash": "Owhq4XQzgFVncVDxnFk3q2v24pQAAb7C9LmoKSWGOmPxGUb8uIT3s+7N8KAUzniHt8g5LaqUpvtFCX27qW3zDw=="
-      },
       "Microsoft.NET.Test.Sdk": {
         "type": "Direct",
         "requested": "[17.9.0, )",
@@ -1124,7 +1118,10 @@
           "System.Xml.XmlDocument": "4.3.0"
         }
       },
-      "JVE.Dataverse.LINQPadDriver": {
+      "lprun": {
+        "type": "Project"
+      },
+      "ny.dataverse.linqpaddriver": {
         "type": "Project",
         "dependencies": {
           "Azure.Identity": "[1.10.4, )",
@@ -1150,12 +1147,6 @@
         "resolved": "2.14.1",
         "contentHash": "lQKvtaTDOXnoVJ20ibTuSIOf2i0uO0MPbDhd1jm238I+U/2ZnRENj0cktKZhtchBMtCUSRQ5v4xBCUbKNmyVMw=="
       },
-      "LPRun": {
-        "type": "Direct",
-        "requested": "[8.3.2, )",
-        "resolved": "8.3.2",
-        "contentHash": "Owhq4XQzgFVncVDxnFk3q2v24pQAAb7C9LmoKSWGOmPxGUb8uIT3s+7N8KAUzniHt8g5LaqUpvtFCX27qW3zDw=="
-      },
       "Microsoft.NET.Test.Sdk": {
         "type": "Direct",
         "requested": "[17.9.0, )",
@@ -2253,7 +2244,10 @@
           "System.Xml.XmlDocument": "4.3.0"
         }
       },
-      "JVE.Dataverse.LINQPadDriver": {
+      "lprun": {
+        "type": "Project"
+      },
+      "ny.dataverse.linqpaddriver": {
         "type": "Project",
         "dependencies": {
           "Azure.Identity": "[1.10.4, )",
@@ -2279,12 +2273,6 @@
         "resolved": "2.14.1",
         "contentHash": "lQKvtaTDOXnoVJ20ibTuSIOf2i0uO0MPbDhd1jm238I+U/2ZnRENj0cktKZhtchBMtCUSRQ5v4xBCUbKNmyVMw=="
       },
-      "LPRun": {
-        "type": "Direct",
-        "requested": "[8.3.2, )",
-        "resolved": "8.3.2",
-        "contentHash": "Owhq4XQzgFVncVDxnFk3q2v24pQAAb7C9LmoKSWGOmPxGUb8uIT3s+7N8KAUzniHt8g5LaqUpvtFCX27qW3zDw=="
-      },
       "Microsoft.NET.Test.Sdk": {
         "type": "Direct",
         "requested": "[17.9.0, )",
@@ -3382,7 +3370,10 @@
           "System.Xml.XmlDocument": "4.3.0"
         }
       },
-      "JVE.Dataverse.LINQPadDriver": {
+      "lprun": {
+        "type": "Project"
+      },
+      "ny.dataverse.linqpaddriver": {
         "type": "Project",
         "dependencies": {
           "Azure.Identity": "[1.10.4, )",

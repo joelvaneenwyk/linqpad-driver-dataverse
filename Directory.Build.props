@@ -20,16 +20,17 @@
 
     <!-- Set Base Variables -->
     <PropertyGroup>
-        <ProjectIdentifier>JVE.Dataverse.LINQPadDriver</ProjectIdentifier>
-        <ProjectNamespace>NY.Dataverse.LINQPadDriver</ProjectNamespace>
+        <ProjectIdentifier>NY.Dataverse.LINQPadDriver</ProjectIdentifier>
+        <ProjectNamespace>$(ProjectIdentifier)</ProjectNamespace>
         <ProjectUrl>https://github.com/joelvaneenwyk/linqpad-driver-dataverse</ProjectUrl>
 
         <!-- SolutionDir is not defined when building projects explicitly -->
         <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">$(WorkspaceFolder)</SolutionDir>
         <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
         <VSToolsPath
-            Condition="'$(VSToolsPath)' == '' and Exists('$(MSBuildExtensionsPath32)/Microsoft/VisualStudio/v$(VisualStudioVersion)')"
-        >$(MSBuildExtensionsPath32)/Microsoft/VisualStudio/v$(VisualStudioVersion)</VSToolsPath>
+                Condition="'$(VSToolsPath)' == '' and Exists('$(MSBuildExtensionsPath32)/Microsoft/VisualStudio/v$(VisualStudioVersion)')"
+        >$(MSBuildExtensionsPath32)/Microsoft/VisualStudio/v$(VisualStudioVersion)
+        </VSToolsPath>
     </PropertyGroup>
 
     <!-- Normalize Output Paths -->

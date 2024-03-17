@@ -1,0 +1,95 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFrameworks>netstandard2.1;net6.0;net7.0;net8.0</TargetFrameworks>
+    <Deterministic>true</Deterministic>
+    <LangVersion>latest</LangVersion>
+    <Nullable>enable</Nullable>
+    <GenerateDocumentationFile>True</GenerateDocumentationFile>
+    <NoWarn>1701;1702;NU5100;NETSDK1138</NoWarn>
+    <OutputPath>..\..\bin\$(Configuration)</OutputPath>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <GenerateAssemblyInfo>true</GenerateAssemblyInfo>
+    <Product>LINQPad Driver LPRun Unit/Integration Tests Runner</Product>
+    <AssemblyTitle>LINQPad driver LPRun unit/integration tests runner</AssemblyTitle>
+    <Description>$(AssemblyTitle).</Description>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
+    <Authors>Ivan Ivon (ivan.ivon@gmail.com), LINQPad.Runtime/LPRun binaries by Joseph Albahari (licensed under https://www.linqpad.net/eula.txt)</Authors>
+    <RepositoryType>git</RepositoryType>
+    <PackageTags>linqpad lprun tests unittests integrationtests windows</PackageTags>
+    <PackageProjectUrl>https://github.com/i2van/CsvLINQPadDriver/tree/master/Src/LPRun</PackageProjectUrl>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <RepositoryUrl>https://github.com/i2van/CsvLINQPadDriver</RepositoryUrl>
+    <Copyright>Copyright © 2021-$([System.DateTime]::Now.Year) $(Authors)</Copyright>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <IncludeSymbols>true</IncludeSymbols>
+    <EmbedUntrackedSources>true</EmbedUntrackedSources>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(GITHUB_ACTIONS)' == 'true'">
+    <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <ContentFilesPath>contentFiles\any\any\LPRun\Bin</ContentFilesPath>
+    <LPRunRoot>LPRun\Bin\</LPRunRoot>
+    <LPRun>$(LPRunRoot)LPRun8</LPRun>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="8.0.0" PrivateAssets="All" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="$(LPRunRoot)LINQPad.Runtime.dll">
+      <PackageCopyToOutput>true</PackageCopyToOutput>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <PackagePath>$(ContentFilesPath)</PackagePath>
+    </Content>
+    <Content Include="$(LPRun)-arm64.exe">
+      <PackageCopyToOutput>true</PackageCopyToOutput>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <PackagePath>$(ContentFilesPath)</PackagePath>
+    </Content>
+    <Content Include="$(LPRun)-x86.exe">
+      <PackageCopyToOutput>true</PackageCopyToOutput>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <PackagePath>$(ContentFilesPath)</PackagePath>
+    </Content>
+    <Content Include="$(LPRun)-x64.exe">
+      <PackageCopyToOutput>true</PackageCopyToOutput>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <PackagePath>$(ContentFilesPath)</PackagePath>
+    </Content>
+    <Content Include="$(LPRunRoot)eula.txt">
+      <PackageCopyToOutput>true</PackageCopyToOutput>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <PackagePath>$(ContentFilesPath)</PackagePath>
+    </Content>
+    <Content Include="$(LPRunRoot)eula.url">
+      <PackageCopyToOutput>true</PackageCopyToOutput>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <PackagePath>$(ContentFilesPath)</PackagePath>
+    </Content>
+    <Content Include="README.md">
+      <Pack>true</Pack>
+      <PackagePath />
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.1'">
+    <PackageReference Include="IsExternalInit" Version="1.0.3">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+</Project>
