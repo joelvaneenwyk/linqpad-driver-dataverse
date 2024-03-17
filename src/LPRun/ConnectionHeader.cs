@@ -12,12 +12,12 @@ using static LPRun.LPRunException;
 namespace LPRun;
 
 /// <summary>
-///     Provides method for getting the LINQPad script connection header.
+/// Provides method for getting the LINQPad script connection header.
 /// </summary>
 public static class ConnectionHeader
 {
     /// <summary>
-    ///     Gets the LINQPad script connection header.
+    /// Gets the LINQPad script connection header.
     /// </summary>
     /// <typeparam name="T">The type of driver configuration object.</typeparam>
     /// <param name="driverAssemblyName">The driver assembly name.</param>
@@ -27,8 +27,8 @@ public static class ConnectionHeader
     /// <returns>The XML LINQPad connection header.</returns>
     /// <exception cref="LPRunException">Keeps the original exception as <see cref="P:System.Exception.InnerException" />.</exception>
     /// <example>
-    ///     This shows how to get the LINQPad script connection header:
-    ///     <code>
+    /// This shows how to get the LINQPad script connection header:
+    /// <code>
     /// var connectionHeader = ConnectionHeader.Get(
     ///     // The driver assembly name.
     ///     "CsvLINQPadDriver",

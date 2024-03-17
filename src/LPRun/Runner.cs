@@ -14,7 +14,7 @@ using static LPRun.LPRunException;
 namespace LPRun;
 
 /// <summary>
-///     Provides method for executing the LINQPad script.
+/// Provides method for executing the LINQPad script.
 /// </summary>
 public static class Runner
 {
@@ -29,14 +29,14 @@ public static class Runner
     private static readonly TimeSpan RetryTimeout = TimeSpan.FromSeconds(3);
 
     /// <summary>
-    ///     Executes LINQPad script using LPRun with optional timeout specified and LPRun command-line options.
+    /// Executes LINQPad script using LPRun with optional timeout specified and LPRun command-line options.
     /// </summary>
     /// <param name="linqFile">The LINQPad script file to execute.</param>
     /// <param name="waitForExit">The LINQPad script execution timeout. 1 minute is the default.</param>
     /// <param name="retryOnError">The number of times to retry the operation on error and timeout between tries.</param>
     /// <param name="commandLineOptions">
-    ///     The additional <a href="https://www.linqpad.net/lprun.aspx">LPRun command-line</a>
-    ///     options. See <see cref="Options">options</see> class for details.
+    /// The additional <a href="https://www.linqpad.net/lprun.aspx">LPRun command-line</a>
+    /// options. See <see cref="Options">options</see> class for details.
     /// </param>
     /// <returns>The LINQPad script execution <see cref="Result" />.</returns>
     /// <exception cref="LPRunException">Keeps the original exception as <see cref="P:System.Exception.InnerException" />.</exception>
@@ -49,14 +49,14 @@ public static class Runner
     }
 
     /// <summary>
-    ///     Executes LINQPad script using LPRun with optional timeout specified and LPRun command-line options.
+    /// Executes LINQPad script using LPRun with optional timeout specified and LPRun command-line options.
     /// </summary>
     /// <param name="linqFile">The LINQPad script file to execute.</param>
     /// <param name="waitForExit">The LINQPad script execution timeout. 1 minute is the default.</param>
     /// <param name="retryOnError">The number of times to retry the operation on error and timeout between tries.</param>
     /// <param name="commandLineOptions">
-    ///     The additional <a href="https://www.linqpad.net/lprun.aspx">LPRun command-line</a>
-    ///     options. See <see cref="Options">options</see> class for details.
+    /// The additional <a href="https://www.linqpad.net/lprun.aspx">LPRun command-line</a>
+    /// options. See <see cref="Options">options</see> class for details.
     /// </param>
     /// <returns>A task that represents the asynchronous LINQPad script execution <see cref="Result" />.</returns>
     /// <exception cref="LPRunException">Keeps the original exception as <see cref="P:System.Exception.InnerException" />.</exception>
@@ -196,7 +196,7 @@ public static class Runner
     }
 
     /// <summary>
-    ///     The LINQPad script execution result.
+    /// The LINQPad script execution result.
     /// </summary>
     /// <param name="Output">The LINQPad script execution captured output stream.</param>
     /// <param name="Error">The LINQPad script execution captured error stream.</param>
@@ -204,13 +204,13 @@ public static class Runner
     public sealed record Result(string Output, string Error, int ExitCode)
     {
         /// <summary>
-        ///     Indicates that operation completed successfully.
+        /// Indicates that operation completed successfully.
         /// </summary>
         public bool Success => string.IsNullOrWhiteSpace(Error) && ExitCode == 0;
     }
 
     /// <summary>
-    ///     The number of times to retry the operation on error and timeout between tries.
+    /// The number of times to retry the operation on error and timeout between tries.
     /// </summary>
     /// <param name="Times">The number of times to retry the operation.</param>
     /// <param name="Timeout">The timeout between tries.</param>

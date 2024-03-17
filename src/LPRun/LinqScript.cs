@@ -12,28 +12,28 @@ using static LPRun.LPRunException;
 namespace LPRun;
 
 /// <summary>
-///     Provides method for for creating the LINQPad script by combining script file content and connection header.
+/// Provides method for for creating the LINQPad script by combining script file content and connection header.
 /// </summary>
 public static class LinqScript
 {
     /// <summary>
-    ///     Creates the LINQPad script file by combining the script <paramref name="file" /> content and the
-    ///     <paramref name="connection" /> header.
+    /// Creates the LINQPad script file by combining the script <paramref name="file" /> content and the
+    /// <paramref name="connection" /> header.
     /// </summary>
     /// <param name="file">The LINQPad script file which content will be appended to <paramref name="connection" /> header.</param>
     /// <param name="connection">
-    ///     The LINQPad script connection header created by call to <see cref="ConnectionHeader" />.
-    ///     <see cref="ConnectionHeader.Get{T}" /> method.
+    /// The LINQPad script connection header created by call to <see cref="ConnectionHeader" />.
+    /// <see cref="ConnectionHeader.Get{T}" /> method.
     /// </param>
     /// <param name="scriptFileName">The expected script file name without extension. <paramref name="file" /> by default.</param>
     /// <returns>
-    ///     The path to LINQPad script file created by combining the script <paramref name="file" /> content and the
-    ///     <paramref name="connection" /> header.
+    /// The path to LINQPad script file created by combining the script <paramref name="file" /> content and the
+    /// <paramref name="connection" /> header.
     /// </returns>
     /// <exception cref="LPRunException">Keeps the original exception as <see cref="P:System.Exception.InnerException" />.</exception>
     /// <example>
-    ///     This shows how to create the LINQPad script file and get path to it:
-    ///     <code>
+    /// This shows how to create the LINQPad script file and get path to it:
+    /// <code>
     /// var pathToLinqScript = LinqScript.FromFile(
     ///     // The LINQPad script file which content will be appended to connection header.
     ///     $"{linqScriptName}.linq",
@@ -57,26 +57,26 @@ public static class LinqScript
     }
 
     /// <summary>
-    ///     Creates the LINQPad script file by combining the <paramref name="script" /> content and the
-    ///     <paramref name="connection" /> header.
+    /// Creates the LINQPad script file by combining the <paramref name="script" /> content and the
+    /// <paramref name="connection" /> header.
     /// </summary>
     /// <param name="script">The LINQPad script which content will be appended to <paramref name="connection" /> header.</param>
     /// <param name="connection">
-    ///     The LINQPad script connection header created by call to <see cref="ConnectionHeader" />.
-    ///     <see cref="ConnectionHeader.Get{T}" /> method.
+    /// The LINQPad script connection header created by call to <see cref="ConnectionHeader" />.
+    /// <see cref="ConnectionHeader.Get{T}" /> method.
     /// </param>
     /// <param name="scriptFileName">
-    ///     The expected script file name without extension. If <see langword="null" /> or empty the
-    ///     script file name will be generated. Your are in charge of removing that file afterwards.
+    /// The expected script file name without extension. If <see langword="null" /> or empty the
+    /// script file name will be generated. Your are in charge of removing that file afterwards.
     /// </param>
     /// <returns>
-    ///     The path to LINQPad script file created by combining the script <paramref name="script" /> content and the
-    ///     <paramref name="connection" /> header.
+    /// The path to LINQPad script file created by combining the script <paramref name="script" /> content and the
+    /// <paramref name="connection" /> header.
     /// </returns>
     /// <exception cref="LPRunException">Keeps the original exception as <see cref="P:System.Exception.InnerException" />.</exception>
     /// <example>
-    ///     This shows how to create the LINQPad script file and get path to it:
-    ///     <code>
+    /// This shows how to create the LINQPad script file and get path to it:
+    /// <code>
     /// var pathToLinqScript = LinqScript.FromScript(
     ///     // The LINQPad script content which will be appended to connection header.
     ///     @"""Hello, world!""",
@@ -122,23 +122,23 @@ public static class LinqScript
     }
 
     /// <summary>
-    ///     Creates the LINQPad script file by combining the script <paramref name="file" /> content and the
-    ///     <paramref name="connection" /> header.
+    /// Creates the LINQPad script file by combining the script <paramref name="file" /> content and the
+    /// <paramref name="connection" /> header.
     /// </summary>
     /// <param name="file">The LINQPad script file which content will be appended to <paramref name="connection" /> header.</param>
     /// <param name="connection">
-    ///     The LINQPad script connection header created by call to <see cref="ConnectionHeader" />.
-    ///     <see cref="ConnectionHeader.Get{T}" /> method.
+    /// The LINQPad script connection header created by call to <see cref="ConnectionHeader" />.
+    /// <see cref="ConnectionHeader.Get{T}" /> method.
     /// </param>
     /// <param name="scriptFileName">The expected script file name without extension. <paramref name="file" /> by default.</param>
     /// <returns>
-    ///     The path to LINQPad script file created by combining the script <paramref name="file" /> content and the
-    ///     <paramref name="connection" /> header.
+    /// The path to LINQPad script file created by combining the script <paramref name="file" /> content and the
+    /// <paramref name="connection" /> header.
     /// </returns>
     /// <exception cref="LPRunException">Keeps the original exception as <see cref="P:System.Exception.InnerException" />.</exception>
     /// <example>
-    ///     This shows how to create the LINQPad script file and get path to it:
-    ///     <code>
+    /// This shows how to create the LINQPad script file and get path to it:
+    /// <code>
     /// var pathToLinqScript = LinqScript.Create(
     ///     // The LINQPad script file which content will be appended to connection header.
     ///     $"{linqScriptName}.linq",

@@ -16,20 +16,20 @@ using static LPRun.LPRunException;
 namespace LPRun;
 
 /// <summary>
-///     Provides method for the LINQPad driver installation.
+/// Provides method for the LINQPad driver installation.
 /// </summary>
 public static class Driver
 {
     /// <summary>
-    ///     Installs the LINQPad driver and related driver files.
+    /// Installs the LINQPad driver and related driver files.
     /// </summary>
     /// <param name="driverDir">The directory to copy driver <paramref name="files" /> to.</param>
     /// <param name="files">The LINQPad driver files.</param>
     /// <exception cref="LPRunException">Keeps the original exception as <see cref="P:System.Exception.InnerException" />.</exception>
     /// <example>
-    ///     This shows how to install the LINQPad driver and specify the driver dependencies JSON (use InstallWithDepsJson
-    ///     instead):
-    ///     <code>
+    /// This shows how to install the LINQPad driver and specify the driver dependencies JSON (use InstallWithDepsJson
+    /// instead):
+    /// <code>
     /// Driver.Install(
     ///     // The directory to copy driver files to.
     ///     "CsvLINQPadDriver",
@@ -42,7 +42,7 @@ public static class Driver
     /// <seealso cref="GetDepsJsonRelativePath(string, string)" />
     /// <seealso cref="GetDepsJsonRelativePath(string, System.Func{string,string}(string))" />
     /// <seealso cref="InstallWithDepsJson(string, string, string, string[])" />
-    /// <seealso cref="InstallWithDepsJson(string, string, Func{string, string}, string[])" />
+    /// <seealso cref="InstallWithDepsJson(string, string, System.Func{string,string}(string), string[])" />
     public static void Install(string driverDir, params string[] files)
     {
         Wrap(Execute);
@@ -77,7 +77,7 @@ public static class Driver
     }
 
     /// <summary>
-    ///     Installs the LINQPad driver with the driver dependencies JSON and related driver files.
+    /// Installs the LINQPad driver with the driver dependencies JSON and related driver files.
     /// </summary>
     /// <param name="driverDir">The directory to copy driver <paramref name="files" /> to.</param>
     /// <param name="driverFileName">The directory to copy driver <paramref name="files" /> to.</param>
@@ -85,8 +85,8 @@ public static class Driver
     /// <param name="files">The LINQPad driver files.</param>
     /// <exception cref="LPRunException">Keeps the original exception as <see cref="P:System.Exception.InnerException" />.</exception>
     /// <example>
-    ///     This shows how to install the LINQPad driver with the driver dependencies JSON:
-    ///     <code>
+    /// This shows how to install the LINQPad driver with the driver dependencies JSON:
+    /// <code>
     /// Driver.Install(
     ///     // The directory to copy driver files to.
     ///     "CsvLINQPadDriver",
@@ -105,20 +105,20 @@ public static class Driver
     }
 
     /// <summary>
-    ///     Installs the LINQPad driver with the driver dependencies JSON and related driver files.
+    /// Installs the LINQPad driver with the driver dependencies JSON and related driver files.
     /// </summary>
     /// <param name="driverDir">The directory to copy driver <paramref name="files" /> to.</param>
     /// <param name="driverFileName">The directory to copy driver <paramref name="files" /> to.</param>
     /// <param name="getDepsJsonFileFullPath">
-    ///     The function which returns the absolute driver dependencies JSON path based on
-    ///     the tests build folder path.
+    /// The function which returns the absolute driver dependencies JSON path based on
+    /// the tests build folder path.
     /// </param>
     /// <param name="files">The LINQPad driver files.</param>
     /// <exception cref="LPRunException">Keeps the original exception as <see cref="P:System.Exception.InnerException" />.</exception>
     /// <example>
-    ///     This shows how to install the LINQPad driver with the driver dependencies JSON (this does the same thing as
-    ///     overloaded method):
-    ///     <code>
+    /// This shows how to install the LINQPad driver with the driver dependencies JSON (this does the same thing as
+    /// overloaded method):
+    /// <code>
     /// Driver.Install(
     ///     // The directory to copy driver files to.
     ///     "CsvLINQPadDriver",
@@ -138,16 +138,16 @@ public static class Driver
     }
 
     /// <summary>
-    ///     Ensures that there is no driver is installed via NuGet. Throws <see cref="LPRunException" /> exception otherwise.
+    /// Ensures that there is no driver is installed via NuGet. Throws <see cref="LPRunException" /> exception otherwise.
     /// </summary>
     /// <param name="driverDir">
-    ///     The driver directory. The file search patterns are allowed; it might be useful for looking for
-    ///     signed drivers.
+    /// The driver directory. The file search patterns are allowed; it might be useful for looking for
+    /// signed drivers.
     /// </param>
     /// <exception cref="LPRunException">Thrown when driver has been installed via NuGet.</exception>
     /// <example>
-    ///     This shows how to verify that driver is not installed via NuGet:
-    ///     <code>
+    /// This shows how to verify that driver is not installed via NuGet:
+    /// <code>
     /// Driver.EnsureNotInstalledViaNuGet("CsvLINQPadDriver*");
     /// </code>
     /// </example>
