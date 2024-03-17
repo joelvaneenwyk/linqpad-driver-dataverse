@@ -1,12 +1,11 @@
 <Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
-        <TargetFrameworks>netstandard2.1;net6.0;net7.0;net8.0</TargetFrameworks>
+        <TargetFrameworks>net6.0;net7.0;net8.0</TargetFrameworks>
         <Deterministic>true</Deterministic>
         <LangVersion>latest</LangVersion>
         <Nullable>enable</Nullable>
         <GenerateDocumentationFile>True</GenerateDocumentationFile>
         <NoWarn>1701;1702;NU5100;NETSDK1138</NoWarn>
-        <OutputPath>..\..\bin\$(Configuration)</OutputPath>
     </PropertyGroup>
 
     <PropertyGroup>
@@ -40,8 +39,8 @@
     </PropertyGroup>
 
     <PropertyGroup>
-        <ContentFilesPath>contentFiles\any\any\LPRun\Bin</ContentFilesPath>
-        <LPRunRoot>LPRun\Bin\</LPRunRoot>
+        <ContentFilesPath>contentFiles/any/any/LPRun/Binaries</ContentFilesPath>
+        <LPRunRoot>LPRun/Binaries/</LPRunRoot>
         <LPRun>$(LPRunRoot)LPRun8</LPRun>
     </PropertyGroup>
 
@@ -50,39 +49,9 @@
     </ItemGroup>
 
     <ItemGroup>
-        <Content Include="$(LPRunRoot)LINQPad.Runtime.dll">
-            <PackageCopyToOutput>true</PackageCopyToOutput>
-            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-            <PackagePath>$(ContentFilesPath)</PackagePath>
-        </Content>
-        <Content Include="$(LPRun)-arm64.exe">
-            <PackageCopyToOutput>true</PackageCopyToOutput>
-            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-            <PackagePath>$(ContentFilesPath)</PackagePath>
-        </Content>
-        <Content Include="$(LPRun)-x86.exe">
-            <PackageCopyToOutput>true</PackageCopyToOutput>
-            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-            <PackagePath>$(ContentFilesPath)</PackagePath>
-        </Content>
-        <Content Include="$(LPRun)-x64.exe">
-            <PackageCopyToOutput>true</PackageCopyToOutput>
-            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-            <PackagePath>$(ContentFilesPath)</PackagePath>
-        </Content>
-        <Content Include="$(LPRunRoot)eula.txt">
-            <PackageCopyToOutput>true</PackageCopyToOutput>
-            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-            <PackagePath>$(ContentFilesPath)</PackagePath>
-        </Content>
-        <Content Include="$(LPRunRoot)eula.url">
-            <PackageCopyToOutput>true</PackageCopyToOutput>
-            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-            <PackagePath>$(ContentFilesPath)</PackagePath>
-        </Content>
         <Content Include="README.md">
             <Pack>true</Pack>
-            <PackagePath/>
+            <PackagePath />
         </Content>
     </ItemGroup>
 
@@ -91,5 +60,35 @@
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Update="Binaries/eula.txt">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+      <None Update="Binaries/eula.url">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+      <None Update="Binaries/LINQPad.Runtime.dll">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+      <None Update="Binaries/LPRun8-arm64.exe">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+      <None Update="Binaries/LPRun8-x64.exe">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+      <None Update="Binaries/LPRun8-x86.exe">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+      <None Remove="LPRun/**" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Compile Remove="LPRun/**" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <EmbeddedResource Remove="LPRun/**" />
     </ItemGroup>
 </Project>
