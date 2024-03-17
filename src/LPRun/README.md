@@ -1,11 +1,11 @@
-# LINQPad Driver LPRun Unit/Integration Tests Runner #
+# LINQPad Driver LPRun Unit/Integration Tests Runner
 
 [![Latest build](https://github.com/i2van/CsvLINQPadDriver/workflows/build/badge.svg)](https://github.com/i2van/CsvLINQPadDriver/actions)
 [![NuGet](https://img.shields.io/nuget/v/LPRun)](https://www.nuget.org/packages/LPRun)
 [![Downloads](https://img.shields.io/nuget/dt/LPRun)](https://www.nuget.org/packages/LPRun)
 [![License](https://img.shields.io/badge/license-MIT-yellow)](https://opensource.org/licenses/MIT)
 
-## Table of Contents ##
+## Table of Contents
 
 - [LINQPad Driver LPRun Unit/Integration Tests Runner](#linqpad-driver-lprun-unitintegration-tests-runner)
   - [Table of Contents](#table-of-contents)
@@ -26,13 +26,13 @@
     - [NuGet](#nuget)
   - [Licenses](#licenses)
 
-## Description ##
+## Description
 
 LINQPad driver [LPRun](https://www.linqpad.net/lprun.aspx) unit/integration tests runner. Can be used for
 testing [LINQPad 8](https://www.linqpad.net/LINQPad8.aspx)/[LINQPad 7](https://www.linqpad.net/LINQPad7.aspx)/[LINQPad 6](https://www.linqpad.net/LINQPad6.aspx)
 drivers using LPRun or for running LINQPad scripts.
 
-## LPRun .NET Versions ##
+## LPRun .NET Versions
 
 .NET versions supported by LPRun are listed below. In case of unsupported version LPRun fallbacks to the latest
 production .NET installed.
@@ -50,32 +50,32 @@ Use the following script to check the .NET version used by LPRun:
 System.Environment.Version
 ```
 
-## Website ##
+## Website
 
 LPRun is a part of the [CsvLINQPadDriver for LINQPad 8/7/6/5](https://github.com/i2van/CsvLINQPadDriver). LPRun source
 code can be found [here](https://github.com/i2van/CsvLINQPadDriver/tree/master/Src/LPRun).
 
-## Download ##
+## Download
 
 [![NuGet](https://img.shields.io/nuget/v/LPRun)](https://www.nuget.org/packages/LPRun)
 
-## Usage ##
+## Usage
 
 Tested driver **MUST NOT** be installed via NuGet into LINQPad. In this case LPRun will use it instead of local one.
 
-### Setup ###
+### Setup
 
 1. Create test project.
 2. Add LPRun [![NuGet](https://img.shields.io/nuget/v/LPRun)](https://www.nuget.org/packages/LPRun)
 3. Create the following folder structure in test project:
 
-```text
-LPRun # Created by LPRun NuGet.
-    Templates # LINQPad script templates.
-    Data      # Optional: Driver data files.
+```ansi
+📂 LPRun             # Created by LPRun NuGet.
+    📁 Templates     # LINQPad script templates.
+    📁 Data          # Optional: Driver data files.
 ```
 
-### LINQPad Test Script Example ###
+### LINQPad Test Script Example
 
 LPRun executes LINQPad test script. Test script
 uses [Fluent Assertions](https://github.com/fluentassertions/fluentassertions) for assertion checks.
@@ -100,7 +100,7 @@ original.GetHashCode()
 `Reason()` method (prints exact line number if assertion fails) and `context` variable are injected
 by [test](https://github.com/i2van/CsvLINQPadDriver/blob/master/Tests/CsvLINQPadDriverTest/LPRunTests.cs) [below](#nunit-test-example).
 
-### NUnit Test Example ###
+### NUnit Test Example
 
 Full NUnit test code can be
 found [here](https://github.com/i2van/CsvLINQPadDriver/blob/master/Tests/CsvLINQPadDriverTest/LPRunTests.cs).
@@ -239,13 +239,13 @@ public class LPRunTests
 }
 ```
 
-## Known Issues ##
+## Known Issues
 
-### Unit-testing Frameworks Support ###
+### Unit-testing Frameworks Support
 
 Tested with [NUnit](https://github.com/nunit/nunit). Other test frameworks should work as well.
 
-### LINQPad Runtime Reference ###
+### LINQPad Runtime Reference
 
 Avoid referencing `LINQPad.Runtime.dll` in your tests, e.g. for [Moq](https://github.com/moq/moq4):
 
@@ -276,24 +276,24 @@ var driverProperties = Mock.Of<IDriverProperties>(props =>
 );
 ```
 
-## Authors ##
+## Authors
 
 - [Ivan Ivon](https://github.com/i2van)
 
-## Credits ##
+## Credits
 
-### Tools ###
+### Tools
 
 - [LINQPad 8](https://www.linqpad.net/LINQPad8.aspx)
 - [LINQPad Command-Line and Scripting](https://www.linqpad.net/lprun.aspx)
 
-### NuGet ###
+### NuGet
 
 - [Fluent Assertions](https://github.com/fluentassertions/fluentassertions)
 - [Moq](https://github.com/moq/moq4)
 - [NUnit](https://github.com/nunit/nunit)
 
-## Licenses ##
+## Licenses
 
 - [LICENSE](https://github.com/i2van/CsvLINQPadDriver/blob/master/Src/LPRun/LICENSE) ([MIT](https://opensource.org/licenses/MIT))
 - [LINQPad End User License Agreement](https://www.linqpad.net/eula.txt)
