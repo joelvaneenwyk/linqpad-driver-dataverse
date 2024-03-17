@@ -1,6 +1,5 @@
 #
 # LINQPad Driver Dataverse: Dictionary
-#
 AAAF
 AABD
 AADB
@@ -41,7 +40,9 @@ bibipkins
 binlog
 birthdate
 buildhelp
+buildsystems
 buildtransitive
+buildtrees
 businessid
 businesstypecode
 cachefile
@@ -50,11 +51,12 @@ casade
 checkin
 Childrens
 childrensnames
+cmds
 codegen
-Columnset
 columnset
-Columnsetxml
+Columnset
 columnsetxml
+Columnsetxml
 commondataservice
 connectionid
 connectionreference
@@ -95,6 +97,7 @@ DCDF
 DCFA
 DCFB
 DCFF
+DCMAKE
 DDAA
 DDAE
 DDBB
@@ -116,6 +119,7 @@ DEEB
 DEFA
 DEFB
 DEFC
+deinit
 DFAA
 DFBA
 DFCB
@@ -146,6 +150,7 @@ Eenwyk
 elease
 eleases
 emailaddress
+emojilib
 employeeid
 enableprefiltering
 endswith
@@ -170,8 +175,8 @@ Extractionand
 familystatuscode
 FDFB
 FEFC
-Fetchxml
 fetchxml
+Fetchxml
 fetchxmlbuilder
 FFBE
 FFCA
@@ -252,19 +257,19 @@ lastxweeks
 lastxyears
 lastyear
 layoutstyle
-Layoutxml
 layoutxml
+Layoutxml
 LCID
 leadsourcecode
-rajyraman
+licence
 linecap
 linejoin
 linkitem
 linkitems
 linktype
-LINQ
 linq
 Linq
+LINQ
 linqpad
 linqpaddriver
 localhistory
@@ -344,8 +349,8 @@ onorbefore
 opendb
 opensdf
 orderitem
-Outputformat
 outputformat
+Outputformat
 overriddencreatedon
 ownerid
 ownershipcode
@@ -392,6 +397,7 @@ pycache
 queryapi
 queryoptions
 querytype
+rajyraman
 rapp
 recordid
 Referencedaccount
@@ -443,6 +449,7 @@ subscriptionid
 svclog
 SYSLIB
 systemuser
+TASKFILE
 Telerik's
 Templating
 territorycode
@@ -454,6 +461,7 @@ thisyear
 tickersymbol
 timespentbymeonemailandmeetings
 timezoneruleversionnumber
+toolsrc
 transactioncurrencyid
 traversedpath
 ublish
@@ -477,10 +485,11 @@ utcconversiontimezonecode
 utcoffset
 utilises
 valueof
+vcpkg
+VCPKG
 versionnumber
 vspscc
 vspx
-licence
 vssscc
 Waitingonsomeoneelse
 webresource

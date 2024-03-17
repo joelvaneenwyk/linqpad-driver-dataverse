@@ -1,0 +1,72 @@
+# https://taskfile.dev
+
+version: "3"
+
+vars:
+  BUILD_DIR: "{{.TASKFILE_DIR}}/.build"
+  SOURCE_DIR: "{{.TASKFILE_DIR}}"
+  PROJECT_DIR: "{{.TASKFILE_DIR}}"
+  RM: '{{if eq .OS "Windows_NT"}}cmd /d /c rmdir /q /s{{else}}rm -rf{{end}}'
+  COPY: '{{if eq .OS "Windows_NT"}}cmd /d /c copy /Y /B{{else}}cp{{end}}'
+  PACKAGE_MANAGER: '{{if eq .OS "Windows_NT"}}scoop{{else}}apt{{end}}'
+  INSTALL: "{{.PACKAGE_MANAGER}} install"
+  UPDATE: "{{.PACKAGE_MANAGER}} update"
+  PROJECT_NAME: NY.Dataverse.LINQPadDriver
+  PROJECT_SOURCE_ROOT: src
+  TEST_PROJECT: src/MarkMpn.FetchXmlToWebAPI/MarkMpn.FetchXmlToWebAPI.Tests/MarkMpn.FetchXmlToWebAPI.Tests.csproj
+
+tasks:
+  default:
+    deps: [init]
+    cmds:
+      - task: build
+    silent: false
+
+  build:
+    dotenv: [".env"]
+    cmds:
+      - cmd: 'dotnet build -c Release -p:Platform="Any CPU" "src/{{.PROJECT_NAME}}/{{.PROJECT_NAME}}.csproj"'
+      - task: copy-file
+        vars:
+          TARGET_DIR: '${NUGET_PACKAGE_PATH:-{{.PROJECT_DIR}}/.deploy}'
+          SOURCE: "{{.PROJECT_DIR}}/bin/Release/Any CPU/NY.Dataverse.LINQPadDriver.1.7.6.nupkg"
+
+  init:
+    cmds:
+      - task: init-git
+
+  init-git:
+    cmds:
+      - cmd: git -C "{{.PROJECT_DIR}}" submodule init
+      - cmd: git -C "{{.PROJECT_DIR}}" submodule update --init --recursive
+    status:
+      - 'test -f "src/MarkMpn.FetchXmlToWebAPI/MarkMpn.FetchXmlToWebAPI.sln"'
+
+  clean:
+    cmds:
+      - task: remove-cache
+        vars: { TARGET: "{{.PROJECT_DIR}}/.build" }
+      - task: remove-cache
+        vars: { TARGET: "{{.PROJECT_DIR}}/TestResults" }
+
+  copy-file:
+    deps: []
+    internal: true
+    required: [SOURCE, TARGET_DIR]
+    cmds:
+      - cmd: '{{if eq .OS "Windows_NT"}}cmd /d /c if not exist "{{fromSlash .TARGET_DIR}}" mkdir "{{fromSlash .TARGET_DIR}}"{{end}}'
+        status:
+          - 'test -d "{{.TARGET_DIR}}"'
+      - cmd: '{{if eq .OS "Windows_NT"}}cmd /d /c copy /Y "{{fromSlash .SOURCE}}" "{{fromSlash .TARGET_DIR}}"{{end}}'
+        timeout: 5s
+
+  remove-cache:
+    deps: []
+    internal: true
+    vars:
+      TARGET: '{{default ".temp" .TARGET}}'
+    cmds:
+      - cmd: '{{if eq .OS "Windows_NT"}}cmd /d /c if exist "{{fromSlash .TARGET}}" rmdir /q /s "{{fromSlash .TARGET}}"{{end}}'
+        timeout: 5s
+      - cmd: '{{if eq .OS "Windows_NT"}}cmd /d /c if exist "{{fromSlash .TARGET}}" del "{{fromSlash .TARGET}}"{{end}}'
+        timeout: 5s

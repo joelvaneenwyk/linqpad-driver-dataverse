@@ -348,3 +348,8 @@ ASALocalRun/
 # BeatPulse healthcheck temp database
 healthchecksdb
 /src/NY - Backup.Dataverse.LINQPadDriver.csproj
+
+.env*
+.flaskenv*
+!.env.project
+!.env.vault
