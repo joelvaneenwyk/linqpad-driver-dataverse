@@ -38,7 +38,7 @@ namespace NY.Dataverse.LINQPadDriver
     public partial class CDSTemplate
     {
         [PublicAPI]
-        public string? Namespace { get; init; }
+        public string Namespace { get; init; }
 
         [PublicAPI]
         public string TypeName { get; set; }
@@ -49,9 +49,11 @@ namespace NY.Dataverse.LINQPadDriver
         [SuppressMessage("Style", "IDE0028:Collection initialization can be simplified",
             Justification = "Not supported on older .NET versions.")]
         [SuppressMessage("ReSharper", "ConvertToPrimaryConstructor")]
-        [SuppressMessage("Style", "IDE0290:Use primary constructor",
+        [SuppressMessage("Style",
+            "IDE0290:Use primary constructor",
             Justification = "Not supported on older .NET versions.")]
-        [SuppressMessage("CodeQuality", "IDE0079:Remove unnecessary suppression",
+        [SuppressMessage("CodeQuality",
+            "IDE0079:Remove unnecessary suppression",
             Justification = "It is not unnecessary but rather ReSharper only.")]
         [SuppressMessage("ReSharper", "UseCollectionExpression")]
         public CDSTemplate(
