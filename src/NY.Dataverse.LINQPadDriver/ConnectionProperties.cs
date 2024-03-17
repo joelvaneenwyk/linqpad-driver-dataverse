@@ -6,13 +6,15 @@ using System;
 using System.Runtime.Caching;
 using System.Threading.Tasks;
 using System.Xml.Linq;
+using JetBrains.Annotations;
 
 namespace NY.Dataverse.LINQPadDriver
 {
 	/// <summary>
 	/// Wrapper to read/write connection properties. This acts as our ViewModel - we will bind to it in ConnectionDialog.xaml.
 	/// </summary>
-	sealed class ConnectionProperties
+	[PublicAPI]
+	public sealed class ConnectionProperties
 	{
 		public IConnectionInfo ConnectionInfo { get; private set; }
 		public string? ContentPath { get; private set; }
