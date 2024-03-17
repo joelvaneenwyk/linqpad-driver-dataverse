@@ -1,0 +1,9 @@
+/*
+!/.gitignore
+!/README.md
+!/eula.txt
+!/eula.url
+!/LINQPad.Runtime.dll
+!/LPRun*-arm64.exe
+!/LPRun*-x64.exe
+!/LPRun*-x86.exe
