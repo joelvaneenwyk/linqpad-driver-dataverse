@@ -122,6 +122,7 @@ namespace NY.Dataverse.LINQPadDriver
             get => GetElement("ConnectionName") ?? string.Empty;
             set => DriverData.SetElementValue("ConnectionName", value);
         }
+
         public string UserName
         {
             get => GetElement("UserName") ?? string.Empty;
@@ -146,8 +147,8 @@ namespace NY.Dataverse.LINQPadDriver
             {
                 accessToken = await credential.GetTokenAsync(new TokenRequestContext(new[] { $"{environment}/.default" }));
                 Cache.Set(
-                    environment, 
-                    accessToken, 
+                    environment,
+                    accessToken,
                     new CacheItemPolicy
                     {
                         AbsoluteExpiration = DateTimeOffset.UtcNow.AddMinutes(50)

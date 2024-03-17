@@ -20,6 +20,10 @@
 
     <!-- Set Base Variables -->
     <PropertyGroup>
+        <ProjectIdentifier>JVE.Dataverse.LINQPadDriver</ProjectIdentifier>
+        <ProjectNamespace>NY.Dataverse.LINQPadDriver</ProjectNamespace>
+        <ProjectUrl>https://github.com/joelvaneenwyk/linqpad-driver-dataverse</ProjectUrl>
+
         <!-- SolutionDir is not defined when building projects explicitly -->
         <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">$(WorkspaceFolder)</SolutionDir>
         <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

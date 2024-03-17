@@ -17,7 +17,7 @@ vars:
 
 tasks:
   default:
-    deps: [init]
+    deps: [init, clean]
     cmds:
       - task: build
     silent: false
@@ -25,11 +25,8 @@ tasks:
   build:
     dotenv: [".env"]
     cmds:
-      - cmd: 'dotnet build -c Release -p:Platform="Any CPU" "src/{{.PROJECT_NAME}}/{{.PROJECT_NAME}}.csproj"'
-      - task: copy-file
-        vars:
-          TARGET_DIR: '${NUGET_PACKAGE_PATH:-{{.PROJECT_DIR}}/.deploy}'
-          SOURCE: "{{.PROJECT_DIR}}/bin/Release/Any CPU/NY.Dataverse.LINQPadDriver.1.7.6.nupkg"
+      # - cmd: 'dotnet build -c Release -p:Platform="Any CPU" "src/{{.PROJECT_NAME}}/{{.PROJECT_NAME}}.csproj"'
+      - cmd: 'dotnet publish -o "${NUGET_PACKAGE_PATH:-{{.PROJECT_DIR}}/.deploy}" --artifacts-path artifacts -c Debug -p:Platform="Any CPU" --framework net8.0 -r "win-x64" "src/{{.PROJECT_NAME}}/{{.PROJECT_NAME}}.csproj"'
 
   init:
     cmds:
@@ -48,6 +45,8 @@ tasks:
         vars: { TARGET: "{{.PROJECT_DIR}}/.build" }
       - task: remove-cache
         vars: { TARGET: "{{.PROJECT_DIR}}/TestResults" }
+      - task: remove-cache
+        vars: { TARGET: "{{.PROJECT_DIR}}/bin" }
 
   copy-file:
     deps: []
@@ -63,8 +62,10 @@ tasks:
   remove-cache:
     deps: []
     internal: true
-    vars:
-      TARGET: '{{default ".temp" .TARGET}}'
+    required: [TARGET]
+    status:
+      - 'test ! -d "{{.TARGET}}"'
+      - 'test ! -f "{{.TARGET}}"'
     cmds:
       - cmd: '{{if eq .OS "Windows_NT"}}cmd /d /c if exist "{{fromSlash .TARGET}}" rmdir /q /s "{{fromSlash .TARGET}}"{{end}}'
         timeout: 5s

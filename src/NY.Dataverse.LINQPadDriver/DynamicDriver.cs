@@ -10,6 +10,8 @@ using System.Reflection;
 using System.Windows;
 using System.Xml.Linq;
 using System;
+using System.Diagnostics;
+using System.IO;
 using Microsoft.PowerPlatform.Dataverse.Client;
 using Microsoft.PowerPlatform.Dataverse.Client.Extensions;
 using System.Linq;
@@ -30,7 +32,7 @@ namespace NY.Dataverse.LINQPadDriver
             AppDomain.CurrentDomain.FirstChanceException += (sender, args) =>
             {
 
-                if (args.Exception.StackTrace.Contains("NY.Dataverse.LINQPadDriver"))
+                if (args?.Exception?.StackTrace?.Contains("NY.Dataverse.LINQPadDriver") ?? false)
                     Debugger.Launch();
             };
         }
@@ -95,9 +97,10 @@ namespace NY.Dataverse.LINQPadDriver
             catch (Exception ex)
             {
                 MessageBox.Show(
-                    $"Error occured while attempting to connect to {connectionProperties.EnvironmentUrl} using {connectionProperties.AuthenticationType}: {ex.Message}", 
+                    $"Error occurred while attempting to connect to {connectionProperties.EnvironmentUrl} using {connectionProperties.AuthenticationType}: {ex.Message}",
                     "Error",
-                    MessageBoxButton.OK, MessageBoxImage.Error);
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Error);
             }
             finally
             {
@@ -286,13 +289,13 @@ namespace NY.Dataverse.LINQPadDriver
         }
 
         private static void BuildOneToManyRelationLinks(
-            List<ExplorerItem> explorerItems, 
+            List<ExplorerItem> explorerItems,
             (
-                EntityMetadata entityMetadata, 
+                EntityMetadata entityMetadata,
                 List<(
-                    string attributeName, 
+                    string attributeName,
                     List<(string Label, int? Value)> options
-                    )> optionMetadata) entity, 
+                    )> optionMetadata) entity,
             ExplorerItem source)
         {
             foreach (var oneToMany in entity.entityMetadata.OneToManyRelationships)
@@ -310,11 +313,11 @@ namespace NY.Dataverse.LINQPadDriver
         }
 
         private static void BuildManyToOneRelationLinks(
-            List<ExplorerItem> explorerItems, 
-            (EntityMetadata entityMetadata, 
+            List<ExplorerItem> explorerItems,
+            (EntityMetadata entityMetadata,
                 List<(
                     string attributeName,
-                    List<(string Label, int? Value)> options)> optionMetadata) entity, 
+                    List<(string Label, int? Value)> options)> optionMetadata) entity,
             ExplorerItem source)
         {
             foreach (var manyToOne in entity.entityMetadata.ManyToOneRelationships)
