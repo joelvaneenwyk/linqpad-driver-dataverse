@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
@@ -10,7 +10,7 @@ namespace NY.Dataverse.LINQPadDriver.Tests;
 
 [TestFixture]
 [SuppressMessage("ReSharper", "InconsistentNaming")]
-public sealed partial class LPRunTests
+public partial class LPRunTests
 {
     private const int SuccessExitCode = 0;
     private static readonly int ErrorExitCode = new Random().Next() % 250 + 2;

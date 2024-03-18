@@ -1,4 +1,4 @@
-﻿using System.Diagnostics.CodeAnalysis;
+using System.Diagnostics.CodeAnalysis;
 using JetBrains.Annotations;
 using LPRun;
 using NUnit.Framework;
@@ -11,24 +11,20 @@ namespace NY.Dataverse.LINQPadDriver.Tests;
 
 [TestFixture]
 [SuppressMessage("ReSharper", "InconsistentNaming")]
-public sealed partial class LPRunTests
+public partial class LPRunTests
 {
     [UsedImplicitly]
     private static readonly string Files = Context.GetDataFullPath("**.csv");
 
     /// <summary>
-    /// 
+    /// Record 
     /// </summary>
     /// <param name="LinqScriptName"></param>
     /// <param name="Context"></param>
     /// <param name="DriverProperties"></param>
     /// <param name="Defines"></param>
     [PublicAPI]
-    public sealed record ScriptWithDriverPropertiesTestData(
-        string LinqScriptName,
-        string? Context,
-        IDataverseContextDriverProperties DriverProperties,
-        params string?[] Defines)
+    public sealed record ScriptWithDriverPropertiesTestData(string LinqScriptName, string? Context, IDataverseContextDriverProperties DriverProperties, params string?[] Defines)
     {
         /// <summary>
         /// Index of the property.

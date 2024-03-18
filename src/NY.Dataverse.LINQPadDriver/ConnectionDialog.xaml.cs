@@ -4,10 +4,10 @@ using JetBrains.Annotations;
 
 namespace NY.Dataverse.LINQPadDriver
 {
-	public partial class ConnectionDialog : Window
-	{
+    public partial class ConnectionDialog : Window
+    {
         [UsedImplicitly]
-		private readonly IConnectionInfo _cxInfo;
+        private readonly IConnectionInfo _cxInfo;
 
         public ConnectionDialog(IConnectionInfo cxInfo)
         {

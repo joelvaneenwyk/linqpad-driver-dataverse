@@ -11,43 +11,64 @@ using System.Windows;
 using System.Xml.Linq;
 using System;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using Microsoft.PowerPlatform.Dataverse.Client;
 using Microsoft.PowerPlatform.Dataverse.Client.Extensions;
 using System.Linq;
 using JetBrains.Annotations;
+using LINQPad.ObjectModel;
+using Microsoft.Identity.Client.NativeInterop;
 
 namespace NY.Dataverse.LINQPadDriver
 {
+    [PublicAPI]
     public class DynamicDriver : DynamicDataContextDriver
     {
-        static DynamicDriver? _driverInstance;
-        static ServiceClient? _dataverseServiceClient;
-        static QueryExecutionManager? _queryExecutionManager;
+        private static DynamicDriver? _driverInstance;
+        private static ServiceClient? _dataverseServiceClient;
+        private static QueryExecutionManager? _queryExecutionManager;
 
-#if DEBUG
         static DynamicDriver()
         {
             // Uncomment the following code to attach to Visual Studio's debugger when an exception is thrown:
             AppDomain.CurrentDomain.FirstChanceException += (sender, args) =>
             {
-
                 if (args?.Exception?.StackTrace?.Contains("NY.Dataverse.LINQPadDriver") ?? false)
-                    Debugger.Launch();
+                {
+                    StartDebugger();
+                }
             };
         }
-#endif
+
+        [System.Diagnostics.Conditional("DEBUG")]
+        private static void StartDebugger()
+        {
+            Debugger.Launch();
+
+        }
+
+        [System.Diagnostics.Conditional("DEBUG")]
+        private void SaveDebugSnapshot(string? code)
+        {
+            File.WriteAllText(Path.Combine(GetContentFolder(), "LINQPad.EarlyBound.cs"), code ?? string.Empty);
+        }
+
         public override string Name => "Dataverse LINQPad Driver";
 
         public override string Author => "Natraj Yegnaraman";
-        public override string GetConnectionDescription(IConnectionInfo connectionInfo)
+
+        public override string GetConnectionDescription(IConnectionInfo cxInfo)
         {
-            var connectionProperties = new ConnectionProperties(connectionInfo);
-            return !string.IsNullOrEmpty(connectionProperties.ConnectionName) ? $"{connectionProperties.ConnectionName} ({connectionProperties.EnvironmentUrl})" : connectionProperties.EnvironmentUrl;
+            var connectionProperties = new ConnectionProperties(cxInfo);
+            return !string.IsNullOrEmpty(connectionProperties.ConnectionName) 
+                ? $"{connectionProperties.ConnectionName} ({connectionProperties.EnvironmentUrl})" 
+                : connectionProperties.EnvironmentUrl;
         }
 
         public override bool ShowConnectionDialog(IConnectionInfo cxInfo, ConnectionDialogOptions dialogOptions)
             => new ConnectionDialog(cxInfo).ShowDialog() == true;
+
         public override IEnumerable<string> GetAssembliesToAdd(IConnectionInfo cxInfo)
         {
             return new string[]
@@ -59,16 +80,16 @@ namespace NY.Dataverse.LINQPadDriver
                 };
         }
 
-        public override List<ExplorerItem> GetSchemaAndBuildAssembly(
+        public override List<ExplorerItem?> GetSchemaAndBuildAssembly(
             IConnectionInfo cxInfo, AssemblyName assemblyToBuild, ref string nameSpace, ref string typeName)
         {
             nameSpace = "NY.Dataverse.LINQPadDriver";
             typeName = "LINQPadOrganizationServiceContext";
-#if DEBUG
-            Debugger.Launch();
-#endif
+
+            StartDebugger();
+
             var connectionProperties = new ConnectionProperties(cxInfo);
-            List<ExplorerItem> explorerItems = new List<ExplorerItem>();
+            List<ExplorerItem?> explorerItems = new();
             ServiceClient? client = null;
             try
             {
@@ -78,16 +99,15 @@ namespace NY.Dataverse.LINQPadDriver
                     var entityMetadata = GetEntityMetadata(client);
                     var template = new CDSTemplate(EntityMetadataCollection.TryCreate(entityMetadata), nameSpace, typeName);
                     var code = template.TransformText();
-#if DEBUG
-                    File.WriteAllText(Path.Combine(GetContentFolder(), "LINQPad.EarlyBound.cs"), code);
-#endif
+
+                    SaveDebugSnapshot(code);
                     Compile(code, assemblyToBuild.CodeBase, cxInfo);
 
                     BuildEntityAndAttributeExplorerItems(explorerItems, entityMetadata);
 
                     foreach (var entity in entityMetadata)
                     {
-                        var source = explorerItems.FirstOrDefault(e => e.Kind == ExplorerItemKind.QueryableObject && (string)e.Tag == entity.entityMetadata.LogicalName);
+                        var source = explorerItems.FirstOrDefault(e => e != null && e.Kind == ExplorerItemKind.QueryableObject && (string)e.Tag == entity.entityMetadata.LogicalName);
 
                         BuildOneToManyRelationLinks(explorerItems, entity, source);
                         BuildManyToOneRelationLinks(explorerItems, entity, source);
@@ -119,17 +139,23 @@ namespace NY.Dataverse.LINQPadDriver
             IConnectionInfo cxInfo, object? context, QueryExecutionManager executionManager)
         {
             _driverInstance = this;
-            EventInfo? preExecuteEvent = context?.GetType().GetEvent("PreExecute");
-            MethodInfo? preExecuteEventHandler = GetType().GetMethod("OnPreExecute", BindingFlags.Static | BindingFlags.NonPublic);
-            preExecuteEvent?.AddEventHandler(
-                context, Delegate.CreateDelegate(preExecuteEvent.EventHandlerType, null, preExecuteEventHandler));
+
+            var preExecuteEvent = context?.GetType().GetEvent("PreExecute");
+            var preExecuteEventHandler = GetType().GetMethod("OnPreExecute", BindingFlags.Static | BindingFlags.NonPublic);
+
+            if (preExecuteEvent?.EventHandlerType != null && preExecuteEventHandler != null)
+            {
+                preExecuteEvent.AddEventHandler(
+                    context, Delegate.CreateDelegate(preExecuteEvent.EventHandlerType, null, preExecuteEventHandler));
+            }
+
             _queryExecutionManager = executionManager;
             base.InitializeContext(cxInfo, context, executionManager);
         }
 
-        public override bool AreRepositoriesEquivalent(IConnectionInfo r1, IConnectionInfo r2)
+        public override bool AreRepositoriesEquivalent(IConnectionInfo c1, IConnectionInfo c2)
         {
-            return Equals(r1.DriverData.Element("EnvironmentUrl"), r2.DriverData.Element("EnvironmentUrl"));
+            return Equals(c1.DriverData.Element("EnvironmentUrl"), c2.DriverData.Element("EnvironmentUrl"));
         }
 
         public override object[] GetContextConstructorArguments(IConnectionInfo cxInfo)
@@ -167,24 +193,29 @@ namespace NY.Dataverse.LINQPadDriver
             "NY.Dataverse.LINQPadDriver.Entities"
         };
 
-        static void Compile(string cSharpSourceCode, string outputFile, IConnectionInfo cxInfo)
+        private static CompilationOutput Compile(string cSharpSourceCode, string? outputFile, IConnectionInfo cxInfo)
         {
-            var customAssemblies = new[]{
+            string[] customAssemblies = {
                 typeof(ServiceClient).Assembly.Location,
                 typeof(EntityReference).Assembly.Location,
                 typeof(AddAppComponentsRequest).Assembly.Location
             };
             var assembliesToReference = GetCoreFxReferenceAssemblies(cxInfo).Concat(customAssemblies);
+
             // CompileSource is a static helper method to compile C# source code using LINQPad's built-in Roslyn libraries.
             // If you prefer, you can add a NuGet reference to the Roslyn libraries and use them directly.
-            var compileResult = CompileSource(new CompilationInput
+            CompilationInput input = new()
             {
                 FilePathsToReference = assembliesToReference.ToArray(),
-                OutputPath = outputFile,
+                OutputPath = outputFile ?? Path.GetTempFileName(),
                 SourceCode = new[] { cSharpSourceCode }
-            });
+            };
+            var compileResult = CompileSource(input);
+
             if (compileResult.Errors.Length > 0)
-                throw new Exception("Cannot compile typed context: " + compileResult.Errors[0]);
+                throw new QueryCompilationException($"Cannot compile typed context: {compileResult.Errors[0]}");
+
+            return compileResult;
         }
 
         #region Helper Methods
@@ -249,7 +280,7 @@ namespace NY.Dataverse.LINQPadDriver
                     )).ToList();
         }
 
-        private static void BuildEntityAndAttributeExplorerItems(List<ExplorerItem> explorerItems, List<(EntityMetadata entityMetadata, List<(string attributeName, List<(string Label, int? Value)> options)> optionMetadata)> entityMetadata)
+        private static void BuildEntityAndAttributeExplorerItems(List<ExplorerItem?> explorerItems, List<(EntityMetadata entityMetadata, List<(string attributeName, List<(string Label, int? Value)> options)> optionMetadata)> entityMetadata)
         {
             foreach (var entity in entityMetadata)
             {
@@ -270,7 +301,7 @@ namespace NY.Dataverse.LINQPadDriver
                     }
                     if (a.AttributeType == AttributeTypeCode.PartyList)
                     {
-                        attributeName = char.ToUpper(attributeName[0]) + attributeName[1..];
+                        attributeName = char.ToUpper(attributeName[0], CultureInfo.CurrentCulture) + attributeName[1..];
                     }
                     return new ExplorerItem($"{attributeName} ({GetTypeFromCode(a.AttributeType)})", ExplorerItemKind.Parameter, ExplorerIcon.Column)
                     {
@@ -289,18 +320,18 @@ namespace NY.Dataverse.LINQPadDriver
         }
 
         private static void BuildOneToManyRelationLinks(
-            List<ExplorerItem> explorerItems,
+            IReadOnlyCollection<ExplorerItem?> explorerItems,
             (
                 EntityMetadata entityMetadata,
                 List<(
                     string attributeName,
                     List<(string Label, int? Value)> options
                     )> optionMetadata) entity,
-            ExplorerItem source)
+            ExplorerItem? source)
         {
             foreach (var oneToMany in entity.entityMetadata.OneToManyRelationships)
             {
-                var target = explorerItems.FirstOrDefault(e => e.Kind == ExplorerItemKind.QueryableObject && (string)e.Tag == oneToMany.ReferencingEntity);
+                var target = explorerItems.FirstOrDefault(e => e != null && e.Kind == ExplorerItemKind.QueryableObject && (string)e.Tag == oneToMany.ReferencingEntity);
                 if (target != null)
                 {
                     source?.Children.Add(new ExplorerItem(oneToMany.SchemaName, ExplorerItemKind.CollectionLink, ExplorerIcon.OneToMany)
@@ -313,16 +344,16 @@ namespace NY.Dataverse.LINQPadDriver
         }
 
         private static void BuildManyToOneRelationLinks(
-            List<ExplorerItem> explorerItems,
+            IReadOnlyCollection<ExplorerItem?> explorerItems,
             (EntityMetadata entityMetadata,
                 List<(
                     string attributeName,
                     List<(string Label, int? Value)> options)> optionMetadata) entity,
-            ExplorerItem source)
+            ExplorerItem? source)
         {
             foreach (var manyToOne in entity.entityMetadata.ManyToOneRelationships)
             {
-                var targetEntity = explorerItems.FirstOrDefault(e => e.Kind == ExplorerItemKind.QueryableObject && (string)e.Tag == manyToOne.ReferencedEntity);
+                var targetEntity = explorerItems.FirstOrDefault(e => e != null && e.Kind == ExplorerItemKind.QueryableObject && (string)e.Tag == manyToOne.ReferencedEntity);
                 var targetAttribute = targetEntity?.Children.FirstOrDefault(e => e.Kind == ExplorerItemKind.Parameter && (string)e.Tag == manyToOne.ReferencedAttribute);
                 if (targetAttribute != null)
                 {
@@ -391,6 +422,14 @@ namespace NY.Dataverse.LINQPadDriver
                 case AttributeTypeCode.PartyList:
                     attributeType = "Party List";
                     break;
+                case AttributeTypeCode.CalendarRules:
+                    break;
+                case AttributeTypeCode.Virtual:
+                    break;
+                case null:
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(attributeTypeCode), attributeTypeCode, null);
             }
             return attributeType;
         }

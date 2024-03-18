@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
@@ -17,7 +17,7 @@ namespace NY.Dataverse.LINQPadDriver.Tests;
 /// </summary>
 [TestFixture]
 [SuppressMessage("ReSharper", "InconsistentNaming")]
-public sealed partial class LPRunTests
+public partial class LPRunTests
 {
     private const int RetryCount = 3;
 
