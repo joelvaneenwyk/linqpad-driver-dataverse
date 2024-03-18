@@ -6,81 +6,80 @@
         <Nullable>enable</Nullable>
         <NoWarn>NETSDK1138</NoWarn>
         <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
-        <OutputPath>..\..\bin\$(Configuration)\Tests</OutputPath>
     </PropertyGroup>
 
-    <PropertyGroup Condition="'$(GITHUB_ACTIONS)'=='true'">
+    <PropertyGroup Condition="'$(GITHUB_ACTIONS)'!=''">
         <DefineConstants>$(DefineConstants);GITHUB_ACTIONS</DefineConstants>
     </PropertyGroup>
 
     <ItemGroup>
-        <Compile Remove="obj\**"/>
-        <EmbeddedResource Remove="obj\**"/>
-        <None Remove="obj\**"/>
+        <Compile Remove="obj/**"/>
+        <EmbeddedResource Remove="obj/**"/>
+        <None Remove="obj/**"/>
     </ItemGroup>
 
     <ItemGroup>
-        <Content Include="LPRun\Data\Authors2.csv">
+        <Content Include="LPRun/Data/Authors2.csv">
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </Content>
-        <Content Include="LPRun\Data\Books.csv">
+        <Content Include="LPRun/Data/Books.csv">
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </Content>
-        <Content Include="LPRun\Data\Authors.csv">
+        <Content Include="LPRun/Data/Authors.csv">
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </Content>
-        <Content Include="LPRun\Data\Books2.csv">
+        <Content Include="LPRun/Data/Books2.csv">
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </Content>
-        <Content Include="LPRun\Data\Comments.csv">
+        <Content Include="LPRun/Data/Comments.csv">
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </Content>
-        <Content Include="LPRun\Data\Encoding\German\Cp1252.csv">
+        <Content Include="LPRun/Data/Encoding/German/Cp1252.csv">
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </Content>
-        <Content Include="LPRun\Data\Same.csv">
+        <Content Include="LPRun/Data/Same.csv">
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </Content>
-        <Content Include="LPRun\Data\Encoding\Utf8Cp65001.csv">
+        <Content Include="LPRun/Data/Encoding/Utf8Cp65001.csv">
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </Content>
-        <Content Include="LPRun\Data\SkipLeadingRows.csv">
+        <Content Include="LPRun/Data/SkipLeadingRows.csv">
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </Content>
-        <Content Include="LPRun\Templates\Encoding.linq">
+        <Content Include="LPRun/Templates/Encoding.linq">
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </Content>
-        <Content Include="LPRun\Templates\Comments.linq">
+        <Content Include="LPRun/Templates/Comments.linq">
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </Content>
-        <Content Include="LPRun\Templates\RenameTable.linq">
+        <Content Include="LPRun/Templates/RenameTable.linq">
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </Content>
-        <Content Include="LPRun\Templates\SkipLeadingRows.linq">
+        <Content Include="LPRun/Templates/SkipLeadingRows.linq">
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </Content>
-        <Content Include="LPRun\Templates\SkipLeadingRowsAll.linq">
+        <Content Include="LPRun/Templates/SkipLeadingRowsAll.linq">
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </Content>
-        <Content Include="LPRun\Templates\StringComparisonForInterning.linq">
+        <Content Include="LPRun/Templates/StringComparisonForInterning.linq">
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </Content>
-        <Content Include="LPRun\Templates\StringComparison.linq">
+        <Content Include="LPRun/Templates/StringComparison.linq">
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </Content>
-        <Content Include="LPRun\Templates\SimilarFilesRelations.linq">
+        <Content Include="LPRun/Templates/SimilarFilesRelations.linq">
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </Content>
-        <Content Include="LPRun\Templates\Extensions.linq">
+        <Content Include="LPRun/Templates/Extensions.linq">
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </Content>
-        <Content Include="LPRun\Templates\ExtensionsSafe.linq">
+        <Content Include="LPRun/Templates/ExtensionsSafe.linq">
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </Content>
-        <Content Include="LPRun\Templates\Generation.linq">
+        <Content Include="LPRun/Templates/Generation.linq">
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </Content>
-        <Content Include="LPRun\Templates\Relations.linq">
+        <Content Include="LPRun/Templates/Relations.linq">
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </Content>
     </ItemGroup>
@@ -98,7 +97,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\LPRun\LPRun.csproj" />
-        <ProjectReference Include="..\NY.Dataverse.LINQPadDriver\NY.Dataverse.LINQPadDriver.csproj"/>
+        <ProjectReference Include="../LPRun/LPRun.csproj" />
+        <ProjectReference Include="../NY.Dataverse.LINQPadDriver/NY.Dataverse.LINQPadDriver.csproj"/>
     </ItemGroup>
 </Project>

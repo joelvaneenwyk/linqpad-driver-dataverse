@@ -137,8 +137,10 @@ public static class Driver
     /// );
     /// </code>
     /// </example>
-    public static void InstallWithDepsJson(string driverDir, string driverFileName,
-        Func<string, string> getDepsJsonFileFullPath, params string[] files)
+    public static void InstallWithDepsJson(
+        string driverDir, string driverFileName,
+        Func<string, string> getDepsJsonFileFullPath,
+        params string[] files)
     {
         Install(
             driverDir,

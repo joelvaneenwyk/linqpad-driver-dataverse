@@ -8,23 +8,23 @@
 ## Table of Contents
 
 - [LINQPad Driver LPRun Unit/Integration Tests Runner](#linqpad-driver-lprun-unitintegration-tests-runner)
-  - [Table of Contents](#table-of-contents)
-  - [Description](#description)
-  - [LPRun .NET Versions](#lprun-net-versions)
-  - [Website](#website)
-  - [Download](#download)
-  - [Usage](#usage)
-    - [Setup](#setup)
-    - [LINQPad Test Script Example](#linqpad-test-script-example)
-    - [NUnit Test Example](#nunit-test-example)
-  - [Known Issues](#known-issues)
-    - [Unit-testing Frameworks Support](#unit-testing-frameworks-support)
-    - [LINQPad Runtime Reference](#linqpad-runtime-reference)
-  - [Authors](#authors)
-  - [Credits](#credits)
-    - [Tools](#tools)
-    - [NuGet](#nuget)
-  - [Licenses](#licenses)
+    - [Table of Contents](#table-of-contents)
+    - [Description](#description)
+    - [LPRun .NET Versions](#lprun-net-versions)
+    - [Website](#website)
+    - [Download](#download)
+    - [Usage](#usage)
+        - [Setup](#setup)
+        - [LINQPad Test Script Example](#linqpad-test-script-example)
+        - [NUnit Test Example](#nunit-test-example)
+    - [Known Issues](#known-issues)
+        - [Unit-testing Frameworks Support](#unit-testing-frameworks-support)
+        - [LINQPad Runtime Reference](#linqpad-runtime-reference)
+    - [Authors](#authors)
+    - [Credits](#credits)
+        - [Tools](#tools)
+        - [NuGet](#nuget)
+    - [Licenses](#licenses)
 
 ## Description
 
@@ -39,8 +39,8 @@ production .NET installed.
 
 | LPRun | .NET 8.0 | .NET 7.0 | .NET 6.0 | .NET 5.0 | .NET 3.1 |
 |:-----:|:--------:|:--------:|:--------:|:--------:|:--------:|
-|   8   |    ✔️     |    ✔️     |    ✔️     |          |          |
-|   7   |          |    ✔️     |    ✔️     |    ✔️     |    ✔️     |
+|   8   |    ✔️    |    ✔️    |    ✔️    |          |          |
+|   7   |          |    ✔️    |    ✔️    |    ✔️    |    ✔️    |
 
 Use the following script to check the .NET version used by LPRun:
 

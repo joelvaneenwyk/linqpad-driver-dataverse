@@ -24,7 +24,8 @@ public partial class LPRunTests
     /// <param name="DriverProperties"></param>
     /// <param name="Defines"></param>
     [PublicAPI]
-    public sealed record ScriptWithDriverPropertiesTestData(string LinqScriptName, string? Context, IDataverseContextDriverProperties DriverProperties, params string?[] Defines)
+    public sealed record ScriptWithDriverPropertiesTestData(
+        string LinqScriptName, string? Context, IDataverseContextDriverProperties DriverProperties, params string?[] Defines)
     {
         /// <summary>
         /// Index of the property.

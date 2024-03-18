@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 using static System.IO.Path;
@@ -30,7 +30,7 @@ public static class Context
             _ => ThrowNotSupportedNetVersionException()
         };
 
-    private static readonly string ExeDir = GetLpRunFullPath("Bin");
+    private static readonly string ExeDir = GetLpRunFullPath("Binaries");
     private static readonly string TemplatesDir = GetLpRunFullPath("Templates");
     private static readonly string DataDir = GetLpRunFullPath("Data");
 
@@ -136,12 +136,10 @@ public static class Context
     /// <see cref="GetDepsJsonRelativePath(string, Func{string, string})" />.
     /// </remarks>
     /// <seealso cref="GetDepsJsonRelativePath(string, Func{string, string})" />
-    public static string GetDepsJsonRelativePath(string driverFileName, string testsFolderPath)
-    {
-        return Wrap(() => GetDepsJsonRelativePath(
+    public static string GetDepsJsonRelativePath(string driverFileName, string testsFolderPath) =>
+        Wrap(() => GetDepsJsonRelativePath(
             driverFileName,
             baseDir => baseDir.Replace(testsFolderPath, string.Empty, StringComparison.OrdinalIgnoreCase)));
-    }
 
     /// <summary>
     /// Gets the driver dependencies JSON path relative to the tests build folder.
@@ -154,7 +152,7 @@ public static class Context
     /// <returns>The driver dependencies JSON path relative to the tests build folder.</returns>
     /// <exception cref="LPRunException">Keeps the original exception as <see cref="P:System.Exception.InnerException" />.</exception>
     /// <remarks>
-    /// Use this method if the tests folder name is used in path multiple times. Otherwise use the overloaded method
+    /// Use this method if the tests folder name is used in path multiple times. Otherwise, use the overloaded method
     /// <see cref="GetDepsJsonRelativePath(string, string)" />.
     /// </remarks>
     /// <seealso cref="GetDepsJsonRelativePath(string, string)" />
@@ -168,13 +166,9 @@ public static class Context
                     ChangeExtension(driverFileName, ".deps.json")))));
     }
 
-    private static string GetLpRunFullPath(string path)
-    {
-        return WrapCombine(LpRunDir, path);
-    }
+    private static string GetLpRunFullPath(string path) =>
+        WrapCombine(LpRunDir, path);
 
-    private static string WrapCombine(string path1, string path2)
-    {
-        return Wrap(() => Combine(path1, path2));
-    }
+    private static string WrapCombine(string path1, string path2) =>
+        Wrap(() => Combine(path1, path2));
 }

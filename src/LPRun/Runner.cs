@@ -19,11 +19,11 @@ namespace LPRun;
 public static class Runner
 {
     private static readonly string[] IgnoredErrorMessages =
-    {
+    [
         "Downloading package",
         "Downloading NuGet package",
         "Restoring package"
-    };
+    ];
 
     private static readonly TimeSpan DefaultTimeout = TimeSpan.FromMinutes(1);
     private static readonly TimeSpan RetryTimeout = TimeSpan.FromSeconds(3);
@@ -44,7 +44,8 @@ public static class Runner
     public static Result Execute(string linqFile, TimeSpan? waitForExit = null, RetryOnError? retryOnError = null,
         params string[] commandLineOptions)
     {
-        return ExecuteAsyncInternal(true, linqFile, waitForExit, retryOnError, commandLineOptions).GetAwaiter()
+        return ExecuteAsyncInternal(true, linqFile, waitForExit, retryOnError, commandLineOptions)
+            .GetAwaiter()
             .GetResult();
     }
 
@@ -102,22 +103,19 @@ public static class Runner
             var output = new StringBuilder();
             var error = new StringBuilder();
 
-            using var process = new Process
-            {
-                StartInfo = new ProcessStartInfo(Exe, GetArguments())
-                {
-                    UseShellExecute = false,
-                    CreateNoWindow = true,
-                    RedirectStandardOutput = true,
-                    RedirectStandardError = true
-                }
-            };
+            using Process process = new();
 
             process.OutputDataReceived += OutputDataReceivedHandler;
             process.ErrorDataReceived += ErrorDataReceivedHandler;
+            process.StartInfo = new ProcessStartInfo(Exe, GetArguments())
+            {
+                UseShellExecute = false,
+                CreateNoWindow = true,
+                RedirectStandardOutput = true,
+                RedirectStandardError = true
+            };
 
             process.Start();
-
             process.BeginOutputReadLine();
             process.BeginErrorReadLine();
 
@@ -156,10 +154,7 @@ public static class Runner
 #if NET5_0_OR_GREATER
             async Task<bool> WaitForExitAsync()
             {
-                if (asSync)
-                {
-                    return WaitForExit();
-                }
+                if (asSync) return WaitForExit();
 
                 try
                 {
@@ -169,7 +164,7 @@ public static class Runner
 #endif
                     await process.WaitForExitAsync
 #if NET6_0_OR_GREATER
-                        ().WaitAsync(waitForExitTimeSpan)
+                            ().WaitAsync(waitForExitTimeSpan)
 #else
                         (cancellationTokenSource.Token)
 #endif

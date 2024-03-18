@@ -34,7 +34,7 @@
         <SymbolPackageFormat>snupkg</SymbolPackageFormat>
     </PropertyGroup>
 
-    <PropertyGroup Condition="'$(GITHUB_ACTIONS)' == 'true'">
+    <PropertyGroup Condition="'$(GITHUB_ACTIONS)'!=''">
         <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
     </PropertyGroup>
 
@@ -51,7 +51,7 @@
     <ItemGroup>
         <Content Include="README.md">
             <Pack>true</Pack>
-            <PackagePath />
+            <PackagePath/>
         </Content>
     </ItemGroup>
 
@@ -63,32 +63,32 @@
     </ItemGroup>
 
     <ItemGroup>
-      <None Update="Binaries/eula.txt">
-        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      </None>
-      <None Update="Binaries/eula.url">
-        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      </None>
-      <None Update="Binaries/LINQPad.Runtime.dll">
-        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      </None>
-      <None Update="Binaries/LPRun8-arm64.exe">
-        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      </None>
-      <None Update="Binaries/LPRun8-x64.exe">
-        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      </None>
-      <None Update="Binaries/LPRun8-x86.exe">
-        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      </None>
-      <None Remove="LPRun/**" />
+        <None Update="Binaries/eula.txt">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
+        <None Update="Binaries/eula.url">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
+        <None Update="Binaries/LINQPad.Runtime.dll">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
+        <None Update="Binaries/LPRun8-arm64.exe">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
+        <None Update="Binaries/LPRun8-x64.exe">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
+        <None Update="Binaries/LPRun8-x86.exe">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
+        <None Remove="LPRun/**"/>
     </ItemGroup>
 
     <ItemGroup>
-      <Compile Remove="LPRun/**" />
+        <Compile Remove="LPRun/**"/>
     </ItemGroup>
 
     <ItemGroup>
-      <EmbeddedResource Remove="LPRun/**" />
+        <EmbeddedResource Remove="LPRun/**"/>
     </ItemGroup>
 </Project>

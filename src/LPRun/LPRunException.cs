@@ -1,6 +1,8 @@
-﻿using System;
+using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
+using System.Diagnostics;
+
 #if !NET8_0_OR_GREATER
 using System.Runtime.Serialization;
 #endif
@@ -71,6 +73,7 @@ public class LPRunException : Exception
     /// </summary>
     /// <param name="action">The <see cref="Action" /> to execute.</param>
     /// <exception cref="LPRunException">Keeps the original exception as <see cref="P:System.Exception.InnerException" />.</exception>
+    [DebuggerStepThrough]
     internal static void Wrap(Action action)
     {
         try
@@ -91,6 +94,7 @@ public class LPRunException : Exception
     /// <param name="func">The <see cref="Func{T}" /> to execute.</param>
     /// <returns>The result of <see cref="Func{T}" /> call.</returns>
     /// <exception cref="LPRunException">Keeps the original exception as <see cref="P:System.Exception.InnerException" />.</exception>
+    [DebuggerStepThrough]
     internal static TResult Wrap<TResult>(Func<TResult> func)
     {
         try
@@ -111,6 +115,7 @@ public class LPRunException : Exception
     /// <param name="func">The asynchronous <see cref="Func{T}" /> where TResult is a <see cref="Task{T}" /> to execute.</param>
     /// <returns>A task that represents the asynchronous result of <see cref="Func{T}" /> call.</returns>
     /// <exception cref="LPRunException">Keeps the original exception as <see cref="P:System.Exception.InnerException" />.</exception>
+    [DebuggerStepThrough]
     internal static async Task<TResult> WrapAsync<TResult>(Func<Task<TResult>> func)
     {
         try
@@ -123,6 +128,7 @@ public class LPRunException : Exception
         }
     }
 
+    [DebuggerStepThrough]
     [DoesNotReturn]
     private static LPRunException Wrap(Exception e)
     {
