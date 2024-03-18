@@ -91,7 +91,7 @@ jobs:
           --logger:trx
           "src/MarkMpn.FetchXmlToWebAPI/MarkMpn.FetchXmlToWebAPI.Tests/MarkMpn.FetchXmlToWebAPI.Tests.csproj"
 
-      - uses: bibipkins/dotnet-test-reporter@v1.4.0
+      - uses: bibipkins/dotnet-test-reporter@v1.4.1
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           comment-title: "Unit Test Results"
