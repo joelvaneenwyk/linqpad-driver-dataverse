@@ -16,13 +16,11 @@ namespace NY.Dataverse.LINQPadDriver.Tests;
 /// Basic tests to validate that LPRun is working.
 /// </summary>
 [TestFixture]
-[SuppressMessage("ReSharper", "InconsistentNaming")]
-public partial class LPRunTests
+public class LINQPadRunnerTestFixture
 {
     private const int RetryCount = 3;
 
     private static readonly TimeSpan RetryTimeout = TimeSpan.FromSeconds(10);
-
     private static readonly TimeSpan WaitTimeout = TimeSpan.FromMinutes(3);
 
     private sealed record FileEncoding(string FileName, Encoding Encoding);
@@ -74,9 +72,13 @@ public partial class LPRunTests
         }
     }
 
-    private static Task<Runner.Result> ExecuteAsync(string scriptFile) =>
-        Runner.ExecuteAsync(scriptFile,
-            WaitTimeout
-            , new Runner.RetryOnError(RetryCount, RetryTimeout)
+    /// <summary>
+    /// Asynchronously execute the script file.
+    /// </summary>
+    /// <param name="scriptFile"></param>
+    /// <returns></returns>
+    protected static Task<Runner.Result> ExecuteAsync(string scriptFile) =>
+        Runner.ExecuteAsync(
+            scriptFile, WaitTimeout, new Runner.RetryOnError(RetryCount, RetryTimeout)
         );
 }

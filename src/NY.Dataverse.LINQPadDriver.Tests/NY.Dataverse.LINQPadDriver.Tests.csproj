@@ -6,6 +6,7 @@
         <Nullable>enable</Nullable>
         <NoWarn>NETSDK1138</NoWarn>
         <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+        <Platforms>AnyCPU</Platforms>
     </PropertyGroup>
 
     <PropertyGroup Condition="'$(GITHUB_ACTIONS)'!=''">
@@ -13,9 +14,9 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <Compile Remove="obj/**"/>
-        <EmbeddedResource Remove="obj/**"/>
-        <None Remove="obj/**"/>
+        <Compile Remove="obj/**" />
+        <EmbeddedResource Remove="obj/**" />
+        <None Remove="obj/**" />
     </ItemGroup>
 
     <ItemGroup>
@@ -85,11 +86,11 @@
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="FluentAssertions" Version="6.12.0"/>
-        <PackageReference Include="Humanizer.Core" Version="2.14.1"/>
-        <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.9.0"/>
-        <PackageReference Include="Moq" Version="[4.20.69]"/>
-        <PackageReference Include="NUnit" Version="4.1.0"/>
+        <PackageReference Include="FluentAssertions" Version="6.12.0" />
+        <PackageReference Include="Humanizer.Core" Version="2.14.1" />
+        <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.9.0" />
+        <PackageReference Include="Moq" Version="[4.20.69]" />
+        <PackageReference Include="NUnit" Version="4.1.0" />
         <PackageReference Include="NUnit3TestAdapter" Version="4.5.0">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -98,6 +99,6 @@
 
     <ItemGroup>
         <ProjectReference Include="../LPRun/LPRun.csproj" />
-        <ProjectReference Include="../NY.Dataverse.LINQPadDriver/NY.Dataverse.LINQPadDriver.csproj"/>
+        <ProjectReference Include="../NY.Dataverse.LINQPadDriver/NY.Dataverse.LINQPadDriver.csproj" />
     </ItemGroup>
 </Project>

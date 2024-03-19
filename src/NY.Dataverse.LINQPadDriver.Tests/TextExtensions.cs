@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Humanizer;
@@ -25,13 +25,6 @@ internal static class TextExtensions
             ? fallback ?? what.Pluralize()
             : what;
     }
-
-#if false
-    public static string AppendDot(this string str) =>
-        AppendDotRegex().IsMatch(str)
-            ? str
-            : str + ".";
-#endif
 
     public static string ReplaceHotKeyChar(this string str, string? newChar = null)
     {
