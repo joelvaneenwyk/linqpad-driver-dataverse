@@ -34,7 +34,7 @@
         <Version>1.7.6</Version>
         <AssemblyVersion>$(Version).0</AssemblyVersion>
         <FileVersion>$(Version).0</FileVersion>
-        <Platforms>AnyCPU;x86;ARM32;ARM64;x64</Platforms>
+        <Platforms>AnyCPU</Platforms>
         <Nullable>enable</Nullable>
         <WarningLevel>7</WarningLevel>
         <CheckForOverflowUnderflow>True</CheckForOverflowUnderflow>
