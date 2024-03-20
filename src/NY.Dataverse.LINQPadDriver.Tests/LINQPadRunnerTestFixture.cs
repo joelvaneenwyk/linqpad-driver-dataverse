@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -45,8 +44,8 @@ public class LINQPadRunnerTestFixture
 
         static void CreateFileEncodings(string baseFile, Encoding encoding)
         {
-            var directory = Path.GetDirectoryName(baseFile);
-            var content = File.ReadAllText(GetFilePath(baseFile), encoding);
+            string? directory = Path.GetDirectoryName(baseFile);
+            string? content = File.ReadAllText(GetFilePath(baseFile), encoding);
 
             Array.ForEach(GetFileEncodings().ToArray(), WriteFiles);
 

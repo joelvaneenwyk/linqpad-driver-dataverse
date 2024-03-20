@@ -18,7 +18,6 @@ using Microsoft.PowerPlatform.Dataverse.Client.Extensions;
 using System.Linq;
 using JetBrains.Annotations;
 using LINQPad.ObjectModel;
-using Microsoft.Identity.Client.NativeInterop;
 
 namespace NY.Dataverse.LINQPadDriver
 {

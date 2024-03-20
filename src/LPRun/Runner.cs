@@ -1,15 +1,10 @@
-﻿using System;
+using System;
 using System.Diagnostics;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using static LPRun.Context;
 using static LPRun.LPRunException;
-
-// ReSharper disable ClassNeverInstantiated.Global
-// ReSharper disable NotAccessedPositionalProperty.Global
-// ReSharper disable UnusedType.Global
-// ReSharper disable UnusedMember.Global
 
 namespace LPRun;
 
@@ -62,25 +57,27 @@ public static class Runner
     /// <returns>A task that represents the asynchronous LINQPad script execution <see cref="Result" />.</returns>
     /// <exception cref="LPRunException">Keeps the original exception as <see cref="P:System.Exception.InnerException" />.</exception>
     /// <seealso href="https://www.linqpad.net/lprun.aspx">LINQPad Command-Line and Scripting</seealso>
-    public static Task<Result> ExecuteAsync(string linqFile, TimeSpan? waitForExit = null,
+    public static Task<Result> ExecuteAsync(
+        string linqFile, TimeSpan? waitForExit = null,
         RetryOnError? retryOnError = null, params string[] commandLineOptions)
     {
         return ExecuteAsyncInternal(false, linqFile, waitForExit, retryOnError, commandLineOptions);
     }
 
-    private static Task<Result> ExecuteAsyncInternal(bool asSync, string linqFile, TimeSpan? waitForExit,
+    private static Task<Result> ExecuteAsyncInternal(
+        bool asSync, string linqFile, TimeSpan? waitForExit,
         RetryOnError? retryOnError, params string[] commandLineOptions)
     {
         return RetryAsync(() => WrapAsync(ExecuteAsyncLocal));
 
         async Task<Result> RetryAsync(Func<Task<Result>> func)
         {
-            var times = retryOnError?.Times ?? 1;
-            var timeout = retryOnError?.Timeout ?? RetryTimeout;
+            int times = retryOnError?.Times ?? 1;
+            TimeSpan timeout = retryOnError?.Timeout ?? RetryTimeout;
 
             while (true)
             {
-                var result = await func();
+                Result result = await func();
 
                 if (result.Success || --times <= 0) return result;
 
@@ -98,10 +95,9 @@ public static class Runner
 
         async Task<Result> ExecuteAsyncLocal()
         {
-            waitForExit ??= DefaultTimeout;
-
-            var output = new StringBuilder();
-            var error = new StringBuilder();
+            TimeSpan waitTime = waitForExit ?? DefaultTimeout;
+            StringBuilder output = new();
+            StringBuilder error = new();
 
             using Process process = new();
 
@@ -119,8 +115,9 @@ public static class Runner
             process.BeginOutputReadLine();
             process.BeginErrorReadLine();
 
-            var waitForExitMilliseconds = (int)waitForExit?.TotalMilliseconds!;
-            var completed = await WaitForExitAsync();
+            bool completed = await WaitForExitAsync(
+                process,
+                TimeSpan.FromMilliseconds(waitTime.TotalMilliseconds));
 
             process.CancelOutputRead();
             process.CancelErrorRead();
@@ -128,17 +125,17 @@ public static class Runner
             process.OutputDataReceived -= OutputDataReceivedHandler;
             process.ErrorDataReceived -= ErrorDataReceivedHandler;
 
-            if (completed) return new Result(output.ToString(), error.ToString(), process.ExitCode);
+            if (completed)
+            {
+                return new Result(output.ToString(), error.ToString(), process.ExitCode);
+            }
 
             process.Kill();
 
-            throw new TimeoutException($"LPRun timed out after {waitForExit}");
+            throw new TimeoutException($"LPRun timed out after {waitTime}");
 
-            string GetArguments()
-            {
-                return
-                    $@"-fx={FrameworkInfo.Version.Major}.{FrameworkInfo.Version.Minor} ""{GetFullPath(linqFile)}"" {string.Join(" ", commandLineOptions)}";
-            }
+            string GetArguments() =>
+                $"""-fx={FrameworkInfo.Version.Major}.{FrameworkInfo.Version.Minor} "{GetFullPath(linqFile)}" {string.Join(" ", commandLineOptions)}""";
 
             void OutputDataReceivedHandler(object _, DataReceivedEventArgs e)
             {
@@ -152,29 +149,39 @@ public static class Runner
             }
 
 #if NET5_0_OR_GREATER
-            async Task<bool> WaitForExitAsync()
+            async Task<bool> WaitForExitAsync(Process exitProcess, TimeSpan waitForExitTimeSpan)
             {
-                if (asSync) return WaitForExit();
+                bool result = false;
 
                 try
                 {
-                    var waitForExitTimeSpan = TimeSpan.FromMilliseconds(waitForExitMilliseconds);
-#if !NET6_0_OR_GREATER
-                    using var cancellationTokenSource = new CancellationTokenSource(waitForExitTimeSpan);
-#endif
-                    await process.WaitForExitAsync
+                    if (asSync)
+                    {
+                        result = WaitForExit(exitProcess, waitForExitTimeSpan);
+                    }
+                    else
+                    {
 #if NET6_0_OR_GREATER
-                            ().WaitAsync(waitForExitTimeSpan)
+                        await exitProcess
+                            .WaitForExitAsync()
+                            .WaitAsync(waitForExitTimeSpan)
+                            .ConfigureAwait(false);
 #else
-                        (cancellationTokenSource.Token)
+                        using var cancellationTokenSource = new CancellationTokenSource(waitForExitTimeSpan);
+                        await exitProcess
+                            .WaitForExitAsync(cancellationTokenSource.Token)
+                            .ConfigureAwait(false);
 #endif
-                        .ConfigureAwait(false);
-                    return true;
+
+                        result = true;
+                    }
                 }
                 catch (OperationCanceledException)
                 {
-                    return false;
+                    // Ignore
                 }
+
+                return result;
             }
 #else
             Task<bool> WaitForExitAsync()
@@ -183,9 +190,9 @@ public static class Runner
             }
 #endif
 
-            bool WaitForExit()
+            static bool WaitForExit(Process exitProcess, TimeSpan exitWaitTime)
             {
-                return process.WaitForExit(waitForExitMilliseconds);
+                return exitProcess.WaitForExit((int)exitWaitTime.TotalMilliseconds);
             }
         }
     }
