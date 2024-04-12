@@ -54,6 +54,7 @@
         <OverwriteReadOnlyOutputFiles>true</OverwriteReadOnlyOutputFiles>
         <TransformOutOfDateOnly>true</TransformOutOfDateOnly>
 
+        <PreserveCompilationContext>true</PreserveCompilationContext>
         <DisableImplicitNuGetFallbackFolder>true</DisableImplicitNuGetFallbackFolder>
         <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
         <Deterministic>true</Deterministic>

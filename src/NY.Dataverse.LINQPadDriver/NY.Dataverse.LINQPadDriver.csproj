@@ -44,9 +44,10 @@
         <IncludeSymbols>True</IncludeSymbols>
         <SymbolPackageFormat>snupkg</SymbolPackageFormat>
         <EnforceCodeStyleInBuild>True</EnforceCodeStyleInBuild>
-        <AnalysisLevel>latest-recommended</AnalysisLevel>
+        <AnalysisLevel>latest-all</AnalysisLevel>
         <NeutralLanguage>en</NeutralLanguage>
         <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
+        <RunPostBuildEvent>Always</RunPostBuildEvent>
     </PropertyGroup>
     <!-- This is the important line. -->
     <Import Condition="Exists('$(VSToolsPath)/TextTemplating/Microsoft.TextTemplating.targets')" Project="$(VSToolsPath)/TextTemplating/Microsoft.TextTemplating.targets" />
