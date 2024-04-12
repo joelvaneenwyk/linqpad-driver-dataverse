@@ -132,7 +132,7 @@ public static class Context
     /// <returns>The driver dependencies JSON path relative to the tests build folder.</returns>
     /// <exception cref="LPRunException">Keeps the original exception as <see cref="P:System.Exception.InnerException" />.</exception>
     /// <remarks>
-    /// Use this method if the tests folder name is used in path only once. Otherwise use the overloaded method
+    /// Use this method if the tests folder name is used in path only once. Otherwise, use the overloaded method
     /// <see cref="GetDepsJsonRelativePath(string, Func{string, string})" />.
     /// </remarks>
     /// <seealso cref="GetDepsJsonRelativePath(string, Func{string, string})" />

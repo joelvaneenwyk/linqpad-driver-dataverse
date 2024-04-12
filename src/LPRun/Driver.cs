@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.IO;
 using System.Linq;
 using static System.Environment;
@@ -49,7 +49,7 @@ public static class Driver
 
         void Execute()
         {
-            var driverPath = Combine(GetExeFullPath(@"drivers\DataContext\NetCore"), driverDir);
+            string driverPath = Combine(GetExeFullPath(@"drivers\DataContext\NetCore"), driverDir);
 
             CreateDirectory(driverPath);
 
@@ -65,11 +65,11 @@ public static class Driver
 
             void ExecIfFileIsNewer(string file, Action<string, string> action)
             {
-                var srcFile = Path.GetFullPath(file);
-                var dstFile = Combine(driverPath, GetFileName(file));
+                string srcFile = Path.GetFullPath(file);
+                string dstFile = Combine(driverPath, GetFileName(file));
 
-                var srcFileInfo = new FileInfo(srcFile);
-                var dstFileInfo = new FileInfo(dstFile);
+                FileInfo srcFileInfo = new(srcFile);
+                FileInfo dstFileInfo = new(dstFile);
 
                 if (!dstFileInfo.Exists || dstFileInfo.LastWriteTime < srcFileInfo.LastWriteTime)
                     action(srcFile, dstFile);
@@ -176,7 +176,7 @@ public static class Driver
         {
             try
             {
-                var path = $@"{GetFolderPath(LocalApplicationData)}\LINQPad\NuGet.Drivers";
+                string path = $@"{GetFolderPath(LocalApplicationData)}\LINQPad\NuGet.Drivers";
 
                 if (GetDirectories(path, driverDir).Any())
                     throw new LPRunException(
