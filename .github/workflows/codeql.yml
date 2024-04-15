@@ -1,0 +1,77 @@
+name: "CodeQL"
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main, develop]
+  schedule:
+    - cron: "34 0 * * 6"
+
+env:
+  PROJECT_NAME: NY.Dataverse.LINQPadDriver
+  PROJECT_SOURCE_ROOT: src
+
+jobs:
+  analyze:
+    permissions:
+      # required for all workflows
+      security-events: write
+
+      # only required for workflows in private repositories
+      actions: read
+      contents: read
+
+    strategy:
+      fail-fast: false
+      matrix:
+        language: [csharp]
+        dotnet: [8.x]
+        os: [windows-latest]
+        runtime: [win-x64]
+        config: [Debug, Release]
+
+    name: "🔎 Analyze | ${{ matrix.config }}"
+
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: ${{ (matrix.language == 'swift' && 120) || 360 }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          submodules: recursive
+
+      # Initializes the CodeQL tools for scanning.
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v3
+        with:
+          languages: ${{ matrix.language }}
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: ${{ matrix.dotnet }}
+
+      - name: Restore dependencies
+        run: >
+          dotnet restore --locked-mode
+          "${{ env.PROJECT_NAME }}.sln"
+
+      # The '--graph' parameter is to address an occasional build error about files being
+      # used by another process the during 'GenerateRuntimeConfigurationFiles'
+      # task: https://github.com/dotnet/msbuild/issues/6690#issuecomment-1553272562
+      - name: Build
+        run: >
+          dotnet build
+          --configuration "${{ matrix.config }}"
+          --runtime "${{ matrix.runtime }}"
+          --verbosity normal
+          --graph
+          "${{ env.PROJECT_SOURCE_ROOT }}/${{ env.PROJECT_NAME }}/${{ env.PROJECT_NAME }}.csproj"
+
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@v3
+        with:
+          category: "/language:${{matrix.language}}"
