@@ -1,0 +1,28 @@
+<Project>
+  <PropertyGroup>
+    <!-- Disable IsTrimmable if explicitly enabled or else we'll get NETSDK1195 and NETSDK1210 errors -->
+    <IsTrimmable Condition="'$(TargetFramework)' != '$(DefaultNetCoreTargetFramework)'"></IsTrimmable>
+    <EnableAOTAnalyzer Condition=" '$(EnableAOTAnalyzer)' == '' ">$([MSBuild]::ValueOrDefault($(IsTrimmable),'false'))</EnableAOTAnalyzer>
+    <EnableSingleFileAnalyzer Condition=" '$(EnableSingleFileAnalyzer)' == '' ">$(EnableAOTAnalyzer)</EnableSingleFileAnalyzer>
+  </PropertyGroup>
+
+  <PropertyGroup Condition=" '$(CopySymbolsToArtifacts)' == 'true' AND '$(TargetFramework)' != '' ">
+    <BuildDependsOn>$(BuildDependsOn);_CopySymbolsToArtifacts</BuildDependsOn>
+  </PropertyGroup>
+
+  <!-- Properties for Package Validation -->
+  <PropertyGroup Condition="'$(ExcludeFromSourceOnlyBuild)' != 'true'">
+    <EnablePackageValidation Condition="'$(EnablePackageValidation)' == ''">true</EnablePackageValidation>
+    <DisablePackageBaselineValidation Condition="'$(IsServicingBuild)' != 'true'">true</DisablePackageBaselineValidation>
+    <GenerateCompatibilitySuppressionFile>true</GenerateCompatibilitySuppressionFile>
+  </PropertyGroup>
+
+  <Target Name="_CopySymbolsToArtifacts">
+    <Copy SourceFiles="$([System.IO.Path]::ChangeExtension('$(TargetPath)', 'pdb'))"
+        DestinationFolder="$(SymbolsOutputPath)$(TargetFramework)"
+        OverwriteReadOnlyFiles="$(OverwriteReadOnlyFiles)"
+        Retries="$(CopyRetryCount)"
+        RetryDelayMilliseconds="$(CopyRetryDelayMilliseconds)"
+        SkipUnchangedFiles="$(SkipCopyUnchangedFiles)" />
+  </Target>
+</Project>

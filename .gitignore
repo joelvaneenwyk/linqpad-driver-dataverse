@@ -6,6 +6,7 @@
 *.sln.DotSettings.user*
 *.sln.DotSettings*
 
+.deploy/
 .build/
 .gdn/
 .sarif/
