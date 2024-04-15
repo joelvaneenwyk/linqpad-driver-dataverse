@@ -1,0 +1,50 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+    <PropertyGroup>
+        <SelfContained>false</SelfContained>
+        <TargetFrameworks>net6.0;net7.0;net8.0</TargetFrameworks>
+        <RuntimeIdentifiers>win-x64;win-x86;linux-x64;linux-x86</RuntimeIdentifiers>
+        <AssemblyName>MarkMpn.FetchXmlToWebAPI.Tests</AssemblyName>
+        <GeneratePackageOnBuild>False</GeneratePackageOnBuild>
+        <PackageTags>dataverse;linqpaddriver;commondataservice;powerapps;dynamics365</PackageTags>
+        <Authors>Natraj Yegnaraman, Joel Van Eenwyk</Authors>
+        <Company>Natraj Yegnaraman</Company>
+        <RootNamespace>MarkMpn.FetchXmlToWebAPI.Tests</RootNamespace>
+        <PackageLicenseExpression>MIT</PackageLicenseExpression>
+        <RepositoryType>git</RepositoryType>
+        <Nullable>enable</Nullable>
+        <TreatWarningsAsErrors>True</TreatWarningsAsErrors>
+        <NoWarn>$(NoWarn);1701;1702;8981;CS1591;YSLIB0044</NoWarn>
+        <EnforceCodeStyleInBuild>True</EnforceCodeStyleInBuild>
+        <AnalysisLevel>latest-recommended</AnalysisLevel>
+        <WarningLevel>9999</WarningLevel>
+        <EnableMSTestRunner>true</EnableMSTestRunner>
+        <IsPackable>false</IsPackable>
+        <Title>$(AssemblyName)</Title>
+        <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+        <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+        <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
+    </PropertyGroup>
+    <ItemGroup>
+        <PackageReference Include="JetBrains.Annotations" Version="2023.3.0" />
+        <PackageReference Include="Microsoft.TestPlatform.TestHost" Version="17.9.0" />
+        <PackageReference Include="MSTest" Version="3.3.1" />
+        <PackageReference Include="MSTest.TestFramework" Version="3.3.1" />
+        <PackageReference Include="FakeXrmEasy.Plugins.v9" Version="3.4.1" />
+        <PackageReference Include="FakeXrmEasy.Messages.v9" Version="3.4.0" />
+        <PackageReference Include="coverlet.collector" Version="6.0.2">
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
+    </ItemGroup>
+    <ItemGroup>
+        <Compile Remove="obj/**" />
+        <EmbeddedResource Remove="obj/**" />
+        <Page Remove="obj/**" />
+        <None Remove="obj/**" />
+    </ItemGroup>
+    <Import Project="../MarkMpn.FetchXmlToWebAPI/MarkMpn.FetchXmlToWebAPI.projitems" Label="Shared" />
+</Project>
