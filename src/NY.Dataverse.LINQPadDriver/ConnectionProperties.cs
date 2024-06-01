@@ -6,20 +6,22 @@ using System;
 using System.Runtime.Caching;
 using System.Threading.Tasks;
 using System.Xml.Linq;
+using JetBrains.Annotations;
 
 namespace NY.Dataverse.LINQPadDriver
 {
 	/// <summary>
 	/// Wrapper to read/write connection properties. This acts as our ViewModel - we will bind to it in ConnectionDialog.xaml.
 	/// </summary>
-	sealed class ConnectionProperties
+	[PublicAPI]
+	public sealed class ConnectionProperties
 	{
 		public IConnectionInfo ConnectionInfo { get; private set; }
 		public string? ContentPath { get; private set; }
 
-		static ObjectCache cache = MemoryCache.Default;
+		internal static ObjectCache Cache = MemoryCache.Default;
 
-		XElement DriverData => ConnectionInfo.DriverData;
+		internal XElement DriverData => ConnectionInfo.DriverData;
 
 		public ConnectionProperties(IConnectionInfo cxInfo) => ConnectionInfo = cxInfo;
 
@@ -106,20 +108,30 @@ namespace NY.Dataverse.LINQPadDriver
 
 		public ServiceClient GetCdsClient()
 		{
-			return !string.IsNullOrEmpty(ConnectionString) ? new ServiceClient(ConnectionString) : new ServiceClient(tokenProviderFunction: f => ConnectionProperties.GetToken(EnvironmentUrl), instanceUrl: new Uri(EnvironmentUrl));
+			return !string.IsNullOrEmpty(ConnectionString)
+                ? new ServiceClient(ConnectionString)
+                : new ServiceClient(tokenProviderFunction: _ => GetToken(EnvironmentUrl), instanceUrl: new Uri(EnvironmentUrl));
 		}
 
 		private static async Task<string> GetToken(string environment)
 		{
-			var credential = new DefaultAzureCredential();
-			//TokenProviderFunction is called multiple times, so we need to check if we already have a token in the cache
-			var accessToken = cache.Get(environment);
-			if (accessToken == null)
+            DefaultAzureCredential credential = new();
+
+			// TokenProviderFunction is called multiple times, so we need to check if we already have a token in the cache
+			if (Cache.Get(environment) is not AccessToken accessToken)
 			{
-				accessToken = (await credential.GetTokenAsync(new TokenRequestContext(new[] { $"{environment}/.default" })));
-				cache.Set(environment, accessToken, new CacheItemPolicy { AbsoluteExpiration = DateTimeOffset.UtcNow.AddMinutes(50) });
+				accessToken = await credential.GetTokenAsync(
+                    new TokenRequestContext(new[] { $"{environment}/.default" }));
+				Cache.Set(
+                    environment,
+                    accessToken,
+                    new CacheItemPolicy
+                    {
+                        AbsoluteExpiration = DateTimeOffset.UtcNow.AddMinutes(50)
+                    });
 			}
-			return ((AccessToken)accessToken).Token;
+
+			return accessToken.Token;
 		}
 	}
 }
