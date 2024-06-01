@@ -1,31 +1,37 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.29806.167
+# Visual Studio Version 17
+VisualStudioVersion = 17.10.34928.147
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NY.Dataverse.LINQPadDriver", "NY.Dataverse.LINQPadDriver.csproj", "{1AEC13A1-A7A0-4E31-8C55-E9E0A2C54511}"
 EndProject
 Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "MarkMpn.FetchXmlToWebAPI", "MarkMpn.FetchXmlToWebAPI\MarkMpn.FetchXmlToWebAPI\MarkMpn.FetchXmlToWebAPI.shproj", "{543E6D79-2913-4B00-AAAC-5661F6ADB1A5}"
 EndProject
 Global
-	GlobalSection(SharedMSBuildProjectFiles) = preSolution
-		MarkMpn.FetchXmlToWebAPI\MarkMpn.FetchXmlToWebAPI\MarkMpn.FetchXmlToWebAPI.projitems*{1aec13a1-a7a0-4e31-8c55-e9e0a2c54511}*SharedItemsImports = 5
-		MarkMpn.FetchXmlToWebAPI\MarkMpn.FetchXmlToWebAPI\MarkMpn.FetchXmlToWebAPI.projitems*{543e6d79-2913-4b00-aaac-5661f6adb1a5}*SharedItemsImports = 13
-	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
+		Debug|x64 = Debug|x64
 		Release|Any CPU = Release|Any CPU
+		Release|x64 = Release|x64
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{1AEC13A1-A7A0-4E31-8C55-E9E0A2C54511}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{1AEC13A1-A7A0-4E31-8C55-E9E0A2C54511}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1AEC13A1-A7A0-4E31-8C55-E9E0A2C54511}.Debug|x64.ActiveCfg = Debug|x64
+		{1AEC13A1-A7A0-4E31-8C55-E9E0A2C54511}.Debug|x64.Build.0 = Debug|x64
 		{1AEC13A1-A7A0-4E31-8C55-E9E0A2C54511}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1AEC13A1-A7A0-4E31-8C55-E9E0A2C54511}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1AEC13A1-A7A0-4E31-8C55-E9E0A2C54511}.Release|x64.ActiveCfg = Release|x64
+		{1AEC13A1-A7A0-4E31-8C55-E9E0A2C54511}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {DE088616-0D66-4525-A34F-4D36042A5B1C}
+	EndGlobalSection
+	GlobalSection(SharedMSBuildProjectFiles) = preSolution
+		MarkMpn.FetchXmlToWebAPI\MarkMpn.FetchXmlToWebAPI\MarkMpn.FetchXmlToWebAPI.projitems*{1aec13a1-a7a0-4e31-8c55-e9e0a2c54511}*SharedItemsImports = 5
+		MarkMpn.FetchXmlToWebAPI\MarkMpn.FetchXmlToWebAPI\MarkMpn.FetchXmlToWebAPI.projitems*{543e6d79-2913-4b00-aaac-5661f6adb1a5}*SharedItemsImports = 13
 	EndGlobalSection
 EndGlobal
