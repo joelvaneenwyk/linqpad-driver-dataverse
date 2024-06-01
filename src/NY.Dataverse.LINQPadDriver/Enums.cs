@@ -1,5 +1,8 @@
-﻿namespace NY.Dataverse.LINQPadDriver
+﻿using JetBrains.Annotations;
+
+namespace NY.Dataverse.LINQPadDriver
 {
+    [PublicAPI]
     public static class FetchAttributes
     {
         public static string Top => "top";
