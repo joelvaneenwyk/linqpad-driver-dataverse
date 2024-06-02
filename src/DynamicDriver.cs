@@ -25,18 +25,17 @@ namespace NY.Dataverse.LINQPadDriver
 		static ServiceClient _dataverseServiceClient;
 		static QueryExecutionManager _queryExecutionManager;
 
-#if DEBUG
 		static DynamicDriver()
 		{
 			// Uncomment the following code to attach to Visual Studio's debugger when an exception is thrown:
 			AppDomain.CurrentDomain.FirstChanceException += (sender, args) =>
 			{
-
+#if DEBUG_BREAKPOINT
 				if (args.Exception.StackTrace.Contains("NY.Dataverse.LINQPadDriver"))
 					Debugger.Launch();
+#endif
 			};
 		}
-#endif
 		public override string Name => "Dataverse LINQPad Driver";
 
 		public override string Author => "Natraj Yegnaraman";
@@ -64,7 +63,7 @@ namespace NY.Dataverse.LINQPadDriver
 		{
 			nameSpace = "NY.Dataverse.LINQPadDriver";
 			typeName = "LINQPadOrganizationServiceContext";
-#if DEBUG
+#if DEBUG_BREAKPOINT
 			Debugger.Launch();
 #endif
 			var connectionProperties = new ConnectionProperties(cxInfo);
@@ -96,10 +95,13 @@ namespace NY.Dataverse.LINQPadDriver
             }
             catch (Exception ex)
             {
+#if DEBUG_BREAKPOINT
 				MessageBox.Show($"Error occured while attemoting to connect to {connectionProperties.EnvironmentUrl} using {connectionProperties.AuthenticationType}: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+#endif
             }
             finally
             {
+#if DEBUG_BREAKPOINT
 				if (client != null) 
 				{
 					var user = client.Retrieve("systemuser", client.GetMyUserId(), new ColumnSet("fullname","internalemailaddress"));
@@ -107,6 +109,7 @@ namespace NY.Dataverse.LINQPadDriver
 					var userName = user.GetAttributeValue<string>("fullname");
 					MessageBox.Show($"Connected to {client.OrganizationDetail.FriendlyName} as {userName} ({email})", "Connected", MessageBoxButton.OK, MessageBoxImage.Information);
 				}
+#endif
 			}
             return explorerItems;
 		}
