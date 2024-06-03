@@ -1,73 +1,77 @@
-name: .NET
+name: ".NET"
 
 on:
- # push:
- #   branches: [ master ]
- # pull_request:
- #   branches: [ master ]
+  push:
+    branches: [main, develop, release]
+  pull_request:
+    branches: [main, develop, release]
   workflow_dispatch:
-     inputs:
-       release:
-         description: "Release?"
-         required: true
-         default: false  
+
+permissions:
+  contents: read
+  id-token: write
+  checks: write
+  pull-requests: write
+
+env:
+  PROJECT_NAME: NY.Dataverse.LINQPadDriver
+  PROJECT_SOURCE_ROOT: src
+  PROJECT_FETCH_XML: MarkMpn.FetchXmlToWebAPI
+
 jobs:
   build:
-    env:
-      buildConfig: 'Release'
-    defaults:
-      run:
-        working-directory: src
-    runs-on: windows-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        dotnet: [8.x]
+        os: [windows-latest]
+        runtime: [win-x64]
+        config: [Debug, Release]
+
+    runs-on: ${{ matrix.os }}
+
+    # Build: dotnet-8.x, win-x64, Debug
+    name: "🪟🔥 Build | ${{ matrix.config }}"
 
     steps:
-    - uses: actions/checkout@v2
-      
-    - name: Setup .NET
-      uses: actions/setup-dotnet@v1
-      with:
-        dotnet-version: '3.1.x'
-        source-url: https://nuget.pkg.github.com/rajyraman/index.json
-      env:
-        NUGET_AUTH_TOKEN: ${{secrets.NUGET_AUTH_TOKEN}}      
-          
-    - name: Restore dependencies
-      run: dotnet restore
-            
-    - name: Build
-      run: dotnet build --no-restore --configuration ${{ env.buildConfig }}
-      
-    - name: Create the package
-      id: create-package
-      run: |
-        $version = "$(Get-Date -Format "yyyy.MM.dd").${{ github.run_number }}";
-        dotnet pack --configuration ${{ env.buildConfig }};
-        Compress-Archive bin/Release/netcoreapp*/* bin/Release/netcoreapp*/NY.Dataverse.LINQPadDriver.lpx6  -Verbose;
-        echo "::set-output name=driverFileName::NY.Dataverse.LINQPadDriver_$version.lpx6";
-        echo "::set-output name=driverFileVersion::$version";
-    
-    - name: Create Release
-      id: create_release
-      uses: actions/create-release@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        tag_name: ${{ steps.create-package.outputs.driverFileVersion }}
-        release_name: ${{ steps.create-package.outputs.driverFileName }}
-        draft: true
-        prerelease: false
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
 
-    - name: Upload LINQPad Driver
-      id: release-managed-solution
-      if: steps.create_release.conclusion == 'success'
-      uses: actions/upload-release-asset@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: bin/Release/netcoreapp*/NY.Dataverse.LINQPadDriver.lpx6
-        asset_name: ${{ steps.create-package.outputs.driverFileName }}
-        asset_content_type: application/zip        
-    
-    #- name: Publish the package to GPR
-    #  run: dotnet nuget push bin/Release/*.nupkg
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: ${{ matrix.dotnet }}
+
+      - name: Restore dependencies
+        run: >
+          dotnet restore --locked-mode
+          "${{ env.PROJECT_NAME }}.sln"
+
+      # The '--graph' parameter is to address an occasional build error about files being
+      # used by another process the during 'GenerateRuntimeConfigurationFiles'
+      # task: https://github.com/dotnet/msbuild/issues/6690#issuecomment-1553272562
+      - name: Build
+        run: >
+          dotnet build
+          --configuration "${{ matrix.config }}"
+          --runtime "${{ matrix.runtime }}"
+          --verbosity normal
+          --graph
+          "${{ env.PROJECT_SOURCE_ROOT }}/${{ env.PROJECT_NAME }}/${{ env.PROJECT_NAME }}.csproj"
+
+      - name: Test
+        run: >
+          dotnet test
+          --configuration "${{ matrix.config }}"
+          --runtime "${{ matrix.runtime }}"
+          --verbosity normal
+          --results-directory:"./TestResults/${{ matrix.dotnet }}-${{ matrix.runtime }}-${{ matrix.config }}"
+          --logger:trx
+          "${{ env.PROJECT_SOURCE_ROOT }}/${{ env.PROJECT_FETCH_XML }}/${{ env.PROJECT_FETCH_XML }}.Tests/${{ env.PROJECT_FETCH_XML }}.Tests.csproj"
+
+      - uses: bibipkins/dotnet-test-reporter@v1.4.1
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          comment-title: "Unit Test Results"
+          results-path: "./TestResults/${{ matrix.dotnet }}-${{ matrix.runtime }}-${{ matrix.config }}/*.trx"
