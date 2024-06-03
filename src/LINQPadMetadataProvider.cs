@@ -5,6 +5,8 @@ using System.Collections.Generic;
 using System.Text;
 using System.Linq;
 
+#nullable enable
+
 namespace NY.Dataverse.LINQPadDriver
 {
     public class LINQPadMetadataProvider : IMetadataProvider
@@ -19,7 +21,7 @@ namespace NY.Dataverse.LINQPadDriver
             return Metadata.Single(x=>x.LogicalName == logicalName);
         }
 
-        public EntityMetadata GetEntity(int otc)
+        public EntityMetadata GetEntity(int? otc)
         {
             return Metadata.Single(x => x.ObjectTypeCode == otc);
         }

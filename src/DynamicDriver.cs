@@ -14,12 +14,13 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.ExceptionServices;
 using System.Windows;
 using System.Xml.Linq;
 
 namespace NY.Dataverse.LINQPadDriver
 {
-    public class DynamicDriver : DynamicDataContextDriver
+	public class DynamicDriver : DynamicDataContextDriver
 	{
 		static DynamicDriver _driverInstance;
 		static ServiceClient _dataverseServiceClient;
@@ -30,23 +31,24 @@ namespace NY.Dataverse.LINQPadDriver
 			// Uncomment the following code to attach to Visual Studio's debugger when an exception is thrown:
 			AppDomain.CurrentDomain.FirstChanceException += (sender, args) =>
 			{
-#if DEBUG_BREAKPOINT
 				if (args.Exception.StackTrace.Contains("NY.Dataverse.LINQPadDriver"))
-					Debugger.Launch();
-#endif
+				{
+					LaunchDebugger();
+				}
 			};
 		}
+
 		public override string Name => "Dataverse LINQPad Driver";
 
 		public override string Author => "Natraj Yegnaraman";
-        public override string GetConnectionDescription(IConnectionInfo connectionInfo) 
-        {
-            var connectionProperties = new ConnectionProperties(connectionInfo);
-            return !string.IsNullOrEmpty(connectionProperties.ConnectionName) ? $"{connectionProperties.ConnectionName} ({connectionProperties.EnvironmentUrl})" : connectionProperties.EnvironmentUrl;
-        }
+		public override string GetConnectionDescription(IConnectionInfo connectionInfo)
+		{
+			var connectionProperties = new ConnectionProperties(connectionInfo);
+			return !string.IsNullOrEmpty(connectionProperties.ConnectionName) ? $"{connectionProperties.ConnectionName} ({connectionProperties.EnvironmentUrl})" : connectionProperties.EnvironmentUrl;
+		}
 
-		public override bool ShowConnectionDialog (IConnectionInfo cxInfo, ConnectionDialogOptions dialogOptions)
-			=> new ConnectionDialog (cxInfo).ShowDialog() == true;
+		public override bool ShowConnectionDialog(IConnectionInfo cxInfo, ConnectionDialogOptions dialogOptions)
+			=> new ConnectionDialog(cxInfo).ShowDialog() == true;
 		public override IEnumerable<string> GetAssembliesToAdd(IConnectionInfo cxInfo)
 		{
 			return new string[]
@@ -58,74 +60,101 @@ namespace NY.Dataverse.LINQPadDriver
 				};
 		}
 
-		public override List<ExplorerItem> GetSchemaAndBuildAssembly (
+		public override List<ExplorerItem> GetSchemaAndBuildAssembly(
 			IConnectionInfo cxInfo, AssemblyName assemblyToBuild, ref string nameSpace, ref string typeName)
 		{
 			nameSpace = "NY.Dataverse.LINQPadDriver";
 			typeName = "LINQPadOrganizationServiceContext";
-#if DEBUG_BREAKPOINT
-			Debugger.Launch();
-#endif
+			LaunchDebugger();
 			var connectionProperties = new ConnectionProperties(cxInfo);
 			List<ExplorerItem> explorerItems = new List<ExplorerItem>();
 			ServiceClient client = null;
-            try
-            {
-                client = connectionProperties.GetCdsClient();
-                if (client.IsReady)
-                {
-                    var entityMetadata = GetEntityMetadata(client);
-                    var code = new CDSTemplate(entityMetadata) { Namespace = nameSpace, TypeName = typeName }.TransformText();
-#if DEBUG
-                    File.WriteAllText(Path.Combine(GetContentFolder(), "LINQPad.EarlyBound.cs"), code);
-#endif
-                    Compile(code, assemblyToBuild.CodeBase, cxInfo);
-
-                    BuildEntityAndAttributeExplorerItems(explorerItems, entityMetadata);
-
-                    foreach (var entity in entityMetadata)
-                    {
-                        var source = explorerItems.FirstOrDefault(e => e.Kind == ExplorerItemKind.QueryableObject && (string)e.Tag == entity.entityMetadata.LogicalName);
-
-                        BuildOneToManyRelationLinks(explorerItems, entity, source);
-
-                        BuildManyToOneRelationLinks(explorerItems, entity, source);
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-#if DEBUG_BREAKPOINT
-				MessageBox.Show($"Error occured while attemoting to connect to {connectionProperties.EnvironmentUrl} using {connectionProperties.AuthenticationType}: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-#endif
-            }
-            finally
-            {
-#if DEBUG_BREAKPOINT
-				if (client != null) 
+			try
+			{
+				client = connectionProperties.GetCdsClient();
+				if (client.IsReady)
 				{
-					var user = client.Retrieve("systemuser", client.GetMyUserId(), new ColumnSet("fullname","internalemailaddress"));
+					var entityMetadata = GetEntityMetadata(client);
+					var code = new CDSTemplate(entityMetadata) { Namespace = nameSpace, TypeName = typeName }.TransformText();
+					SaveEarlyBound(code);
+					Compile(code, assemblyToBuild.CodeBase, cxInfo);
+
+					BuildEntityAndAttributeExplorerItems(explorerItems, entityMetadata);
+
+					foreach (var entity in entityMetadata)
+					{
+						var source = explorerItems.FirstOrDefault(e => e.Kind == ExplorerItemKind.QueryableObject && (string)e.Tag == entity.entityMetadata.LogicalName);
+
+						BuildOneToManyRelationLinks(explorerItems, entity, source);
+
+						BuildManyToOneRelationLinks(explorerItems, entity, source);
+					}
+				}
+			}
+			catch (Exception ex)
+			{
+				ShowMessage($"Error occured while attempting to connect to {connectionProperties.EnvironmentUrl} using {connectionProperties.AuthenticationType}: {ex.Message}");
+			}
+			finally
+			{
+				if (client != null)
+				{
+					var user = client.Retrieve("systemuser", client.GetMyUserId(), new ColumnSet("fullname", "internalemailaddress"));
 					var email = user.GetAttributeValue<string>("internalemailaddress");
 					var userName = user.GetAttributeValue<string>("fullname");
-					MessageBox.Show($"Connected to {client.OrganizationDetail.FriendlyName} as {userName} ({email})", "Connected", MessageBoxButton.OK, MessageBoxImage.Information);
+					ShowMessage($"Connected to {client.OrganizationDetail.FriendlyName} as {userName} ({email})", "Connected", MessageBoxButton.OK, MessageBoxImage.Information);
 				}
-#endif
 			}
-            return explorerItems;
+			return explorerItems;
 		}
 
-        public override void InitializeContext(IConnectionInfo cxInfo, object context,
+		[Conditional("DEBUG")]
+		private static void LaunchDebugger()
+		{
+			Debugger.Launch();
+
+		}
+
+		[Conditional("DEBUG")]
+		private void SaveEarlyBound(string code)
+		{
+			File.WriteAllText(Path.Combine(GetContentFolder(), "LINQPad.EarlyBound.cs"), code);
+
+		}
+
+		[Conditional("DEBUG")]
+		private static void ShowMessage(
+			string message,
+			string caption = "Error",
+			MessageBoxButton button = MessageBoxButton.OK,
+			MessageBoxImage image = MessageBoxImage.Error)
+		{
+			MessageBox.Show(message, caption, button, image);
+
+		}
+
+		/// <summary>
+		/// Initialize driver with connection info and execution context.
+		/// </summary>
+		/// <param name="cxInfo"></param>
+		/// <param name="context"></param>
+		/// <param name="executionManager"></param>
+		public override void InitializeContext(IConnectionInfo cxInfo, object context,
 												QueryExecutionManager executionManager)
 		{
 			_driverInstance = this;
-            var preExecuteEvent = context.GetType().GetEvent("PreExecute");
+			var preExecuteEvent = context.GetType().GetEvent("PreExecute");
 			var preExecuteEventHandler = GetType().GetMethod("OnPreExecute", BindingFlags.Static | BindingFlags.NonPublic);
-			preExecuteEvent.AddEventHandler(context, Delegate.CreateDelegate(preExecuteEvent.EventHandlerType, null, preExecuteEventHandler));
+			if (preExecuteEvent != null)
+			{
+				preExecuteEvent.AddEventHandler(context,
+					Delegate.CreateDelegate(preExecuteEvent.EventHandlerType, null, preExecuteEventHandler));
+			}
 			_queryExecutionManager = executionManager;
 			base.InitializeContext(cxInfo, context, executionManager);
 		}
 
-        public override bool AreRepositoriesEquivalent(IConnectionInfo r1, IConnectionInfo r2)
+		public override bool AreRepositoriesEquivalent(IConnectionInfo r1, IConnectionInfo r2)
 		{
 			return Equals(r1.DriverData.Element("EnvironmentUrl"), r2.DriverData.Element("EnvironmentUrl"));
 		}
@@ -185,17 +214,17 @@ namespace NY.Dataverse.LINQPadDriver
 				throw new Exception("Cannot compile typed context: " + compileResult.Errors[0]);
 		}
 
-        #region Helper Methods
+		#region Helper Methods
 		private static void OnPreExecute(object sender, EventArgs e)
-        {
+		{
 			if (_dataverseServiceClient != null)
 			{
 				QueryExpression query = (QueryExpression)e.GetType().GetProperty("query").GetValue(e);
-                var expressionToFetchXmlRequest = new QueryExpressionToFetchXmlRequest
-                {
-                    Query = query
-                };
-                var organizationResponse = (QueryExpressionToFetchXmlResponse)_dataverseServiceClient.Execute(expressionToFetchXmlRequest);
+				var expressionToFetchXmlRequest = new QueryExpressionToFetchXmlRequest
+				{
+					Query = query
+				};
+				var organizationResponse = (QueryExpressionToFetchXmlResponse)_dataverseServiceClient.Execute(expressionToFetchXmlRequest);
 				try
 				{
 					var webApiUrl = WebAPIQueryHelper.GetWebApiUrl(_dataverseServiceClient, organizationResponse.FetchXml);
@@ -204,70 +233,70 @@ namespace NY.Dataverse.LINQPadDriver
 						_queryExecutionManager?.SqlTranslationWriter.WriteLine($"***WebAPI Url***\n{webApiUrl}");
 					}
 				}
-				catch(Exception ex)
-                {
+				catch (Exception ex)
+				{
 					_queryExecutionManager?.SqlTranslationWriter.WriteLine($"***WebAPI Generation Exception***\n{ex.Message}");
 				}
-                finally
-                {
+				finally
+				{
 					_queryExecutionManager?.SqlTranslationWriter.WriteLine($"\n***FetchXML***\n{XElement.Parse(organizationResponse.FetchXml)}\n");
 				}
 			}
 		}
 
 		private static List<(EntityMetadata entityMetadata, List<(string attributeName, List<(string Label, int? Value)> options)> optionMetadata)> GetEntityMetadata(ServiceClient client)
-        {
+		{
 			var metadata = client.GetAllEntityMetadata(filter: EntityFilters.Attributes | EntityFilters.Entity | EntityFilters.Relationships).ToList();
-            //Fix for https://github.com/rajyraman/Dataverse-LINQPad-Driver/issues/19
-            metadata.ForEach(entityMetadata =>
+			//Fix for https://github.com/rajyraman/Dataverse-LINQPad-Driver/issues/19
+			metadata.ForEach(entityMetadata =>
 			{
-                entityMetadata.SchemaName = !IsCSharpKeyword(entityMetadata.SchemaName) ? entityMetadata.SchemaName : $"_{entityMetadata.SchemaName}";
-                entityMetadata.EntitySetName = entityMetadata.SchemaName;
-            });
-            return (from e in metadata
-                    orderby e.LogicalName
-                    select (entityMetadata: e, optionMetadata: (from attribute in e.Attributes.Where(a => a.AttributeType == AttributeTypeCode.State || a.AttributeType == AttributeTypeCode.Status || a.AttributeType == AttributeTypeCode.Picklist).OrderBy(a => a.LogicalName)
-                                                                let allOptions = from a in ((EnumAttributeMetadata)attribute).OptionSet.Options
-                                                                                 select new { a.Label, a.Value, SanitisedLabel = a.Label.UserLocalizedLabel?.Label.Sanitise() ?? "" }
-                                                                select (attributeName: attribute.SchemaName, options: allOptions.Select(x =>
-                                                                {
-                                                                    var enumValue = x.SanitisedLabel;
-                                                                    if (string.IsNullOrEmpty(x.SanitisedLabel))
-                                                                    {
+				entityMetadata.SchemaName = !IsCSharpKeyword(entityMetadata.SchemaName) ? entityMetadata.SchemaName : $"_{entityMetadata.SchemaName}";
+				entityMetadata.EntitySetName = entityMetadata.SchemaName;
+			});
+			return (from e in metadata
+					orderby e.LogicalName
+					select (entityMetadata: e, optionMetadata: (from attribute in e.Attributes.Where(a => a.AttributeType == AttributeTypeCode.State || a.AttributeType == AttributeTypeCode.Status || a.AttributeType == AttributeTypeCode.Picklist).OrderBy(a => a.LogicalName)
+																let allOptions = from a in ((EnumAttributeMetadata)attribute).OptionSet.Options
+																				 select new { a.Label, a.Value, SanitisedLabel = a.Label.UserLocalizedLabel?.Label.Sanitise() ?? "" }
+																select (attributeName: attribute.SchemaName, options: allOptions.Select(x =>
+																{
+																	var enumValue = x.SanitisedLabel;
+																	if (string.IsNullOrEmpty(x.SanitisedLabel))
+																	{
 																		//When the value is a negative number, replace '-' with '_'.
-																		enumValue = $"_{x.Value}".Replace("-","_");
-                                                                    }
-                                                                    else if (IsCSharpKeyword(enumValue) || char.IsDigit(enumValue[0]) || allOptions.Count(o => o.SanitisedLabel == x.SanitisedLabel) > 1)
-                                                                    {
+																		enumValue = $"_{x.Value}".Replace("-", "_");
+																	}
+																	else if (IsCSharpKeyword(enumValue) || char.IsDigit(enumValue[0]) || allOptions.Count(o => o.SanitisedLabel == x.SanitisedLabel) > 1)
+																	{
 																		//When the value is a negative number, replace '-' with '_'.
 																		enumValue = $"_{enumValue}_{x.Value}".Replace("-", "_");
-                                                                    }
-                                                                    return (Label: enumValue, x.Value);
-                                                                }).ToList())).ToList()
-                    )).ToList();
-        }
+																	}
+																	return (Label: enumValue, x.Value);
+																}).ToList())).ToList()
+					)).ToList();
+		}
 
-        private static void BuildEntityAndAttributeExplorerItems(List<ExplorerItem> explorerItems, List<(EntityMetadata entityMetadata, List<(string attributeName, List<(string Label, int? Value)> options)> optionMetadata)> entityMetadata)
-        {
-            foreach (var entity in entityMetadata)
-            {
-                var attributes = entity.entityMetadata.Attributes
-                .Where(x => (x.IsLogical == false || (x.IsLogical == true && x.IsValidForForm == true)) 
-				&& x.AttributeType != AttributeTypeCode.Virtual 
+		private static void BuildEntityAndAttributeExplorerItems(List<ExplorerItem> explorerItems, List<(EntityMetadata entityMetadata, List<(string attributeName, List<(string Label, int? Value)> options)> optionMetadata)> entityMetadata)
+		{
+			foreach (var entity in entityMetadata)
+			{
+				var attributes = entity.entityMetadata.Attributes
+				.Where(x => (x.IsLogical == false || (x.IsLogical == true && x.IsValidForForm == true))
+				&& x.AttributeType != AttributeTypeCode.Virtual
 				&& x.AttributeType != AttributeTypeCode.CalendarRules)
-                .OrderBy(x => x.LogicalName)
-                .Select(a => 
+				.OrderBy(x => x.LogicalName)
+				.Select(a =>
 				{
 					var attributeName = a.SchemaName;
-					if(a.LogicalName == a.EntityLogicalName || 
+					if (a.LogicalName == a.EntityLogicalName ||
 						a.SchemaName == "EntityLogicalName" ||
 						a.SchemaName == "EntityTypeCode" ||
 						a.SchemaName == "Id")
-                    {
+					{
 						attributeName = $"{a.SchemaName}1";
 					}
-					if(a.AttributeType == AttributeTypeCode.PartyList)
-                    {
+					if (a.AttributeType == AttributeTypeCode.PartyList)
+					{
 						attributeName = char.ToUpper(attributeName[0]) + attributeName[1..];
 					}
 					return new ExplorerItem($"{attributeName} ({GetTypeFromCode(a.AttributeType)})", ExplorerItemKind.Parameter, ExplorerIcon.Column)
@@ -276,48 +305,48 @@ namespace NY.Dataverse.LINQPadDriver
 						Tag = a.LogicalName
 					};
 				}).ToList();
-                ExplorerItem item = new ExplorerItem(entity.entityMetadata.SchemaName, ExplorerItemKind.QueryableObject, ExplorerIcon.Table)
-                {
-                    IsEnumerable = true,
-                    Children = attributes,
-                    Tag = entity.entityMetadata.LogicalName
-                };
-                explorerItems.Add(item);
-            }
-        }
+				ExplorerItem item = new ExplorerItem(entity.entityMetadata.SchemaName, ExplorerItemKind.QueryableObject, ExplorerIcon.Table)
+				{
+					IsEnumerable = true,
+					Children = attributes,
+					Tag = entity.entityMetadata.LogicalName
+				};
+				explorerItems.Add(item);
+			}
+		}
 
-        private static void BuildOneToManyRelationLinks(List<ExplorerItem> explorerItems, (EntityMetadata entityMetadata, List<(string attributeName, List<(string Label, int? Value)> options)> optionMetadata) entity, ExplorerItem source)
-        {
-            foreach (var oneToMany in entity.entityMetadata.OneToManyRelationships)
-            {
-                var target = explorerItems.FirstOrDefault(e => e.Kind == ExplorerItemKind.QueryableObject && (string)e.Tag == oneToMany.ReferencingEntity);
-                if (target != null)
-                {
-                    source?.Children.Add(new ExplorerItem(oneToMany.SchemaName, ExplorerItemKind.CollectionLink, ExplorerIcon.OneToMany)
-                    {
-                        HyperlinkTarget = target,
-                        ToolTipText = oneToMany.ReferencingAttribute
-                    });
-                }
-            }
-        }
+		private static void BuildOneToManyRelationLinks(List<ExplorerItem> explorerItems, (EntityMetadata entityMetadata, List<(string attributeName, List<(string Label, int? Value)> options)> optionMetadata) entity, ExplorerItem source)
+		{
+			foreach (var oneToMany in entity.entityMetadata.OneToManyRelationships)
+			{
+				var target = explorerItems.FirstOrDefault(e => e.Kind == ExplorerItemKind.QueryableObject && (string)e.Tag == oneToMany.ReferencingEntity);
+				if (target != null)
+				{
+					source?.Children.Add(new ExplorerItem(oneToMany.SchemaName, ExplorerItemKind.CollectionLink, ExplorerIcon.OneToMany)
+					{
+						HyperlinkTarget = target,
+						ToolTipText = oneToMany.ReferencingAttribute
+					});
+				}
+			}
+		}
 
-        private static void BuildManyToOneRelationLinks(List<ExplorerItem> explorerItems, (EntityMetadata entityMetadata, List<(string attributeName, List<(string Label, int? Value)> options)> optionMetadata) entity, ExplorerItem source)
-        {
-            foreach (var manyToOne in entity.entityMetadata.ManyToOneRelationships)
-            {
-                var targetEntity = explorerItems.FirstOrDefault(e => e.Kind == ExplorerItemKind.QueryableObject && (string)e.Tag == manyToOne.ReferencedEntity);
-                var targetAttribute = targetEntity?.Children.FirstOrDefault(e => e.Kind == ExplorerItemKind.Parameter && (string)e.Tag == manyToOne.ReferencedAttribute);
-                if (targetAttribute != null)
-                {
-                    source?.Children.Add(new ExplorerItem(manyToOne.SchemaName, ExplorerItemKind.ReferenceLink, ExplorerIcon.ManyToOne)
-                    {
-                        HyperlinkTarget = targetAttribute,
-                        ToolTipText = manyToOne.ReferencingAttribute
-                    });
-                }
-            }
-        }
+		private static void BuildManyToOneRelationLinks(List<ExplorerItem> explorerItems, (EntityMetadata entityMetadata, List<(string attributeName, List<(string Label, int? Value)> options)> optionMetadata) entity, ExplorerItem source)
+		{
+			foreach (var manyToOne in entity.entityMetadata.ManyToOneRelationships)
+			{
+				var targetEntity = explorerItems.FirstOrDefault(e => e.Kind == ExplorerItemKind.QueryableObject && (string)e.Tag == manyToOne.ReferencedEntity);
+				var targetAttribute = targetEntity?.Children.FirstOrDefault(e => e.Kind == ExplorerItemKind.Parameter && (string)e.Tag == manyToOne.ReferencedAttribute);
+				if (targetAttribute != null)
+				{
+					source?.Children.Add(new ExplorerItem(manyToOne.SchemaName, ExplorerItemKind.ReferenceLink, ExplorerIcon.ManyToOne)
+					{
+						HyperlinkTarget = targetAttribute,
+						ToolTipText = manyToOne.ReferencingAttribute
+					});
+				}
+			}
+		}
 
 		private static string GetTypeFromCode(AttributeTypeCode? attributeTypeCode)
 		{
