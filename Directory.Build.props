@@ -26,6 +26,7 @@
         <VSToolsPath
             Condition="'$(VSToolsPath)' == '' and Exists('$(MSBuildExtensionsPath32)/Microsoft/VisualStudio/v$(VisualStudioVersion)')"
         >$(MSBuildExtensionsPath32)/Microsoft/VisualStudio/v$(VisualStudioVersion)</VSToolsPath>
+        <NoWarn>IDE0040;IDE0028;IDE0022;IDE0055;IDE0008;IDE0011;IDE0021;IDE0025;IDE0045;IDE0046;IDE0047;IDE0052;IDE0065;CA1871;IDE0078;IDE0160;IDE0290;IDE0300;IDE0305;IDE1006;MSB3277;NU1504;$(NoWarn)</NoWarn>
     </PropertyGroup>
 
     <!-- Normalize Output Paths -->

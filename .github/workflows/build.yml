@@ -20,7 +20,7 @@ env:
 jobs:
   spellcheck:
     runs-on: ubuntu-latest
-    name: "📝🔥 Spellcheck"
+    name: "📝 Spellcheck"
     steps:
       - uses: actions/checkout@v4
         name: 📤 Checkout
@@ -52,7 +52,7 @@ jobs:
     runs-on: ${{ matrix.os }}
 
     # Build: dotnet-8.x, win-x64, Debug
-    name: "🪟🔥 Build | ${{ matrix.config }}"
+    name: "🔥 Build | ${{ matrix.config }}"
 
     steps:
       - uses: actions/checkout@v4
